@@ -1,0 +1,31 @@
+﻿using System;
+using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace OutbornE_commerce.DAL.Models
+{
+	public class User : IdentityUser
+	{
+		public string FullName { get; set; }
+		public string? ProfilePicture { get; set; }
+		public string? ProfilePictureName { get; set; }
+		public int AccountType { get; set; }
+		public string? CreatedBy { get; set; }
+		public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
+		public string? UpdatedBy { get; set; }
+		public DateTime? UpdatedOn { get; set; }
+		public List<RefreshToken>? RefreshTokens { get; set; }
+		public string? ActivationCodeEmail { get; set; }
+		public string? ActivationCodePhoneNumber { get; set; }
+		public string? ForgetPasswordCode { get; set; }
+		public string? DeviceId { get; set; }
+		public string? PhoneNumber { get; set; }
+		public List<UserAddress> UserAddresses { get; set; }
+		public string? Brief { get; set; }
+		public string? RefreshToken { get; set; }
+		public DateTime? RefreshTokenExpiryTime { get; set; }
+	}
+}
