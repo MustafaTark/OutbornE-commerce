@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using OutbornE_commerce.BAL.AuthServices;
 using OutbornE_commerce.BAL.Dto;
 using OutbornE_commerce.DAL.Data;
 using OutbornE_commerce.DAL.Models;
@@ -88,6 +89,7 @@ builder.Services.AddSwaggerGen(c => {
 	});
 });
 
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 
 builder.Services.AddEndpointsApiExplorer();
