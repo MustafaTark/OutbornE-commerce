@@ -12,6 +12,7 @@ using OutbornE_commerce.BAL.Repositories.Brands;
 using OutbornE_commerce.BAL.Repositories.Categories;
 using OutbornE_commerce.DAL.Data;
 using OutbornE_commerce.DAL.Models;
+using OutbornE_commerce.Extensions;
 using OutbornE_commerce.FilesManager;
 using System.Text;
 
@@ -93,13 +94,7 @@ builder.Services.AddSwaggerGen(c => {
 	});
 });
 
-
-
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IBrandRepository, BrandRepository>();
-builder.Services.AddScoped<IFilesManager, FilesManager>();
-
+builder.Services.ConfigureLifeTime();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
