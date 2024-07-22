@@ -24,7 +24,7 @@ namespace OutbornE_commerce.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllCateogries()
         {
-            var categories = await _categoryRepository.GetAllAsync(null, false);
+            var categories = await _categoryRepository.FindAllAsync(null, false);
             var data = categories.Adapt<List<CategoryDto>>();
             return Ok(data);
         }
@@ -36,11 +36,12 @@ namespace OutbornE_commerce.Controllers
             {
                 return NotFound();
             }
+            var data = category.Adapt<CategoryDto>();
             return Ok(category);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCategory([FromForm] CategoryDto model)
+        public async Task<IActionResult> CreateCategory([FromForm] CategoryDto model , CancellationToken cancellationToken)
         {
             var category = model.Adapt<Category>();
             category.CreatedBy = "admin";
@@ -50,14 +51,14 @@ namespace OutbornE_commerce.Controllers
                 category.ImageUrl = fileModel!.Url;
             }
             var result = await _categoryRepository.Create(category);
-            await _categoryRepository.SaveAsync();
+            await _categoryRepository.SaveAsync(cancellationToken);
 
             return Ok(result.Id);
 
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateCategory([FromForm] CategoryDto model)
+        public async Task<IActionResult> UpdateCategory([FromForm] CategoryDto model , CancellationToken cancellationToken)
         {
             var category = await _categoryRepository.Find(c => c.Id == model.Id, true);
             category = model.Adapt<Category>();
@@ -70,17 +71,17 @@ namespace OutbornE_commerce.Controllers
             }
 
             _categoryRepository.Update(category);
-            await _categoryRepository.SaveAsync();
+            await _categoryRepository.SaveAsync(cancellationToken);
 
             return Ok(category.Id);
         }
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(Guid id)
+        public async Task<IActionResult> DeleteCategory(Guid id,CancellationToken cancellationToken)
         {
             var category = await _categoryRepository.Find(c => c.Id == id, true);
 
             _categoryRepository.Delete(category);
-            await _categoryRepository.SaveAsync();
+            await _categoryRepository.SaveAsync(cancellationToken);
 
             return Ok(category.Id);
         }
@@ -88,7 +89,7 @@ namespace OutbornE_commerce.Controllers
         [HttpGet("subCategories/{categoryId}")]
         public async Task<IActionResult> GetAllSubCategories(Guid categoryId)
         {
-            var subs = await _categoryRepository.FindAllByCondition(s => s.ParentCategoryId == categoryId);
+            var subs = await _categoryRepository.FindByCondition(s => s.ParentCategoryId == categoryId);
             var data = subs.Adapt<List<SubCategoryDto>>();
             return Ok(data);
         }
@@ -104,7 +105,7 @@ namespace OutbornE_commerce.Controllers
             return Ok(data);
         }
         [HttpPost("subcategory")]
-        public async Task<IActionResult> CreateSubCategory([FromForm] SubCategoryDto model)
+        public async Task<IActionResult> CreateSubCategory([FromForm] SubCategoryDto model, CancellationToken cancellationToken)
         {
             var subcategory = model.Adapt<Category>();
             subcategory.CreatedBy = "admin";
@@ -114,13 +115,13 @@ namespace OutbornE_commerce.Controllers
                 subcategory.ImageUrl = fileModel!.Url;
             }
             var result = await _categoryRepository.Create(subcategory);
-            await _categoryRepository.SaveAsync();
+            await _categoryRepository.SaveAsync(cancellationToken);
 
             return Ok(result.Id);
         }
 
         [HttpPut("subcategory")]
-        public async Task<IActionResult> UpdateSubCategory([FromForm] CategoryDto model)
+        public async Task<IActionResult> UpdateSubCategory([FromForm] SubCategoryDto model, CancellationToken cancellationToken)
         {
             var category = await _categoryRepository.Find(c => c.Id == model.Id, true);
             category = model.Adapt<Category>();
@@ -133,7 +134,7 @@ namespace OutbornE_commerce.Controllers
             }
 
             _categoryRepository.Update(category);
-            await _categoryRepository.SaveAsync();
+            await _categoryRepository.SaveAsync(cancellationToken);
 
             return Ok(category.Id);
         }
