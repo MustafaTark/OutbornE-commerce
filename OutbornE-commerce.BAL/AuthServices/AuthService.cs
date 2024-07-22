@@ -18,11 +18,10 @@ namespace OutbornE_commerce.BAL.AuthServices
 		private readonly UserManager<User> _userManager;
 		private readonly IConfiguration _configuration;
 		private User _user;
-		public AuthService(UserManager<User> userManager, IConfiguration configuration, User user)
+		public AuthService(UserManager<User> userManager, IConfiguration configuration)
 		{
 			_userManager = userManager;
 			_configuration = configuration;
-			_user = user;
 		}
 		public async Task<bool> ValidateUser(UserForLoginDto userForAuth)
 		{
@@ -38,7 +37,7 @@ namespace OutbornE_commerce.BAL.AuthServices
 		}
 		private SigningCredentials GetSigningCredentials()
 		{
-			var key = Encoding.UTF8.GetBytes("ResearchersAPIKey");
+			var key = Encoding.UTF8.GetBytes("HQDshfnnystWB3Ff4tKeQx3d0aIR2uoEurrknFhsyjA");
 			var secret = new SymmetricSecurityKey(key);
 			return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
 		}
@@ -56,7 +55,7 @@ namespace OutbornE_commerce.BAL.AuthServices
 		}
 		private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
 		{
-			var jwtSettings = _configuration.GetSection("JwtSettings");
+			var jwtSettings = _configuration.GetSection("JWT");
 			var tokenOptions = new JwtSecurityToken(
 				issuer: jwtSettings.GetSection("validIssuer").Value,
 				audience: jwtSettings.GetSection("validAudience").Value,
