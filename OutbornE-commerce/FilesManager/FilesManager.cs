@@ -118,7 +118,7 @@ namespace OutbornE_commerce.FilesManager
             }
             catch (Exception ex)
             {
-                return false;
+                return false; // https://localhost:5050.com
             }
         }
         public async Task<bool> DeleteMultipleFiles(List<string> filesUrl)

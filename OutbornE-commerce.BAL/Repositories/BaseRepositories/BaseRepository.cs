@@ -16,14 +16,31 @@ namespace OutbornE_commerce.BAL.Repositories.BaseRepositories
 		{
 			_context = context;
 		}
-		public async Task<IEnumerable<T>> FindAll(bool trackChanges)
-		=> trackChanges ?
-		   await _context.Set<T>().ToListAsync() : await _context.Set<T>().AsNoTracking().ToListAsync();
+        public async Task<IEnumerable<T>> GetAllAsync(string[] includes, bool withNoTracking = true)
+        {
+            IQueryable<T> query = _context.Set<T>();
 
-		public async Task<IEnumerable<T>> FindByCondition(Expression<Func<T, bool>> expression, bool trackChanges)
-		=> !trackChanges ?
-			await _context.Set<T>().Where(expression).AsNoTracking().ToListAsync()
-			: await _context.Set<T>().Where(expression).AsTracking(QueryTrackingBehavior.TrackAll).ToListAsync();
+            if (withNoTracking)
+                query = query.AsNoTracking();
+
+            if (includes != null)
+                foreach (var incluse in includes)
+                    query = query.Include(incluse);
+
+            return await query.ToListAsync();
+        }
+		//string[] includes = new string[] { "SubCategories" };
+        public async Task<IEnumerable<T>> FindByCondition(Expression<Func<T, bool>> criteria, string[] includes = null)
+        {
+            IQueryable<T> query = _context.Set<T>();
+
+            if (includes != null)
+                foreach (var include in includes)
+                    query = query.Include(include);
+
+            return await query.Where(criteria).ToListAsync();
+        }
+
 		public async Task<T?> Find(Expression<Func<T, bool>> expression, bool trackChanges)
 		=> !trackChanges ?
 			await _context.Set<T>().Where(expression).AsNoTracking().FirstOrDefaultAsync()
