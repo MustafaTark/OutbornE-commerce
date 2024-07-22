@@ -16,7 +16,7 @@ namespace OutbornE_commerce.BAL.Repositories.BaseRepositories
 		{
 			_context = context;
 		}
-        public async Task<IEnumerable<T>> GetAllAsync(string[] includes, bool withNoTracking = true)
+        public async Task<IEnumerable<T>> FindAllAsync(string[] includes, bool withNoTracking = true)
         {
             IQueryable<T> query = _context.Set<T>();
 
