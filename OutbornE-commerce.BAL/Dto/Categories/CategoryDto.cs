@@ -14,8 +14,8 @@ namespace OutbornE_commerce.BAL.Dto.Categories
         public string NameAr { get; set; }
         public string? DescriptionEn { get; set; }
         public string? DescriptionAr { get; set; }
-        public string ImageUrl { get; set; }
-        public IFormFile Image {  get; set; }
+        public string? ImageUrl { get; set; }
+        public IFormFile? Image {  get; set; }
  
     }
 }

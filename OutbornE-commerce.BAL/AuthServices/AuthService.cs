@@ -44,7 +44,9 @@ namespace OutbornE_commerce.BAL.AuthServices
 		private async Task<List<Claim>> GetClaims()
 		{
 			var claims = new List<Claim> {
-				new Claim(ClaimTypes.Name, _user.UserName!)
+				new Claim("userName", _user.UserName!),
+				new Claim("uid", _user.Id!),
+				new Claim("email", _user.Email!),
 			};
 			var roles = await _userManager.GetRolesAsync(_user);
 			foreach (var role in roles)
