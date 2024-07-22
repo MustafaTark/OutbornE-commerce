@@ -7,8 +7,12 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OutbornE_commerce.BAL.AuthServices;
 using OutbornE_commerce.BAL.Dto;
+using OutbornE_commerce.BAL.Repositories.BaseRepositories;
+using OutbornE_commerce.BAL.Repositories.Brands;
+using OutbornE_commerce.BAL.Repositories.Categories;
 using OutbornE_commerce.DAL.Data;
 using OutbornE_commerce.DAL.Models;
+using OutbornE_commerce.FilesManager;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -89,7 +93,12 @@ builder.Services.AddSwaggerGen(c => {
 	});
 });
 
+
+
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IBrandRepository, BrandRepository>();
+builder.Services.AddScoped<IFilesManager, FilesManager>();
 
 
 builder.Services.AddEndpointsApiExplorer();
