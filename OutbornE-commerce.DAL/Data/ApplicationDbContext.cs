@@ -23,6 +23,9 @@ namespace OutbornE_commerce.DAL.Data
         public DbSet<HomeSection> HomeSections { get; set; }
         public DbSet<Color> Colors { get; set; }
         public DbSet<Size> Sizes { get; set; }
+        public DbSet<SEO> SEOs {  get; set; }
+        public DbSet<ReceivePoints> ReceivePoints { get; set; }
+        public DbSet<Currency> Currencies { get; set; }
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 	  : base(options) { }
 		protected override void OnModelCreating(ModelBuilder builder)

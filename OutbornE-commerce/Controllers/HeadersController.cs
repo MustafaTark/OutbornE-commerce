@@ -24,8 +24,8 @@ namespace OutbornE_commerce.Controllers
         public async Task<IActionResult> GetAllHeaders()
         {
             var header = await _headerRepository.FindAllAsync(null, false);
-            var headerEntites = header.Adapt<HeaderDto>();
-            if(headerEntites == null) 
+            var headerEntites = header.Adapt<List<HeaderDto>>();
+            if(!headerEntites.Any()) 
                 return Ok(new {Message = "No Headers are inserted in the database yet ! "});
             return Ok(new {data = headerEntites , Message = ""});
         }
@@ -39,7 +39,7 @@ namespace OutbornE_commerce.Controllers
             return Ok(new { data = headerEntity, Message = "" });
         }
         [HttpPost]
-        public async Task<IActionResult> CreateHeader([FromForm] HeaderDto model , CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateHeader([FromForm] HeaderForCreationDto model , CancellationToken cancellationToken)
         {
             var header = model.Adapt<Header>();
             header.CreatedBy = "admin";
