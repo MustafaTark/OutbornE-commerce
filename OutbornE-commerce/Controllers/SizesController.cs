@@ -23,21 +23,21 @@ namespace OutbornE_commerce.Controllers
         {
             var sizes = await _sizeRepository.FindAllAsync(null, false);
             var sizeEntites = sizes.Adapt<List<SizeDto>>();
-            return Ok(new { data = sizeEntites, message = "" });
+            return Ok(sizeEntites);
         }
         [HttpGet("Clothing")]
         public async Task<IActionResult> GetAllClothingSizes()
         {
             var clothingSizes = await _sizeRepository.FindByCondition(t => t.Type == 0, null);
             var sizeEntites = clothingSizes.Adapt<List<SizeDto>>();
-            return Ok(new { data = sizeEntites, message = "" });
+            return Ok(sizeEntites);
         }
         [HttpGet("Shoes")]
         public async Task<IActionResult> GetAllShoesSizes()
         {
             var shoesSizes = await _sizeRepository.FindByCondition(t => (int)t.Type == 1, null);
             var sizeEntites = shoesSizes.Adapt<List<SizeDto>>();
-            return Ok(new { data = sizeEntites, message = "" });
+            return Ok(sizeEntites);
         }
         [HttpGet("Id")]
         public async Task<IActionResult> GetSizeById(Guid Id)
@@ -46,7 +46,7 @@ namespace OutbornE_commerce.Controllers
             if (size == null)
                 return Ok(new { message = $"Size with Id: {size!.Id} doesn't exist in the database" });
             var sizeEntity = size.Adapt<SizeDto>();
-            return Ok(new { data = sizeEntity, message = "" });
+            return Ok(sizeEntity);
         }
         //[HttpPost]
         //public async Task<IActionResult> CreateSize([FromForm] SizeForCreationDto model, CancellationToken cancellationToken)
@@ -77,7 +77,7 @@ namespace OutbornE_commerce.Controllers
                 return Ok(new { message = $"Size with Id: {size!.Id} doesn't exist in the database" });
             _sizeRepository.Delete(size);
             await _sizeRepository.SaveAsync(cancellationToken);
-            return Ok(new { data = Id, message = "" });
+            return Ok(Id);
         }
     }
 }

@@ -25,9 +25,7 @@ namespace OutbornE_commerce.Controllers
         {
             var header = await _headerRepository.FindAllAsync(null, false);
             var headerEntites = header.Adapt<List<HeaderDto>>();
-            if(!headerEntites.Any()) 
-                return Ok(new {Message = "No Headers are inserted in the database yet ! "});
-            return Ok(new {data = headerEntites , Message = ""});
+            return Ok(headerEntites);
         }
         [HttpGet("Id")]
         public async Task<IActionResult>GetHeaderById(Guid Id)
@@ -36,7 +34,7 @@ namespace OutbornE_commerce.Controllers
             var headerEntity = header.Adapt<HeaderDto>();
             if (headerEntity == null)
                 return Ok(new { message =$"Header with Id{header!.Id} doesn't exist in the database"});
-            return Ok(new { data = headerEntity, Message = "" });
+            return Ok(headerEntity);
         }
         [HttpPost]
         public async Task<IActionResult> CreateHeader([FromForm] HeaderForCreationDto model , CancellationToken cancellationToken)
@@ -50,7 +48,7 @@ namespace OutbornE_commerce.Controllers
             }
             var result = await _headerRepository.Create(header);
             await _headerRepository.SaveAsync(cancellationToken);
-            return Ok(new { data = result.Id  , message = ""});
+            return Ok( result.Id);
         }
         [HttpPut]
         public async Task<IActionResult> UpdateHeader([FromForm] HeaderDto model, CancellationToken cancellationToken)
@@ -65,7 +63,7 @@ namespace OutbornE_commerce.Controllers
             }
            _headerRepository.Update(header);
             await _headerRepository.SaveAsync(cancellationToken);
-            return Ok(new { data = header.Id, message = "" });
+            return Ok(header.Id);
         }
         [HttpDelete("Id")]
         public async Task<IActionResult> DeleteHeader(Guid Id , CancellationToken cancellationToken)
@@ -75,7 +73,7 @@ namespace OutbornE_commerce.Controllers
                 return Ok(new { message = $"Header with Id{header!.Id} doesn't exist in the database" });
             _headerRepository.Delete(header);
             await _headerRepository.SaveAsync(cancellationToken);
-            return Ok(new { data = header.Id, message = "" });
+            return Ok(header.Id);
         }
     }
 }

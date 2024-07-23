@@ -27,7 +27,7 @@ namespace OutbornE_commerce.Controllers
         {
             var homeSection = await _homeSectionRepository.FindAllAsync(null, false);
             var homeEntity = homeSection.Adapt<List<HomeSectionDto>>();
-            return Ok(new { HomeSection = homeEntity  , message = ""});
+            return Ok(homeEntity);
         }
         [HttpPost]
         public async Task<IActionResult> CreateHomeSection([FromForm] HomeSectionForCreationDto model , CancellationToken cancellationToken)
@@ -44,7 +44,7 @@ namespace OutbornE_commerce.Controllers
             }
             var result = await _homeSectionRepository.Create(section);
             await _homeSectionRepository.SaveAsync(cancellationToken);
-            return Ok(new { data = result.Id , message = ""});
+            return Ok(result.Id);
         }
         [HttpPut]
         public async Task<IActionResult> UpdateHomeSection([FromForm] HomeSectionDto model , CancellationToken cancellationToken)
@@ -61,7 +61,7 @@ namespace OutbornE_commerce.Controllers
             }
             _homeSectionRepository.Update(homeSection);
             await _homeSectionRepository.SaveAsync(cancellationToken);
-            return Ok(new { data = homeSection.Id, message = "" });
+            return Ok(homeSection.Id);
         }
         [HttpDelete("Id")]
         public async Task<IActionResult> DeleteHomeSection(Guid Id, CancellationToken cancellationToken)
@@ -71,7 +71,7 @@ namespace OutbornE_commerce.Controllers
                 return Ok(new { message = $"Home Section with Id: {homeSection!.Id} doesn't exist in the database" });
             _homeSectionRepository.Delete(homeSection);
             await _homeSectionRepository.SaveAsync(cancellationToken);
-            return Ok(new { data = homeSection.Id, message = "" });
+            return Ok(homeSection.Id);
         }
     }
 }

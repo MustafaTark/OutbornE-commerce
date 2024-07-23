@@ -23,7 +23,7 @@ namespace OutbornE_commerce.Controllers
         {
             var colors = await _colorRepository.FindAllAsync(null, false);
             var colorEntites = colors.Adapt<List<ColorDto>>();
-            return Ok(new { data = colorEntites, message = ""});
+            return Ok(colorEntites);
         }
         [HttpGet("Id")]
         public async Task<IActionResult> GetColorById(Guid Id)
@@ -32,7 +32,7 @@ namespace OutbornE_commerce.Controllers
             if (color == null)
                 return Ok(new { message = $"Color with Id: {color!.Id} doesn't exist in the database" });
             var colorEntity = color.Adapt<ColorDto>();
-            return Ok(new { data = colorEntity , message = ""});
+            return Ok(colorEntity);
         }
         [HttpPost]
         public async Task<IActionResult> CreateColor([FromForm] ColorForCreationDto model , CancellationToken cancellationToken )
@@ -41,7 +41,7 @@ namespace OutbornE_commerce.Controllers
             color.CreatedBy = "admin";
             var result = await _colorRepository.Create(color);
             await _colorRepository.SaveAsync(cancellationToken);
-            return Ok(new {data = result.Id , message = ""});
+            return Ok(result.Id);
         }
         [HttpPut]
         public async Task<IActionResult> UpdateColor([FromForm] ColorDto model ,CancellationToken cancellationToken )
@@ -53,7 +53,7 @@ namespace OutbornE_commerce.Controllers
             color.UpdatedBy = "admin";
             _colorRepository.Update(color);
             await _colorRepository.SaveAsync(cancellationToken) ;
-            return Ok(new { data = color.Id, message = "" });
+            return Ok(color.Id);
         }
         [HttpDelete("Id")]
         public async Task<IActionResult> DeleteColor(Guid Id , CancellationToken cancellationToken)
@@ -63,7 +63,7 @@ namespace OutbornE_commerce.Controllers
                 return Ok(new { message = $"Color with Id: {color!.Id} doesn't exist in the database" });
             _colorRepository.Delete(color);
             await _colorRepository.SaveAsync(cancellationToken);
-            return Ok(new { data = Id, message = "" });
+            return Ok(Id);
         }
     }
 }
