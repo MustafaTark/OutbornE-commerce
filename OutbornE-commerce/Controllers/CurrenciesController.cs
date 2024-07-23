@@ -25,9 +25,9 @@ namespace OutbornE_commerce.Controllers
         [HttpGet("Id")]
         public async Task<IActionResult> GetCurrencyById(Guid Id)
         {
-            var currency = await _currencyRepository.Find(c => c.Id == Id , false);
+            var currency = await _currencyRepository.Find(c => c.Id == Id, false);
             if (currency is null)
-                return Ok(new { message = $"Currency with Id : {currency!.Id} doesn't exist in the database");
+                return Ok(new { message = $"Currency with Id : {currency!.Id} doesn't exist in the database" });
             var currencyEntity = currency.Adapt<CurrencyDto>();
             return Ok(new { data = currencyEntity, message = "" });
         }
