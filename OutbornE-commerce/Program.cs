@@ -69,7 +69,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddSwaggerGen(c => {
 	c.SwaggerDoc("v1", new OpenApiInfo
 	{
-		Title = "Hebr_API",
+		Title = "Outborn_API",
 		Version = "v1"
 	});
 	c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -79,7 +79,7 @@ builder.Services.AddSwaggerGen(c => {
 		Scheme = "Bearer",
 		BearerFormat = "JWT",
 		In = ParameterLocation.Header,
-		Description = "Add your valid token to be able to use Hebr-Api",
+		Description = "Add your valid token to be able to Outborn-Api",
 	});
 	c.AddSecurityRequirement(new OpenApiSecurityRequirement {
 		{

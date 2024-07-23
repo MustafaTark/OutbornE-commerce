@@ -9,7 +9,9 @@ using OutbornE_commerce.FilesManager;
 
 namespace OutbornE_commerce.Controllers
 {
-    public class BrandsController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class BrandsController : ControllerBase
     {
         private readonly IBrandRepository _brandRepository;
         private readonly IFilesManager _filesManager;
