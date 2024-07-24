@@ -1,13 +1,17 @@
 ﻿using OutbornE_commerce.BAL.AuthServices;
 using OutbornE_commerce.BAL.Repositories.Brands;
 using OutbornE_commerce.BAL.Repositories.Categories;
+using OutbornE_commerce.BAL.Repositories.Cities;
 using OutbornE_commerce.BAL.Repositories.Colors;
+using OutbornE_commerce.BAL.Repositories.Countries;
 using OutbornE_commerce.BAL.Repositories.Currencies;
 using OutbornE_commerce.BAL.Repositories.Headers;
 using OutbornE_commerce.BAL.Repositories.HomeSections;
 using OutbornE_commerce.BAL.Repositories.ReceivePoints;
 using OutbornE_commerce.BAL.Repositories.SEOs;
 using OutbornE_commerce.BAL.Repositories.Sizes;
+using OutbornE_commerce.BAL.Repositories.SMTP_Server;
+using OutbornE_commerce.BAL.Repositories.Tickets;
 using OutbornE_commerce.FilesManager;
 
 namespace OutbornE_commerce.Extensions
@@ -27,6 +31,10 @@ namespace OutbornE_commerce.Extensions
             services.AddScoped<ISEORepository, SEORepository>();
             services.AddScoped<IReceivePointsRepository, ReceivePointsRepository>();
             services.AddScoped<ICurrencyRepository, CurrencyRepository>();
+            services.AddScoped<ICityRepository, CityRepository>();
+            services.AddScoped<ICountryRepository, CountryRepository>();
+            services.AddScoped<ISMTPRepository, SMTPRepository>();
+            services.AddScoped<ITicketRepository, TicketRepository>();
 
         }
     }

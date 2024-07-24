@@ -26,6 +26,10 @@ namespace OutbornE_commerce.DAL.Data
         public DbSet<SEO> SEOs {  get; set; }
         public DbSet<ReceivePoints> ReceivePoints { get; set; }
         public DbSet<Currency> Currencies { get; set; }
+        public DbSet<City> Cities { get; set; }
+        public DbSet<Country> Countries { get; set; }
+        public DbSet<SMTPServer> SMTPServers { get; set; }
+        public DbSet<Ticket> Tickets { get; set; }
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 	  : base(options) { }
 		protected override void OnModelCreating(ModelBuilder builder)
