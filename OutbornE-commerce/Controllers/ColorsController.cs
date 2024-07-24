@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using OutbornE_commerce.BAL.Dto;
 using OutbornE_commerce.BAL.Dto.Colors;
 using OutbornE_commerce.BAL.Repositories.Colors;
 using OutbornE_commerce.DAL.Models;
@@ -28,11 +29,23 @@ namespace OutbornE_commerce.Controllers
         [HttpGet("Id")]
         public async Task<IActionResult> GetColorById(Guid Id)
         {
-            var color = await _colorRepository.Find(c => c.Id == Id , false);
+            var color = await _colorRepository.Find(c => c.Id == Id, false);
             if (color == null)
-                return Ok(new { message = $"Color with Id: {color!.Id} doesn't exist in the database" });
+                return Ok(new Response<ColorDto>
+                {
+                    Data = null,
+                    Status = (StatusCode)2 , // Success
+                    IsError = true,
+                    Message = $"Color with Id: {color!.Id} doesn't exist in the database"
+                }); ;
             var colorEntity = color.Adapt<ColorDto>();
-            return Ok(new { data = colorEntity , message = ""});
+            return Ok(new Response<ColorDto>
+            {
+                Data = colorEntity,
+                Status = 0, // Success  
+                IsError = false,
+                Message = ""
+            });
         }
         [HttpPost]
         public async Task<IActionResult> CreateColor([FromForm] ColorForCreationDto model , CancellationToken cancellationToken )
