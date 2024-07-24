@@ -19,6 +19,16 @@ namespace OutbornE_commerce.Controllers
         {
             _colorRepository = colorRepository;
         }
+        [HttpGet("StaticColor")]
+        public IActionResult GetStaticColor()
+        {
+            return Ok(new ColorDto()
+            {
+                Hexadecimal = "#CCC",
+                NameAr = "رمادي",
+                NameEn = "Grey"
+            });
+        }
         [HttpGet]
         public async Task<IActionResult> GetAllColors()
         {
