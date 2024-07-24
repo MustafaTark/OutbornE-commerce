@@ -25,10 +25,14 @@ string[] CorsOrigins;
 CorsOrigins = builder.Configuration["Cors_Origins"].Split(",");
 
 builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
-builder.Services.AddCors(options => options.AddPolicy("_myAllowSpecificOrigins", builder =>
-{
-	builder.WithOrigins(CorsOrigins).AllowAnyMethod().AllowAnyHeader();
-}));
+builder.Services.AddCors(options => {
+    options.AddPolicy("_myAllowSpecificOrigins", builder =>
+    builder.AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials()
+    .SetIsOriginAllowed((hosts) => true));
+});
+
 
 builder.Services.AddControllers();
 

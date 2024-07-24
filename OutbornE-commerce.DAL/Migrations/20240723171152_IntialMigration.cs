@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OutbornE_commerce.DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class IntialiMigration : Migration
+    public partial class IntialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -165,6 +165,27 @@ namespace OutbornE_commerce.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Currencies",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    NameAr = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NameEn = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Sign = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    IsDeafult = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Currencies", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Headers",
                 columns: table => new
                 {
@@ -205,6 +226,41 @@ namespace OutbornE_commerce.DAL.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_HomeSections", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ReceivePoints",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReceivePoints", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SEOs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    NameAr = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NameEn = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SEOs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -391,8 +447,8 @@ namespace OutbornE_commerce.DAL.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "3dfe5c31-b79b-4f83-ad23-e0df68d3e362", null, "Admin", "ADMIN" },
-                    { "5dc9e45b-aa12-4788-914b-985614406269", null, "User", "USER" },
+                    { "23c6096a-b149-4cb5-8e21-ff8a9077cba8", null, "Admin", "ADMIN" },
+                    { "4455361a-b788-48c5-b681-f5abafcbbd8a", null, "User", "USER" },
                 });
 
             migrationBuilder.CreateIndex(
@@ -483,13 +539,22 @@ namespace OutbornE_commerce.DAL.Migrations
                 name: "Colors");
 
             migrationBuilder.DropTable(
+                name: "Currencies");
+
+            migrationBuilder.DropTable(
                 name: "Headers");
 
             migrationBuilder.DropTable(
                 name: "HomeSections");
 
             migrationBuilder.DropTable(
+                name: "ReceivePoints");
+
+            migrationBuilder.DropTable(
                 name: "RefreshToken");
+
+            migrationBuilder.DropTable(
+                name: "SEOs");
 
             migrationBuilder.DropTable(
                 name: "Sizes");
