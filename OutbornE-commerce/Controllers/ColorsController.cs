@@ -18,6 +18,11 @@ namespace OutbornE_commerce.Controllers
         {
             _colorRepository = colorRepository;
         }
+        [HttpGet("GetStaticColor")]
+        public async Task<IActionResult> GetStaticColor()
+        {
+            return Ok(new { hexa = "#6EACDA", Name = "testcolor" });
+        }
         [HttpGet]
         public async Task<IActionResult> GetAllColors()
         {
