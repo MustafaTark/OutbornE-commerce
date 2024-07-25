@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OutbornE_commerce.BAL.Dto.Currencies;
 using OutbornE_commerce.BAL.Dto.Headers;
 using OutbornE_commerce.BAL.Repositories.Headers;
 using OutbornE_commerce.DAL.Models;
@@ -25,16 +26,28 @@ namespace OutbornE_commerce.Controllers
         {
             var header = await _headerRepository.FindAllAsync(null, false);
             var headerEntites = header.Adapt<List<HeaderDto>>();
-            return Ok(headerEntites);
+            return Ok(new Response<List<HeaderDto>>
+            {
+                Data = headerEntites,
+                IsError = false,
+                Message = "",
+                Status = (int)(StatusCodeEnum.NotFound)
+            });
         }
         [HttpGet("Id")]
         public async Task<IActionResult>GetHeaderById(Guid Id)
         {
             var header = await _headerRepository.Find(i => i.Id == Id, false);
             var headerEntity = header.Adapt<HeaderDto>();
-            if (headerEntity == null)
-                return Ok(new { message =$"Header with Id{header!.Id} doesn't exist in the database"});
-            return Ok(headerEntity);
+            //if (headerEntity == null)
+            //    return Ok(new { message =$"Header with Id{header!.Id} doesn't exist in the database"});
+            return Ok(new Response<HeaderDto>
+            {
+                Data = headerEntity,
+                IsError = false,
+                Message = "",
+                Status = (int)(StatusCodeEnum.Ok)
+            });
         }
         [HttpPost]
         public async Task<IActionResult> CreateHeader([FromForm] HeaderForCreationDto model , CancellationToken cancellationToken)
@@ -48,7 +61,13 @@ namespace OutbornE_commerce.Controllers
             }
             var result = await _headerRepository.Create(header);
             await _headerRepository.SaveAsync(cancellationToken);
-            return Ok( result.Id);
+            return Ok(new Response<Guid>
+            {
+                Data = header.Id,
+                IsError = false,
+                Message = "",
+                Status = (int)(StatusCodeEnum.Ok)
+            });
         }
         [HttpPut]
         public async Task<IActionResult> UpdateHeader([FromForm] HeaderDto model, CancellationToken cancellationToken)
@@ -63,7 +82,13 @@ namespace OutbornE_commerce.Controllers
             }
            _headerRepository.Update(header);
             await _headerRepository.SaveAsync(cancellationToken);
-            return Ok(header.Id);
+            return Ok(new Response<Guid>
+            {
+                Data = header.Id,
+                IsError = false,
+                Message = "",
+                Status = (int)(StatusCodeEnum.Ok)
+            });
         }
         [HttpDelete("Id")]
         public async Task<IActionResult> DeleteHeader(Guid Id , CancellationToken cancellationToken)
@@ -73,7 +98,7 @@ namespace OutbornE_commerce.Controllers
                 return Ok(new { message = $"Header with Id{header!.Id} doesn't exist in the database" });
             _headerRepository.Delete(header);
             await _headerRepository.SaveAsync(cancellationToken);
-            return Ok(header.Id);
+            return Ok(new Response<Guid> { Data = header.Id, IsError = false, Message = "", Status = (int)(StatusCodeEnum.Ok) });
         }
     }
 }

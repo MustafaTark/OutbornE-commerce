@@ -41,10 +41,16 @@ namespace OutbornE_commerce.Controllers
                     Data = null,
                     IsError = true,
                     Message = $"Currency with Id: {Id} doesn't exist in the database",
-                    //Status = (StatusCodeEn)2,
+                   Status = (int)(StatusCodeEnum.NotFound)    
                 });
             var currencyEntity = currency.Adapt<CurrencyDto>();
-            return Ok(currencyEntity);
+            return Ok(new Response<CurrencyDto>
+            {
+                Data = currencyEntity,
+                IsError = false,
+                Message = "",
+                Status = (int)(StatusCodeEnum.Ok)
+            });
         }
         [HttpPost]
         public async Task<IActionResult> CreateCurrency([FromForm] CurrencyDto model, CancellationToken cancellationToken)
@@ -53,7 +59,13 @@ namespace OutbornE_commerce.Controllers
             currency.CreatedBy = "admin";
            var result =  await _currencyRepository.Create(currency);
             await _currencyRepository.SaveAsync(cancellationToken);
-            return Ok(result.Id);
+            return Ok(new Response<Guid>
+            {
+                Data = result.Id,
+                IsError = false,
+                Message = "",
+                Status = (int)(StatusCodeEnum.Ok)
+            });
         }
         [HttpPut]
         public async Task<IActionResult> UpdateCurrency([FromForm] CurrencyDto model, CancellationToken cancellationToken)
@@ -64,16 +76,22 @@ namespace OutbornE_commerce.Controllers
                 return Ok(new Response<CurrencyDto>
                 {
                     Data = null,
-                    IsError = true,
-                    Message = $"Currency with Id: {model.Id} doesn't exist in the database",
-                    //Status = (StatusCodeEn)2,
+                    IsError = false,
+                    Message = "",
+                    Status = (int)(StatusCodeEnum.NotFound)
                 });
             }
             currency = model.Adapt<Currency>();
             currency.CreatedBy = "admin";
            _currencyRepository.Update(currency);
             await _currencyRepository.SaveAsync(cancellationToken);
-            return Ok(currency.Id);
+            return Ok(new Response<Guid>
+            {
+                Data = currency.Id,
+                IsError = false,
+                Message = "",
+                Status = (int)(StatusCodeEnum.NotFound)
+            });
         }
         [HttpDelete("Id")]
         public async Task<IActionResult> DeleteCurrency(Guid Id , CancellationToken cancellationToken)
@@ -85,13 +103,19 @@ namespace OutbornE_commerce.Controllers
                 {
                     Data = null,
                     IsError = true,
-                    Message = $"Currency with Id: {currency!.Id} doesn't exist in the database",
-                    //Status = (StatusCode)2,
+                    Message = $"Currency with Id: {Id} doesn't exist in the database",
+                    Status = (int)StatusCodeEnum.NotFound
                 });
             }
             _currencyRepository.Delete(currency);
             await _currencyRepository.SaveAsync(cancellationToken) ;
-            return Ok(currency.Id);
+            return Ok(new Response<Guid>
+            {
+                Data = currency.Id,
+                IsError = false,
+                Message = "",
+                Status = (int)StatusCodeEnum.Ok
+            });
         }
 
     }
