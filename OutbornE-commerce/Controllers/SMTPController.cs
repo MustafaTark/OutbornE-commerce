@@ -38,7 +38,7 @@ namespace OutbornE_commerce.Controllers
                     Data = null,
                     IsError = true,
                     Message = "You have already inserted a SMTP Server before ",
-                    Status = (StatusCode)2
+                    //Status = (StatusCode)2
             });
             var smtp = model.Adapt<SMTPServer>();
             smtp.CreatedBy = "admin";
@@ -56,7 +56,7 @@ namespace OutbornE_commerce.Controllers
                     Data = null,
                     IsError = true,
                     Message = $"SMTP Server with Id: {model.Id} doesn't exist in the database",
-                    Status = (StatusCode)2
+                    //Status = (StatusCode)2
                 });
             smtp = model.Adapt<SMTPServer>();
             smtp.CreatedBy = "admin";
@@ -74,7 +74,7 @@ namespace OutbornE_commerce.Controllers
                     Data = null,
                     IsError = true,
                     Message = $"SMTP Server with Id: {Id} doesn't exist in the database",
-                    Status = (StatusCode)2
+                    //Status = (StatusCode)2
                 });
             _sMTPRepository.Delete(smtp);
             await _sMTPRepository.SaveAsync(cancellationToken) ;

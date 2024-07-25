@@ -24,6 +24,7 @@ namespace OutbornE_commerce.BAL.Dto
         public string Password { get; set; }
 
         [Required]
+        [Range(1,2)]
         public int AccountType { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using OutbornE_commerce.BAL.Dto.Categories;
 using OutbornE_commerce.BAL.Repositories.Categories;
 using OutbornE_commerce.DAL.Models;
 using OutbornE_commerce.FilesManager;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace OutbornE_commerce.Controllers
 {
@@ -26,7 +27,13 @@ namespace OutbornE_commerce.Controllers
         {
             var categories = await _categoryRepository.FindAllAsync(null, false);
             var data = categories.Adapt<List<CategoryDto>>();
-            return Ok(data);
+            return Ok(new Response<List<CategoryDto>>()
+            {
+                Data =data,
+                IsError = false,
+                Message = $"",
+                Status = (int)StatusCodeEnum.Ok
+            });
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategoryById(Guid id)
@@ -34,10 +41,22 @@ namespace OutbornE_commerce.Controllers
             var category = await _categoryRepository.Find(c => c.Id == id, false);
             if (category == null)
             {
-                return NotFound();
+                return Ok(new Response<CategoryDto>()
+                {
+                    Data = null,
+                    IsError = true,
+                    Message = $"",
+                    Status = (int)StatusCodeEnum.NotFound
+                });
             }
             var data = category.Adapt<CategoryDto>();
-            return Ok(category);
+            return Ok(new Response<CategoryDto>()
+            {
+                Data = data,
+                IsError = false,
+                Message = $"",
+                Status = (int)StatusCodeEnum.Ok
+            });
         }
 
         [HttpPost]
@@ -53,7 +72,7 @@ namespace OutbornE_commerce.Controllers
             var result = await _categoryRepository.Create(category);
             await _categoryRepository.SaveAsync(cancellationToken);
 
-            return Ok(result.Id);
+            return Ok(new Response<Guid> { Data = result.Id, IsError = false, Message = $"", Status = (int)StatusCodeEnum.Ok });
 
         }
 
@@ -73,7 +92,7 @@ namespace OutbornE_commerce.Controllers
             _categoryRepository.Update(category);
             await _categoryRepository.SaveAsync(cancellationToken);
 
-            return Ok(category.Id);
+            return Ok(new Response<Guid> { Data = category.Id, IsError = false, Message = $"", Status = (int)StatusCodeEnum.Ok });
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(Guid id,CancellationToken cancellationToken)
@@ -83,7 +102,7 @@ namespace OutbornE_commerce.Controllers
             _categoryRepository.Delete(category);
             await _categoryRepository.SaveAsync(cancellationToken);
 
-            return Ok(category.Id);
+            return Ok(new Response<Guid> { Data = category.Id, IsError = false, Message = $"", Status = (int)StatusCodeEnum.Ok });
         }
 
         [HttpGet("subCategories/{categoryId}")]
@@ -91,7 +110,14 @@ namespace OutbornE_commerce.Controllers
         {
             var subs = await _categoryRepository.FindByCondition(s => s.ParentCategoryId == categoryId);
             var data = subs.Adapt<List<SubCategoryDto>>();
-            return Ok(data);
+
+            return Ok(new Response<List<SubCategoryDto>>()
+            {
+                Data = data,
+                IsError = false,
+                Message = $"",
+                Status = (int)StatusCodeEnum.Ok
+            });
         }
         [HttpGet("subCategoryById/{id}")]
         public async Task<IActionResult> GetSubCategoryById(Guid id)
@@ -102,7 +128,13 @@ namespace OutbornE_commerce.Controllers
                 return NotFound();
             }
             var data = sub.Adapt<SubCategoryDto>();
-            return Ok(data);
+            return Ok(new Response<SubCategoryDto>()
+            {
+                Data = data,
+                IsError = false,
+                Message = $"",
+                Status = (int)StatusCodeEnum.Ok
+            });
         }
         [HttpPost("subcategory")]
         public async Task<IActionResult> CreateSubCategory([FromForm] SubCategoryDto model, CancellationToken cancellationToken)
@@ -117,7 +149,13 @@ namespace OutbornE_commerce.Controllers
             var result = await _categoryRepository.Create(subcategory);
             await _categoryRepository.SaveAsync(cancellationToken);
 
-            return Ok(result.Id);
+            return Ok(new Response<Guid>()
+            {
+                Data = result.Id,
+                IsError = false,
+                Message = $"",
+                Status = (int)StatusCodeEnum.Ok
+            });
         }
 
         [HttpPut("subcategory")]
@@ -136,7 +174,13 @@ namespace OutbornE_commerce.Controllers
             _categoryRepository.Update(category);
             await _categoryRepository.SaveAsync(cancellationToken);
 
-            return Ok(category.Id);
+            return Ok(new Response<Guid>()
+            {
+                Data = category.Id,
+                IsError = false,
+                Message = $"",
+                Status = (int)StatusCodeEnum.Ok
+            });
         }
     }
 }

@@ -1,11 +1,14 @@
 ﻿using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using OutbornE_commerce.BAL.Dto;
 using OutbornE_commerce.BAL.Dto.Brands;
 using OutbornE_commerce.BAL.Dto.Categories;
 using OutbornE_commerce.BAL.Repositories.Brands;
 using OutbornE_commerce.BAL.Repositories.Categories;
+using OutbornE_commerce.DAL.Enums;
 using OutbornE_commerce.DAL.Models;
 using OutbornE_commerce.FilesManager;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace OutbornE_commerce.Controllers
 {
@@ -26,7 +29,14 @@ namespace OutbornE_commerce.Controllers
         {
             var brands = await _brandRepository.FindAllAsync(null, false);
             var data = brands.Adapt<List<BrandDto>>();
-            return Ok(data);
+
+             return Ok(new Response<List<BrandDto>>
+            {
+                Data = data,
+                IsError = false,
+                Message = $"",
+                Status = (int)StatusCodeEnum.Ok
+            });
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBrandById(Guid id)
@@ -34,10 +44,22 @@ namespace OutbornE_commerce.Controllers
             var brand = await _brandRepository.Find(c => c.Id == id, false);
             if (brand == null)
             {
-                return NotFound();
+                return Ok(new Response<CityDto>
+                {
+                    Data = null,
+                    IsError = true,
+                    Message = $"",
+                    Status = (int)StatusCodeEnum.NotFound
+                });
             }
             var data = brand.Adapt<BrandDto>();
-            return Ok(brand);
+            return Ok(new Response<BrandDto>
+            {
+                Data = data,
+                IsError = false,
+                Message = $"",
+                Status = (int)StatusCodeEnum.Ok
+            });
         }
 
         [HttpPost]
@@ -53,7 +75,13 @@ namespace OutbornE_commerce.Controllers
             var result = await _brandRepository.Create(brand);
             await _brandRepository.SaveAsync(cancellationToken);
 
-            return Ok(result.Id);
+            return Ok(new Response<Guid>
+            {
+                Data = result.Id,
+                IsError = false,
+                Message = $"",
+                Status = (int)StatusCodeEnum.Ok
+            }); 
 
         }
 
@@ -73,7 +101,13 @@ namespace OutbornE_commerce.Controllers
             _brandRepository.Update(brand);
             await _brandRepository.SaveAsync(cancellationToken);
 
-            return Ok(brand.Id);
+            return Ok(new Response<Guid>
+            {
+                Data = brand.Id,
+                IsError = false,
+                Message = $"",
+                Status = (int)StatusCodeEnum.Ok
+            }); ;
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBrand(Guid id, CancellationToken cancellationToken)
@@ -83,7 +117,13 @@ namespace OutbornE_commerce.Controllers
             _brandRepository.Delete(brand);
             await _brandRepository.SaveAsync(cancellationToken);
 
-            return Ok(brand.Id);
+            return Ok(new Response<Guid>
+            {
+                Data = id,
+                IsError = false,
+                Message = $"",
+                Status = (int)StatusCodeEnum.Ok
+            });
         }
 
         [HttpGet("subBrands/{brandId}")]
@@ -91,7 +131,14 @@ namespace OutbornE_commerce.Controllers
         {
             var subs = await _brandRepository.FindByCondition(s => s.ParentBrandId == brandId);
             var data = subs.Adapt<List<SubBrandDto>>();
-            return Ok(data);
+
+            return Ok(new Response<List<SubBrandDto>>
+            {
+                Data = data,
+                IsError = false,
+                Message = $"",
+                Status = (int)StatusCodeEnum.Ok
+            }); ;
         }
         [HttpGet("subBrandById/{id}")]
         public async Task<IActionResult> GetSubBrandById(Guid id)
@@ -101,8 +148,15 @@ namespace OutbornE_commerce.Controllers
             {
                 return NotFound();
             }
-            var data = sub.Adapt<SubCategoryDto>();
-            return Ok(data);
+            var data = sub.Adapt<SubBrandDto>();
+
+            return Ok(new Response<SubBrandDto>
+            {
+                Data = data,
+                IsError = false,
+                Message = $"",
+                Status = (int)StatusCodeEnum.Ok
+            });
         }
         [HttpPost("subBrand")]
         public async Task<IActionResult> CreateSubBrand([FromForm] SubBrandDto model, CancellationToken cancellationToken)
@@ -117,7 +171,13 @@ namespace OutbornE_commerce.Controllers
             var result = await _brandRepository.Create(subbrand);
             await _brandRepository.SaveAsync(cancellationToken);
 
-            return Ok(result.Id);
+            return Ok(new Response<Guid>
+            {
+                Data = result.Id,
+                IsError = false,
+                Message = $"",
+                Status = (int)StatusCodeEnum.Ok
+            });
         }
 
         [HttpPut("subcategory")]
@@ -136,7 +196,13 @@ namespace OutbornE_commerce.Controllers
             _brandRepository.Update(brand);
             await _brandRepository.SaveAsync(cancellationToken);
 
-            return Ok(brand.Id);
+            return Ok(new Response<Guid>
+            {
+                Data = brand.Id,
+                IsError = false,
+                Message = $"",
+                Status = (int)StatusCodeEnum.Ok
+            });
         }
     }
 }

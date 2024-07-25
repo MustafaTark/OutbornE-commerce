@@ -1,12 +1,4 @@
-﻿using Mapster;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using OutbornE_commerce.BAL.Dto;
-using OutbornE_commerce.BAL.Dto.Cities;
-using OutbornE_commerce.BAL.Dto.Countries;
-using OutbornE_commerce.BAL.Repositories.Cities;
-using OutbornE_commerce.BAL.Repositories.Countries;
-using OutbornE_commerce.DAL.Models;
+﻿
 using System.Threading;
 
 namespace OutbornE_commerce.Controllers
@@ -31,7 +23,7 @@ namespace OutbornE_commerce.Controllers
             {
                 Data = cityEntites,
                 IsError = false,
-                Status = 0,
+                Status = (int)StatusCodeEnum.Ok,
                 Message = ""
             });
         }
@@ -45,7 +37,7 @@ namespace OutbornE_commerce.Controllers
                     Data = null,
                     IsError = true,
                     Message = $"Contry with Id: {countryId} doesn't exist in the database",
-                    Status = (StatusCode) 2,
+                    Status = (int)StatusCodeEnum.NotFound
                 });
             var cities = await _cityRepository.FindByCondition(c => c.CountryId == countryId, null); // null for the includes !!!
             var cityEntites = cities.Adapt<List<CityDto>>();
@@ -54,11 +46,11 @@ namespace OutbornE_commerce.Controllers
                 Data = cityEntites,
                 IsError = false,
                 Message = "",
-                Status =0,
+                Status = (int)StatusCodeEnum.Ok
             });
         }
         [HttpPost]
-        public async Task<IActionResult> CreateCity([FromForm] CityForCreationDto model ,Guid countryId , CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateCity([FromBody] CityForCreationDto model ,Guid countryId , CancellationToken cancellationToken)
         {
             var country = await _countryRepository.Find(c => c.Id == countryId, false);
             if (country == null)
@@ -67,16 +59,21 @@ namespace OutbornE_commerce.Controllers
                     Data = null,
                     IsError = true,
                     Message = $"Contry with Id: {countryId} doesn't exist in the database",
-                    Status = (StatusCode)2,
+                    Status = (int)StatusCodeEnum.NotFound
                 });
             var city = model.Adapt<City>();
             city.CreatedBy = "admin";
             var result = await _cityRepository.Create(city);
             await _cityRepository.SaveAsync(cancellationToken);
-            return Ok(result.Id);
+            return Ok(new Response<Guid>
+            {
+                Data = city.Id,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok
+            });
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateCity([FromForm] CityDto model, Guid countryId, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateCity([FromBody] CityDto model, Guid countryId, CancellationToken cancellationToken)
         {
             var country = await _countryRepository.Find(c => c.Id == countryId, true);
             if (country == null)
@@ -85,7 +82,7 @@ namespace OutbornE_commerce.Controllers
                     Data = null,
                     IsError = true,
                     Message = $"Contry with Id: {countryId} doesn't exist in the database",
-                    Status = (StatusCode)2,
+                    Status = (int)StatusCodeEnum.NotFound
                 });
             var city = await _cityRepository.Find(c => c.Id == model.Id, true);
             if(city == null)
@@ -95,16 +92,21 @@ namespace OutbornE_commerce.Controllers
                     Data = null,
                     IsError = true,
                     Message = $"City with Id: {model.Id} doesn't exist in the database",
-                    Status = (StatusCode)2,
+                    Status = (int)StatusCodeEnum.NotFound
                 });
             }
             city = model.Adapt<City>();
             city.CreatedBy = "admin";
             _cityRepository.Update(city);
             await _cityRepository.SaveAsync(cancellationToken);
-            return Ok(city.Id);
+            return Ok(new Response<Guid>
+            {
+                Data = city.Id,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok
+            });
         }
-        [HttpDelete("Id")]
+        [HttpDelete("{Id}")]
         public async Task<IActionResult> DeleteCity(Guid Id, CancellationToken cancellationToken)
         {
             var city = await _cityRepository.Find(c => c.Id == Id, false);
@@ -114,11 +116,16 @@ namespace OutbornE_commerce.Controllers
                     Data = null,
                     IsError = true,
                     Message = $"City with Id: {city!.Id} doesn't exist in the database",
-                    Status = (StatusCode)2,
+                    Status = (int)StatusCodeEnum.NotFound
                 });
             _cityRepository.Delete(city);
             await _cityRepository.SaveAsync(cancellationToken);
-            return Ok(city.Id);
+            return Ok(new Response<Guid>
+            {
+                Data = city.Id,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok
+            });
         }
 
     }

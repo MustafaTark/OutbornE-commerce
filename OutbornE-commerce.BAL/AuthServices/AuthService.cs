@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using OutbornE_commerce.BAL.Dto;
+using OutbornE_commerce.DAL.Enums;
 using OutbornE_commerce.DAL.Models;
 using System;
 using System.Collections.Generic;
@@ -17,16 +18,27 @@ namespace OutbornE_commerce.BAL.AuthServices
 	{
 		private readonly UserManager<User> _userManager;
 		private readonly IConfiguration _configuration;
-		private User _user;
+		private User? _user;
 		public AuthService(UserManager<User> userManager, IConfiguration configuration)
 		{
 			_userManager = userManager;
 			_configuration = configuration;
 		}
-		public async Task<bool> ValidateUser(UserForLoginDto userForAuth)
+		public async Task<AuthResponseModel?> ValidateUser(UserForLoginDto userForAuth)
 		{
-			_user = await _userManager.FindByEmailAsync(userForAuth.Email);
-			return (_user != null && await _userManager.CheckPasswordAsync(_user, userForAuth.Password!));
+			 _user = await _userManager.FindByEmailAsync(userForAuth.Email);
+			if (_user == null || ! await _userManager.CheckPasswordAsync(_user, userForAuth.Password!))
+			{
+                return new AuthResponseModel
+                {
+                    Email = userForAuth.Email,
+                    IsError = true,
+                    MessageAr = "البريد الالكترونى او كلمة السر غير صحيحين",
+                    MessageEn = "Email or Password not correct",
+					StatusCode = (int) StatusCodeEnum.BadRequest
+                };
+            }
+			return null;
 		}
 		public async Task<string> CreateToken()
 		{

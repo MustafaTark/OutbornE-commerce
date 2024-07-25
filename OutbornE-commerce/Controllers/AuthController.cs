@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using OutbornE_commerce.BAL.AuthServices;
 using OutbornE_commerce.BAL.Dto;
+using OutbornE_commerce.DAL.Enums;
 using OutbornE_commerce.DAL.Models;
+using OutbornE_commerce.Extensions;
 using System.Text;
 
 namespace OutbornE_commerce.Controllers
@@ -24,20 +26,28 @@ namespace OutbornE_commerce.Controllers
             _userManager = userManager;
             _authService = authService;
         }
-        [HttpPost("RegisterUser")]
+        [HttpPost("registerUser")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterModel userForRegistration)
         {
+            var checkByEmail = await _userManager.FindByEmailAsync(userForRegistration.Email);
+            if(checkByEmail != null)
+            {
+                return BadRequest(new List<string> { "Email already Exist"});
+            }
             var user = userForRegistration.Adapt<User>();
             var result = await _userManager.CreateAsync(user, userForRegistration.Password!);
             if (!result.Succeeded)
             {
-                foreach (var error in result.Errors)
-                {
-                    ModelState.TryAddModelError(error.Code, error.Description);
-                }
-                return BadRequest(ModelState);
+                //foreach (var error in result.Errors)
+                //{
+                //    ModelState.TryAddModelError(error.Code, error.Description);
+                //}
+                return BadRequest(result.Errors.Select(e=>e.Description).ToList());
             }
-            await _userManager.AddToRoleAsync(user, "User");
+
+            string Role = Enum.GetName(typeof(AccountTypeEnum), userForRegistration.AccountType)!;
+
+            await _userManager.AddToRoleAsync(user, Role);
               return Ok(
                 new
                 {
@@ -50,17 +60,16 @@ namespace OutbornE_commerce.Controllers
 
         public async Task<IActionResult> Authenticate([FromBody] UserForLoginDto user)
         {
-            if (!await _authService.ValidateUser(user))
-                return Unauthorized();
-            var student = await _userManager.FindByEmailAsync(user.Email!);
+            var validate = await _authService.ValidateUser(user);
+            if (validate is not null)
+                return Ok(validate);
+
+            var userModel = await _userManager.FindByEmailAsync(user.Email!);
             var token = await _authService.CreateToken();
-            return Ok(
-            new
-            {
-                Token = token,
-                UserId = await _userManager.GetUserIdAsync(student!)
-            }
-            );
+            var roles = await _userManager.GetRolesAsync(userModel!);
+
+           var response =  userModel!.GetAuthResponse(roles.ToList(), "Success","تم بنجاح", (int)StatusCodeEnum.Ok, token);
+            return Ok(response);
         }
 
         //[HttpPost("resetpassword")]
@@ -73,7 +82,7 @@ namespace OutbornE_commerce.Controllers
         //    var result = await _userManager.ResetPasswordAsync(user, decodedToken, model.NewPassword!);
         //    if (result.Succeeded)
         //    {
-        //        return StatusCode(201, "Password reset successful");
+        //        return StatusCodeEnum(201, "Password reset successful");
         //    }
         //    else
         //    {
@@ -105,7 +114,7 @@ namespace OutbornE_commerce.Controllers
         //    }
         //    catch (Exception ex)
         //    {
-        //        return StatusCode(500, $"An error occurred while sending the password reset email. {ex.Message}");
+        //        return StatusCodeEnum(500, $"An error occurred while sending the password reset email. {ex.Message}");
         //    }
         //}
 

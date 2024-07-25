@@ -27,9 +27,9 @@ namespace OutbornE_commerce.Controllers
                 return Ok(new Response<List<CountryDto>>
                 {
                     Data = countryEntites,
-                    IsError = true,
+                    IsError = false,
                     Message = "",
-                    Status = 0,
+                    Status = (int)StatusCodeEnum.Ok,
                 });
         }
         [HttpGet("Id")]
@@ -42,15 +42,15 @@ namespace OutbornE_commerce.Controllers
                     Data = null,
                     IsError = true,
                     Message = $"Country with Id: {country!.Id} doesn't exist in the database",
-                    Status = (StatusCode)2,
+                    Status =(int) StatusCodeEnum.NotFound ,
                 });
             var countryEntity = country.Adapt<CountryDto>();
             return Ok(new Response<CountryDto>
             {
                 Data = countryEntity,
-                IsError = true,
+                IsError = false,
                 Message = "",
-                Status = 0,
+                Status = (int) StatusCodeEnum.Ok,
             });
         }
         [HttpPost]
@@ -60,7 +60,13 @@ namespace OutbornE_commerce.Controllers
             country.CreatedBy = "admin";
             var result = await _countryRepository.Create(country);
             await _countryRepository.SaveAsync(cancellationToken);
-            return Ok(result.Id);
+            return Ok(new Response<Guid>
+            {
+                Data = result.Id,
+                IsError = false,
+                Message = "",
+                Status = (int)StatusCodeEnum.Ok,
+            });
         }
         [HttpPut]
         public async Task<IActionResult> UpdateCountry([FromForm] CountryDto model, CancellationToken cancellationToken)
@@ -72,13 +78,19 @@ namespace OutbornE_commerce.Controllers
                     Data = null,
                     IsError = true,
                     Message = $"Country with Id: {country!.Id} doesn't exist in the database",
-                    Status = (StatusCode)2,
+                    Status = (int)StatusCodeEnum.NotFound,
                 });
             country = model.Adapt<Country>();
             country.CreatedBy = "admin";
             _countryRepository.Update(country);
             await _countryRepository.SaveAsync(cancellationToken);
-            return Ok(country.Id);
+            return Ok(new Response<Guid>
+            {
+                Data = country.Id,
+                IsError = false,
+                Message ="",
+                Status = (int)StatusCodeEnum.NotFound,
+            });
         }
         [HttpDelete("Id")]
         public async Task<IActionResult> DeleteCountry(Guid Id , CancellationToken cancellationToken)
@@ -90,11 +102,17 @@ namespace OutbornE_commerce.Controllers
                     Data = null,
                     IsError = true,
                     Message = $"Country with Id: {country!.Id} doesn't exist in the database",
-                    Status = (StatusCode)2,
+                    Status = ((int)StatusCodeEnum.NotFound),
                 });
             _countryRepository.Delete(country);
             await _countryRepository.SaveAsync(cancellationToken);
-            return Ok(country.Id);
+            return Ok(new Response<CountryDto>
+            {
+                Data = null,
+                IsError = true,
+                Message = $"Country with Id: {country!.Id} doesn't exist in the database",
+                Status = (int)StatusCodeEnum.Ok,
+            });
         }
     }
 }

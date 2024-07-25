@@ -40,7 +40,7 @@ namespace OutbornE_commerce.Controllers
             {
                 Data = null,
                 IsError = true,
-                Status = (StatusCode)2,
+                //Status = (StatusCode)2,
                 Message = $"Ticket with Id : {Id} doesn't exist in the database"
             });
             var ticketEntity = ticket.Adapt<TicketDto>();
@@ -70,7 +70,7 @@ namespace OutbornE_commerce.Controllers
                 {
                     Data = null,
                     IsError = true,
-                    Status = (StatusCode)2,
+                    //Status = (StatusCode)2,
                     Message = $"Ticket with Id : {Id} doesn't exist in the database"
                 });
             ticket = model.Adapt<Ticket>();
@@ -88,7 +88,7 @@ namespace OutbornE_commerce.Controllers
                 {
                     Data = null,
                     IsError = true,
-                    Status = (StatusCode)2,
+                    //Status = (StatusCode)2,
                     Message = $"Ticket with Id : {Id} doesn't exist in the database"
                 });
             _ticketRepository.Delete(ticket);

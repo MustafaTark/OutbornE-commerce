@@ -23,14 +23,26 @@ namespace OutbornE_commerce.Controllers
         {
             var currencies = await _currencyRepository.FindAllAsync(null, false);
             var currencyEntites = currencies.Adapt<List<CurrencyDto>>();
-            return Ok(currencyEntites);
+            return Ok(new Response<List<CurrencyDto>>
+            {
+                Data = currencyEntites,
+                IsError = false,
+                Message = "",
+                Status = (int)(StatusCodeEnum.Ok)
+            });
         }
-        [HttpGet("Id")]
+        [HttpGet("{Id}")]
         public async Task<IActionResult> GetCurrencyById(Guid Id)
         {
             var currency = await _currencyRepository.Find(c => c.Id == Id, false);
             if (currency is null)
-                return Ok(new { message = $"Currency with Id : {currency!.Id} doesn't exist in the database" });
+                return Ok(new Response<CurrencyDto>
+                {
+                    Data = null,
+                    IsError = true,
+                    Message = $"Currency with Id: {Id} doesn't exist in the database",
+                    //Status = (StatusCodeEn)2,
+                });
             var currencyEntity = currency.Adapt<CurrencyDto>();
             return Ok(currencyEntity);
         }
@@ -54,7 +66,7 @@ namespace OutbornE_commerce.Controllers
                     Data = null,
                     IsError = true,
                     Message = $"Currency with Id: {model.Id} doesn't exist in the database",
-                    Status = (StatusCode)2,
+                    //Status = (StatusCodeEn)2,
                 });
             }
             currency = model.Adapt<Currency>();
@@ -74,7 +86,7 @@ namespace OutbornE_commerce.Controllers
                     Data = null,
                     IsError = true,
                     Message = $"Currency with Id: {currency!.Id} doesn't exist in the database",
-                    Status = (StatusCode)2,
+                    //Status = (StatusCode)2,
                 });
             }
             _currencyRepository.Delete(currency);

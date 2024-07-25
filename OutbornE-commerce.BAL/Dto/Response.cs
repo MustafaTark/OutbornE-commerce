@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OutbornE_commerce.DAL.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,15 +9,10 @@ namespace OutbornE_commerce.BAL.Dto
 {
     public class Response<T>
     {
-        public T Data { get; set; }
-        public StatusCode Status {  get; set; }
+        public T? Data { get; set; }
+        public int Status {  get; set; }
         public bool IsError { get; set; }
         public string Message { get; set; }
     }
-    public enum StatusCode
-    {
-        Success = 0,
-        NotFound = 1,
-        Error = 2
-    }
+   
 }
