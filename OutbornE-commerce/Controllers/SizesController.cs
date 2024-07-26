@@ -5,6 +5,7 @@ using OutbornE_commerce.BAL.Dto.Colors;
 using OutbornE_commerce.BAL.Dto.Sizes;
 using OutbornE_commerce.BAL.Repositories.Sizes;
 using OutbornE_commerce.DAL.Models;
+using System.Net.Sockets;
 
 namespace OutbornE_commerce.Controllers
 {
@@ -48,27 +49,39 @@ namespace OutbornE_commerce.Controllers
             var sizeEntity = size.Adapt<SizeDto>();
             return Ok(sizeEntity);
         }
-        //[HttpPost]
-        //public async Task<IActionResult> CreateSize([FromForm] SizeForCreationDto model, CancellationToken cancellationToken)
-        //{
-        //    var size = model.Adapt<Size>();
-        //    size.CreatedBy = "admin";
-        //    var result = await _sizeRepository.Create(size);
-        //    await _sizeRepository.SaveAsync(cancellationToken);
-        //    return Ok(new { data = result.Id, message = "" });
-        //}
-        //[HttpPut]
-        //public async Task<IActionResult> UpdateSize([FromForm] SizeDto model, CancellationToken cancellationToken)
-        //{
-        //    var size = await _sizeRepository.Find(s => s.Id == model.Id, true);
-        //    if (size == null)
-        //        return Ok(new { message = $"Size with Id: {size!.Id} doesn't exist in the database" });
-        //    size = model.Adapt<Size>();
-        //    size.UpdatedBy = "admin";
-        //    _sizeRepository.Update(size);
-        //    await _sizeRepository.SaveAsync(cancellationToken);
-        //    return Ok(new { data = size.Id, message = "" });
-        //}
+        [HttpPost]
+        public async Task<IActionResult> CreateSize([FromForm] SizeForCreationDto model, CancellationToken cancellationToken)
+        {
+            var size = model.Adapt<Size>();
+            size.CreatedBy = "admin";
+            var result = await _sizeRepository.Create(size);
+            await _sizeRepository.SaveAsync(cancellationToken);
+            return Ok(new Response<Guid>()
+            {
+                Data = size.Id,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok
+
+            });
+        }
+        [HttpPut]
+        public async Task<IActionResult> UpdateSize([FromForm] SizeDto model, CancellationToken cancellationToken)
+        {
+            var size = await _sizeRepository.Find(s => s.Id == model.Id, true);
+            if (size == null)
+                return Ok(new { message = $"Size with Id: {size!.Id} doesn't exist in the database" });
+            size = model.Adapt<Size>();
+            size.UpdatedBy = "admin";
+            _sizeRepository.Update(size);
+            await _sizeRepository.SaveAsync(cancellationToken);
+            return Ok(new Response<Guid>()
+            {
+                Data = size.Id,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok
+
+            });
+        }
         [HttpDelete("Id")]
         public async Task<IActionResult> DeleteSize(Guid Id, CancellationToken cancellationToken)
         {
