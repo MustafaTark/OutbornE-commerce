@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using OutbornE_commerce.BAL.Dto;
 using OutbornE_commerce.BAL.Dto.Tickets;
@@ -27,11 +28,11 @@ namespace OutbornE_commerce.Controllers
             {
                 Data = ticketEntites,
                 IsError = false,
-                Status = 0,
+                Status = (int) StatusCodeEnum.Ok,
                 Message = ""
             });
         }
-        [HttpGet("Id")]
+        [HttpGet("{Id}")]
         public async Task<IActionResult> GetTicketById(Guid Id)
         {
             var ticket = await _ticketRepository.Find(t => t.Id == Id , false);
@@ -40,7 +41,7 @@ namespace OutbornE_commerce.Controllers
             {
                 Data = null,
                 IsError = true,
-                //Status = (StatusCode)2,
+                Status = (int)StatusCodeEnum.NotFound,
                 Message = $"Ticket with Id : {Id} doesn't exist in the database"
             });
             var ticketEntity = ticket.Adapt<TicketDto>();
@@ -48,7 +49,7 @@ namespace OutbornE_commerce.Controllers
             {
                 Data = ticketEntity,
                 IsError = false,
-                Status = 0,
+                Status = (int)StatusCodeEnum.Ok,
                 Message = ""
             });
         }
@@ -59,25 +60,37 @@ namespace OutbornE_commerce.Controllers
             ticket.CreatedBy = "user"; // !!!
             var result = await _ticketRepository.Create(ticket);
             await _ticketRepository.SaveAsync(cancellationToken);
-            return Ok(result.Id);
+            return Ok(new Response<Guid>()
+            {
+                Data = result.Id,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok
+
+            });
         }
         [HttpPut("Id")]
-        public async Task<IActionResult> UpdateTicket(Guid Id , [FromBody] TicketForCreationDto model,  CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateTicket( [FromBody] TicketDto model,  CancellationToken cancellationToken)
         {
-            var ticket = await _ticketRepository.Find(t => t.Id == Id, true);
+            var ticket = await _ticketRepository.Find(t => t.Id == model.Id, true);
             if(ticket == null)
                 return Ok(new Response<TicketDto>
                 {
                     Data = null,
                     IsError = true,
-                    //Status = (StatusCode)2,
-                    Message = $"Ticket with Id : {Id} doesn't exist in the database"
+                    Status = (int)StatusCodeEnum.NotFound,
+                    Message = $"Ticket with Id : {model.Id} doesn't exist in the database"
                 });
             ticket = model.Adapt<Ticket>();
             ticket.CreatedBy = "user";
             _ticketRepository.Update(ticket);
             await _ticketRepository.SaveAsync(cancellationToken);
-            return Ok(ticket.Id);
+            return Ok(new Response<Guid>()
+            {
+                Data = ticket.Id,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok
+
+            });
         }
         [HttpDelete("Id")]
         public async Task<IActionResult> DeleteTicket(Guid Id , CancellationToken cancellationToken)
@@ -93,7 +106,13 @@ namespace OutbornE_commerce.Controllers
                 });
             _ticketRepository.Delete(ticket);
             await _ticketRepository.SaveAsync(cancellationToken);
-            return Ok(ticket.Id);
+            return Ok(new Response<Guid>()
+            {
+                Data = ticket.Id,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok
+
+            });
         }
     }
 }

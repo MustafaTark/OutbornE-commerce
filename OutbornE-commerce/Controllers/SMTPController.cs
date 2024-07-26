@@ -22,11 +22,12 @@ namespace OutbornE_commerce.Controllers
         {
             var smtp = await _sMTPRepository.FindAllAsync(null, false);
             var smtpEntites = smtp.Adapt<List<SMTPDto>>();
-            return Ok(new Response<List<SMTPDto>>{
+            return Ok(new Response<List<SMTPDto>>()
+            {
                 Data = smtpEntites,
                 IsError = false,
-                Message ="",
-                Status = 0
+                Status = (int)StatusCodeEnum.Ok
+
             });
         }
         [HttpPost]
@@ -38,13 +39,20 @@ namespace OutbornE_commerce.Controllers
                     Data = null,
                     IsError = true,
                     Message = "You have already inserted a SMTP Server before ",
+                    Status = (int)StatusCodeEnum.NotFound
                     //Status = (StatusCode)2
-            });
+            });;
             var smtp = model.Adapt<SMTPServer>();
             smtp.CreatedBy = "admin";
             var result = await _sMTPRepository.Create(smtp);
             await _sMTPRepository.SaveAsync(cancellationToken);
-            return Ok(result.Id);
+              return Ok(new Response<Guid>()
+            {
+                Data = smtp.Id,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok
+
+            });
         }
         [HttpPut]
         public async Task<IActionResult> UpdateSMTPServer([FromBody] SMTPDto model, CancellationToken cancellationToken)
@@ -62,7 +70,13 @@ namespace OutbornE_commerce.Controllers
             smtp.CreatedBy = "admin";
             _sMTPRepository.Update(smtp);
             await _sMTPRepository.SaveAsync(cancellationToken);
-            return Ok(smtp.Id);
+            return Ok(new Response<Guid>()
+            {
+                Data = smtp.Id,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok
+
+            });
         }
         [HttpDelete("Id")]
         public async Task<IActionResult> DeleteSMTPServer(Guid Id, CancellationToken cancellationToken)
@@ -78,7 +92,13 @@ namespace OutbornE_commerce.Controllers
                 });
             _sMTPRepository.Delete(smtp);
             await _sMTPRepository.SaveAsync(cancellationToken) ;
-            return Ok(smtp.Id);
+            return Ok(new Response<Guid>()
+            {
+                Data = smtp.Id,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok
+
+            });
         }
     }
 }

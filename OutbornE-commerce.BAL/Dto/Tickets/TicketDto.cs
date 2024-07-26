@@ -9,7 +9,7 @@ namespace OutbornE_commerce.BAL.Dto.Tickets
 {
     public class TicketDto
     {
-        Guid Id { get; set; }
+      public  Guid Id { get; set; }
         public string Description { get; set; }
         public TicketStatus Status { get; set; }
     }
