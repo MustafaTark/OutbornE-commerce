@@ -32,7 +32,14 @@ namespace OutbornE_commerce.Controllers
             var checkByEmail = await _userManager.FindByEmailAsync(userForRegistration.Email);
             if(checkByEmail != null)
             {
-                return Ok(new {Messages = new List<string> { "Email already Exist" } });
+                return Ok(new AuthResponseModel
+                {
+                    MessageEn = "Email already Exist",
+                    MessageAr = "هذا البريد موجود من قبل",
+                    IsError = true,
+                    Email = userForRegistration.Email,
+                    
+                });
             }
             var user = userForRegistration.Adapt<User>();
             var result = await _userManager.CreateAsync(user, userForRegistration.Password!);
@@ -42,18 +49,30 @@ namespace OutbornE_commerce.Controllers
                 //{
                 //    ModelState.TryAddModelError(error.Code, error.Description);
                 //}
-                return Ok(new {Messages = result.Errors.Select(e => e.Description).ToList()});
-            }
+                return Ok(new AuthResponseModel
+                {
+                    MessageEn = "Someting Wrong",
+                    MessageAr = "حدث خطأ",
+                    IsError = true,
+                    Email = userForRegistration.Email,
+
+                });
+            
+        }
 
             string Role = Enum.GetName(typeof(AccountTypeEnum), userForRegistration.AccountType)!;
 
             await _userManager.AddToRoleAsync(user, Role);
-              return Ok(
-                new
-                {
-                    UserId = await _userManager.GetUserIdAsync(user!)
-                }
-                );
+            return Ok(new AuthResponseModel
+            {
+
+                IsError = false,
+                Email = userForRegistration.Email,
+                Id = await _userManager.GetUserIdAsync(user!),
+                AccountType = userForRegistration.AccountType,
+                
+
+            });
 
         }
         [HttpPost("login")]
