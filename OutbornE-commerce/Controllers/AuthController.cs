@@ -32,7 +32,7 @@ namespace OutbornE_commerce.Controllers
             var checkByEmail = await _userManager.FindByEmailAsync(userForRegistration.Email);
             if(checkByEmail != null)
             {
-                return BadRequest(new List<string> { "Email already Exist"});
+                return Ok(new {Messages = new List<string> { "Email already Exist" } });
             }
             var user = userForRegistration.Adapt<User>();
             var result = await _userManager.CreateAsync(user, userForRegistration.Password!);
@@ -42,7 +42,7 @@ namespace OutbornE_commerce.Controllers
                 //{
                 //    ModelState.TryAddModelError(error.Code, error.Description);
                 //}
-                return BadRequest(result.Errors.Select(e=>e.Description).ToList());
+                return Ok(new {Messages = result.Errors.Select(e => e.Description).ToList()});
             }
 
             string Role = Enum.GetName(typeof(AccountTypeEnum), userForRegistration.AccountType)!;

@@ -30,6 +30,10 @@ namespace OutbornE_commerce.DAL.Data
         public DbSet<Country> Countries { get; set; }
         public DbSet<SMTPServer> SMTPServers { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ProductColor> ProductColors { get; set; }
+        public DbSet<ProductSize> ProductSizes { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 	  : base(options) { }
 		protected override void OnModelCreating(ModelBuilder builder)

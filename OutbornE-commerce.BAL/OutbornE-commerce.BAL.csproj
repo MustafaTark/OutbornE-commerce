@@ -28,4 +28,9 @@
     <ProjectReference Include="..\OutbornE-commerce.DAL\OutbornE-commerce.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Dto\ProductColors\" />
+    <Folder Include="Dto\Products\" />
+  </ItemGroup>
+
 </Project>
