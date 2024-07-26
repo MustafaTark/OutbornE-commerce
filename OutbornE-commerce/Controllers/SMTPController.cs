@@ -30,7 +30,7 @@ namespace OutbornE_commerce.Controllers
             });
         }
         [HttpPost]
-        public async Task<IActionResult> CreateSMTPServer([FromForm] SMTPForCreationDto model , CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateSMTPServer([FromBody] SMTPForCreationDto model , CancellationToken cancellationToken)
         {
             var smtpServer = await _sMTPRepository.FindAllAsync(null, false);
             if(smtpServer.Any())
@@ -47,7 +47,7 @@ namespace OutbornE_commerce.Controllers
             return Ok(result.Id);
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateSMTPServer([FromForm] SMTPDto model, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateSMTPServer([FromBody] SMTPDto model, CancellationToken cancellationToken)
         {
             var smtp = await _sMTPRepository.Find(s => s.Id == model.Id, true);
             if (smtp is null)

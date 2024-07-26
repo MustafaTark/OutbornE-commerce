@@ -58,7 +58,7 @@ namespace OutbornE_commerce.Controllers
             });
         }
         [HttpPost]
-        public async Task<IActionResult> CreateColor([FromForm] ColorForCreationDto model , CancellationToken cancellationToken )
+        public async Task<IActionResult> CreateColor([FromBody] ColorForCreationDto model , CancellationToken cancellationToken )
         {
             var color = model.Adapt<Color>();
             color.CreatedBy = "admin";
@@ -73,11 +73,11 @@ namespace OutbornE_commerce.Controllers
             });
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateColor([FromForm] ColorDto model ,CancellationToken cancellationToken )
+        public async Task<IActionResult> UpdateColor([FromBody] ColorDto model ,CancellationToken cancellationToken )
         {
             var color = await _colorRepository.Find(c => c.Id == model.Id , true);
             if (color == null)
-                return Ok(new { message = $"Color with Id: {color!.Id} doesn't exist in the database" });
+                return Ok(new { message = $"Color with Id: doesn't exist in the database" });
             color = model.Adapt<Color>();
             color.UpdatedBy = "admin";
             _colorRepository.Update(color);
@@ -95,7 +95,7 @@ namespace OutbornE_commerce.Controllers
         {
             var color = await _colorRepository.Find(c => c.Id == Id, true);
             if (color == null)
-                return Ok(new { message = $"Color with Id: {color!.Id} doesn't exist in the database" });
+                return Ok(new { message = $"Color with Id: doesn't exist in the database" });
             _colorRepository.Delete(color);
             await _colorRepository.SaveAsync(cancellationToken);
             return Ok(new Response<Guid>

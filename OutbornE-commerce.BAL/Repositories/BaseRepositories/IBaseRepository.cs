@@ -13,10 +13,15 @@ namespace OutbornE_commerce.BAL.Repositories.BaseRepositories
 		//Task<IEnumerable<T>> FindByCondition(Expression<Func<T, bool>> expression, bool trackChanges);
 		Task<IEnumerable<T>> FindByCondition(Expression<Func<T, bool>> criteria, string[] includes = null);
 
-        Task<T?> Find(Expression<Func<T, bool>> expression, bool trackChanges);
+        Task<T?> Find(Expression<Func<T, bool>> expression, bool trackChanges, string[] includes = null);
 		Task<T> Create(T entity);
-		void Delete(T entity);
-		void Update(T entity);
+        Task CreateRange(List<T> entities)
+
+        void Delete(T entity);
+		Task DeleteRange(Expression<Func<T, bool>> expression);
+		void UpdateRange(List<T> entities);
+
+        void Update(T entity);
 		Task SaveAsync(CancellationToken cancellationToken);
 	}
 }

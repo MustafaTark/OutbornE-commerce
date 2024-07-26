@@ -7,6 +7,10 @@ using OutbornE_commerce.BAL.Repositories.Countries;
 using OutbornE_commerce.BAL.Repositories.Currencies;
 using OutbornE_commerce.BAL.Repositories.Headers;
 using OutbornE_commerce.BAL.Repositories.HomeSections;
+using OutbornE_commerce.BAL.Repositories.ProductColors;
+using OutbornE_commerce.BAL.Repositories.ProductImages;
+using OutbornE_commerce.BAL.Repositories.Products;
+using OutbornE_commerce.BAL.Repositories.ProductSizes;
 using OutbornE_commerce.BAL.Repositories.ReceivePoints;
 using OutbornE_commerce.BAL.Repositories.SEOs;
 using OutbornE_commerce.BAL.Repositories.Sizes;
@@ -35,6 +39,11 @@ namespace OutbornE_commerce.Extensions
             services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<ISMTPRepository, SMTPRepository>();
             services.AddScoped<ITicketRepository, TicketRepository>();
+
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IProductSizeRepository, ProductSizeRepository>();
+            services.AddScoped<IProductColorRepository, ProductColorRepository>();
+            services.AddScoped<IProductImageRepository, ProductImageRepository>();
 
         }
     }

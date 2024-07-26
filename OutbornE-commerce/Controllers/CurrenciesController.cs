@@ -53,7 +53,7 @@ namespace OutbornE_commerce.Controllers
             });
         }
         [HttpPost]
-        public async Task<IActionResult> CreateCurrency([FromForm] CurrencyDto model, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateCurrency([FromBody] CurrencyDto model, CancellationToken cancellationToken)
         {
             var currency = model.Adapt<Currency>();
             currency.CreatedBy = "admin";
@@ -68,7 +68,7 @@ namespace OutbornE_commerce.Controllers
             });
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateCurrency([FromForm] CurrencyDto model, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateCurrency([FromBody] CurrencyDto model, CancellationToken cancellationToken)
         {
             var currency = await _currencyRepository.Find(c => c.Id != model.Id, true);
             if (currency is null)

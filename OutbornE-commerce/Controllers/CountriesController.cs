@@ -54,7 +54,7 @@ namespace OutbornE_commerce.Controllers
             });
         }
         [HttpPost]
-        public async Task<IActionResult> CreateCountry([FromForm] CountryForCreationDto model , CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateCountry([FromBody] CountryForCreationDto model , CancellationToken cancellationToken)
         {
             var country = model.Adapt<Country>();
             country.CreatedBy = "admin";
@@ -69,7 +69,7 @@ namespace OutbornE_commerce.Controllers
             });
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateCountry([FromForm] CountryDto model, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateCountry([FromBody] CountryDto model, CancellationToken cancellationToken)
         {
             var country = await _countryRepository.Find(c => c.Id == model.Id, false);
             if (country == null)

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OutbornE_commerce.DAL.Data;
+using OutbornE_commerce.DAL.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,17 +42,29 @@ namespace OutbornE_commerce.BAL.Repositories.BaseRepositories
             return await query.Where(criteria).ToListAsync();
         }
 
-		public async Task<T?> Find(Expression<Func<T, bool>> expression, bool trackChanges)
-		=> !trackChanges ?
-			await _context.Set<T>().Where(expression).AsNoTracking().FirstOrDefaultAsync()
-			: await _context.Set<T>().Where(expression).AsTracking(QueryTrackingBehavior.TrackAll).FirstOrDefaultAsync();
+		public async Task<T?> Find(Expression<Func<T, bool>> expression,  bool trackChanges, string[] includes = null)
+		{
+            IQueryable<T> query = _context.Set<T>();
+            if (includes != null)
+                foreach (var include in includes)
+                    query = query.Include(include);
+            return !trackChanges ?
+			await query.Where(expression).AsNoTracking().FirstOrDefaultAsync()
+			: await query.Where(expression).AsTracking(QueryTrackingBehavior.TrackAll).FirstOrDefaultAsync();
+		}
 		public async Task<T> Create(T entity)
 		{
 			var result = await _context.Set<T>().AddAsync(entity);
 			return result.Entity;
 		}
+		public async Task CreateRange(List<T> entities)
+		{
+			 await _context.Set<T>().AddRangeAsync(entities);
+		}
 		public void Delete(T entity) => _context.Set<T>().Remove(entity);
 		public void Update(T entity) => _context.Set<T>().Update(entity);
+		public void UpdateRange(List<T> entities) => _context.Set<T>().UpdateRange(entities);
+		public async Task DeleteRange(Expression<Func<T, bool>> expression) =>await _context.Set<T>().Where(expression).ExecuteDeleteAsync();
 
 		public async Task SaveAsync(CancellationToken cancellationToken)
 		{
