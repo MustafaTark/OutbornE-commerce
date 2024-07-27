@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+
+using OutbornE_commerce.DAL.Enums;
 
 namespace OutbornE_commerce.BAL.Dto.Sizes
 {
     public class SizeForCreationDto
     {
         public string Name { get; set; } // Clothing {S,M,L,Xl,XXL , etc ..} , Shoes {32 , 33 , 34 ,35 , ... 46}
-        public Type Type { get; set; }
+        public TypeEnum Type { get; set; }
     }
 }

@@ -40,7 +40,7 @@ namespace OutbornE_commerce.Controllers
             var sizeEntites = shoesSizes.Adapt<List<SizeDto>>();
             return Ok(sizeEntites);
         }
-        [HttpGet("Id")]
+        [HttpGet("{Id}")]
         public async Task<IActionResult> GetSizeById(Guid Id)
         {
             var size = await _sizeRepository.Find(c => c.Id == Id, false);
@@ -49,8 +49,8 @@ namespace OutbornE_commerce.Controllers
             var sizeEntity = size.Adapt<SizeDto>();
             return Ok(sizeEntity);
         }
-        [HttpPost]
-        public async Task<IActionResult> CreateSize([FromForm] SizeForCreationDto model, CancellationToken cancellationToken)
+        [HttpPost("CreateSize")]
+        public async Task<IActionResult> CreateSize([FromBody] SizeForCreationDto model, CancellationToken cancellationToken)
         {
             var size = model.Adapt<Size>();
             size.CreatedBy = "admin";
@@ -64,8 +64,8 @@ namespace OutbornE_commerce.Controllers
 
             });
         }
-        [HttpPut]
-        public async Task<IActionResult> UpdateSize([FromForm] SizeDto model, CancellationToken cancellationToken)
+        [HttpPut("UpdateSize")]
+        public async Task<IActionResult> UpdateSize([FromBody] SizeDto model, CancellationToken cancellationToken)
         {
             var size = await _sizeRepository.Find(s => s.Id == model.Id, true);
             if (size == null)
@@ -82,7 +82,7 @@ namespace OutbornE_commerce.Controllers
 
             });
         }
-        [HttpDelete("Id")]
+        [HttpDelete("{Id}")]
         public async Task<IActionResult> DeleteSize(Guid Id, CancellationToken cancellationToken)
         {
             var size = await _sizeRepository.Find(c => c.Id == Id, true);
