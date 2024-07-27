@@ -15,7 +15,7 @@ namespace OutbornE_commerce.BAL.Repositories.BaseRepositories
 
         Task<T?> Find(Expression<Func<T, bool>> expression, bool trackChanges, string[] includes = null);
 		Task<T> Create(T entity);
-        Task CreateRange(List<T> entities)
+		Task CreateRange(List<T> entities);
 
         void Delete(T entity);
 		Task DeleteRange(Expression<Func<T, bool>> expression);
