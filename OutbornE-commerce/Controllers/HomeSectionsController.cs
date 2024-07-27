@@ -49,7 +49,7 @@ namespace OutbornE_commerce.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateHomeSection([FromForm] HomeSectionDto model , CancellationToken cancellationToken)
         {
-            var homeSection = await _homeSectionRepository.Find(s => s.Id == model.Id, true);
+            var homeSection = await _homeSectionRepository.Find(s => s.Id == model.Id, false);
             if (homeSection == null)
                 return Ok(new {message = $"Home Section with Id : {homeSection!.Id} doesn't exist in the database"});
             homeSection = model.Adapt<HomeSection>();
@@ -66,7 +66,7 @@ namespace OutbornE_commerce.Controllers
         [HttpDelete("Id")]
         public async Task<IActionResult> DeleteHomeSection(Guid Id, CancellationToken cancellationToken)
         {
-            var homeSection = await _homeSectionRepository.Find(h => h.Id == Id, true);
+            var homeSection = await _homeSectionRepository.Find(h => h.Id == Id, false);
             if (homeSection == null)
                 return Ok(new { message = $"Home Section with Id: {homeSection!.Id} doesn't exist in the database" });
             _homeSectionRepository.Delete(homeSection);

@@ -67,7 +67,7 @@ namespace OutbornE_commerce.Controllers
         [HttpPut("UpdateSize")]
         public async Task<IActionResult> UpdateSize([FromBody] SizeDto model, CancellationToken cancellationToken)
         {
-            var size = await _sizeRepository.Find(s => s.Id == model.Id, true);
+            var size = await _sizeRepository.Find(s => s.Id == model.Id, false);
             if (size == null)
                 return Ok(new { message = $"Size with Id: {size!.Id} doesn't exist in the database" });
             size = model.Adapt<Size>();
@@ -85,7 +85,7 @@ namespace OutbornE_commerce.Controllers
         [HttpDelete("{Id}")]
         public async Task<IActionResult> DeleteSize(Guid Id, CancellationToken cancellationToken)
         {
-            var size = await _sizeRepository.Find(c => c.Id == Id, true);
+            var size = await _sizeRepository.Find(c => c.Id == Id, false);
             if (size == null)
                 return Ok(new { message = $"Size with Id: {size!.Id} doesn't exist in the database" });
             _sizeRepository.Delete(size);

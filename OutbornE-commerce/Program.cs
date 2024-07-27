@@ -112,6 +112,7 @@ var app = builder.Build();
 	app.UseSwaggerUI();
 //}
 app.UseCors("_myAllowSpecificOrigins");
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 
 //app.UseJwtExpirationHandling();

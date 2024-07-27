@@ -88,7 +88,7 @@ namespace OutbornE_commerce.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateBrand([FromForm] BrandDto model, CancellationToken cancellationToken)
         {
-            var brand = await _brandRepository.Find(c => c.Id == model.Id, true);
+            var brand = await _brandRepository.Find(c => c.Id == model.Id, false);
             brand = model.Adapt<Brand>();
             brand.CreatedBy = "admin";
 
@@ -112,7 +112,7 @@ namespace OutbornE_commerce.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBrand(Guid id, CancellationToken cancellationToken)
         {
-            var brand = await _brandRepository.Find(c => c.Id == id, true);
+            var brand = await _brandRepository.Find(c => c.Id == id, false);
 
             _brandRepository.Delete(brand);
             await _brandRepository.SaveAsync(cancellationToken);

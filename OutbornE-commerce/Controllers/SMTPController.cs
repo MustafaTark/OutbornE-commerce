@@ -57,7 +57,7 @@ namespace OutbornE_commerce.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateSMTPServer([FromBody] SMTPDto model, CancellationToken cancellationToken)
         {
-            var smtp = await _sMTPRepository.Find(s => s.Id == model.Id, true);
+            var smtp = await _sMTPRepository.Find(s => s.Id == model.Id, false);
             if (smtp is null)
                 return Ok(new Response<SMTPDto>
                 {
@@ -81,7 +81,7 @@ namespace OutbornE_commerce.Controllers
         [HttpDelete("Id")]
         public async Task<IActionResult> DeleteSMTPServer(Guid Id, CancellationToken cancellationToken)
         {
-            var smtp = await _sMTPRepository.Find(s => s.Id == Id, true);
+            var smtp = await _sMTPRepository.Find(s => s.Id == Id, false);
             if (smtp is null)
                 return Ok(new Response<SMTPDto>
                 {

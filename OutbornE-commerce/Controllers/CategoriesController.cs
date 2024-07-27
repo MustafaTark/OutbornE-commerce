@@ -38,7 +38,7 @@ namespace OutbornE_commerce.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategoryById(Guid id)
         {
-            var category = await _categoryRepository.Find(c => c.Id == id, false);
+            var category = await _categoryRepository.Find(c => c.Id == id, true);
             if (category == null)
             {
                 return Ok(new Response<CategoryDto>()
@@ -79,7 +79,7 @@ namespace OutbornE_commerce.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateCategory([FromForm] CategoryDto model , CancellationToken cancellationToken)
         {
-            var category = await _categoryRepository.Find(c => c.Id == model.Id, true);
+            var category = await _categoryRepository.Find(c => c.Id == model.Id, false);
             category = model.Adapt<Category>();
             category.CreatedBy = "admin";
 
@@ -97,7 +97,7 @@ namespace OutbornE_commerce.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(Guid id,CancellationToken cancellationToken)
         {
-            var category = await _categoryRepository.Find(c => c.Id == id, true);
+            var category = await _categoryRepository.Find(c => c.Id == id, false);
 
             _categoryRepository.Delete(category);
             await _categoryRepository.SaveAsync(cancellationToken);

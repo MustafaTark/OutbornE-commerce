@@ -72,7 +72,7 @@ namespace OutbornE_commerce.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateHeader([FromForm] HeaderDto model, CancellationToken cancellationToken)
         {
-            var header = await _headerRepository.Find(h => h.Id == model.Id, true);
+            var header = await _headerRepository.Find(h => h.Id == model.Id, false);
             header = model.Adapt<Header>();
             header.CreatedBy = "admin";
             if (header.ImageUrl != null)
@@ -93,7 +93,7 @@ namespace OutbornE_commerce.Controllers
         [HttpDelete("Id")]
         public async Task<IActionResult> DeleteHeader(Guid Id , CancellationToken cancellationToken)
         {
-            var header = await _headerRepository.Find(h => h.Id==Id, true);
+            var header = await _headerRepository.Find(h => h.Id==Id, false);
             if(header == null)
                 return Ok(new { message = $"Header with Id{header!.Id} doesn't exist in the database" });
             _headerRepository.Delete(header);

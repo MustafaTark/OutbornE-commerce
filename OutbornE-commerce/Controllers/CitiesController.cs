@@ -75,7 +75,7 @@ namespace OutbornE_commerce.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateCity([FromBody] CityDto model, Guid countryId, CancellationToken cancellationToken)
         {
-            var country = await _countryRepository.Find(c => c.Id == countryId, true);
+            var country = await _countryRepository.Find(c => c.Id == countryId, false);
             if (country == null)
                 return Ok(new Response<CountryDto>
                 {

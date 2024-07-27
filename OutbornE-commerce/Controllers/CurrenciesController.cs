@@ -34,7 +34,7 @@ namespace OutbornE_commerce.Controllers
         [HttpGet("{Id}")]
         public async Task<IActionResult> GetCurrencyById(Guid Id)
         {
-            var currency = await _currencyRepository.Find(c => c.Id == Id, false);
+            var currency = await _currencyRepository.Find(c => c.Id == Id, true);
             if (currency is null)
                 return Ok(new Response<CurrencyDto>
                 {
@@ -70,7 +70,7 @@ namespace OutbornE_commerce.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateCurrency([FromBody] CurrencyDto model, CancellationToken cancellationToken)
         {
-            var currency = await _currencyRepository.Find(c => c.Id != model.Id, true);
+            var currency = await _currencyRepository.Find(c => c.Id != model.Id, false);
             if (currency is null)
             {
                 return Ok(new Response<CurrencyDto>
@@ -96,7 +96,7 @@ namespace OutbornE_commerce.Controllers
         [HttpDelete("Id")]
         public async Task<IActionResult> DeleteCurrency(Guid Id , CancellationToken cancellationToken)
         {
-            var currency = await _currencyRepository.Find(c => c.Id != Id, true);
+            var currency = await _currencyRepository.Find(c => c.Id != Id, false);
             if (currency is null)
             {
                 return Ok(new Response<CurrencyDto>

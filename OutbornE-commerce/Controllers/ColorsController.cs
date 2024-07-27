@@ -75,7 +75,7 @@ namespace OutbornE_commerce.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateColor([FromBody] ColorDto model ,CancellationToken cancellationToken )
         {
-            var color = await _colorRepository.Find(c => c.Id == model.Id , true);
+            var color = await _colorRepository.Find(c => c.Id == model.Id , false);
             if (color == null)
                 return Ok(new { message = $"Color with Id: doesn't exist in the database" });
             color = model.Adapt<Color>();
@@ -93,7 +93,7 @@ namespace OutbornE_commerce.Controllers
         [HttpDelete("Id")]
         public async Task<IActionResult> DeleteColor(Guid Id , CancellationToken cancellationToken)
         {
-            var color = await _colorRepository.Find(c => c.Id == Id, true);
+            var color = await _colorRepository.Find(c => c.Id == Id, false);
             if (color == null)
                 return Ok(new { message = $"Color with Id: doesn't exist in the database" });
             _colorRepository.Delete(color);

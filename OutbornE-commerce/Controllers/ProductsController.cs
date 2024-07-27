@@ -81,7 +81,7 @@ namespace OutbornE_commerce.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateProduct([FromBody]ProductDto model,CancellationToken cancellationToken)
         {
-            var product = await _productRepository.Find(c => c.Id == model.Id, true);
+            var product = await _productRepository.Find(c => c.Id == model.Id, false);
 
             product = model.Adapt<Product>();
             product.UpdatedBy = "admin";

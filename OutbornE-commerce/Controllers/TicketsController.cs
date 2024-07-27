@@ -71,7 +71,7 @@ namespace OutbornE_commerce.Controllers
         [HttpPut("Id")]
         public async Task<IActionResult> UpdateTicket( [FromBody] TicketDto model,  CancellationToken cancellationToken)
         {
-            var ticket = await _ticketRepository.Find(t => t.Id == model.Id, true);
+            var ticket = await _ticketRepository.Find(t => t.Id == model.Id, false);
             if(ticket == null)
                 return Ok(new Response<TicketDto>
                 {
@@ -95,7 +95,7 @@ namespace OutbornE_commerce.Controllers
         [HttpDelete("Id")]
         public async Task<IActionResult> DeleteTicket(Guid Id , CancellationToken cancellationToken)
         {
-            var ticket = await _ticketRepository.Find(t => t.Id == Id, true);
+            var ticket = await _ticketRepository.Find(t => t.Id == Id, false);
             if (ticket == null)
                 return Ok(new Response<TicketDto>
                 {
