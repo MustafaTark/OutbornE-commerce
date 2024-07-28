@@ -25,17 +25,22 @@ namespace OutbornE_commerce.Controllers
             _brandRepository = brandRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllBrands()
+        public async Task<IActionResult> GetAllBrands(int pageNumber = 1 ,int pageSize = 10)
         {
-            var brands = await _brandRepository.FindAllAsync(null, false);
-            var data = brands.Adapt<List<BrandDto>>();
+           // var brands = await _brandRepository.FindAllAsync(null, false);
 
-             return Ok(new Response<List<BrandDto>>
+            var brands = await _brandRepository.FindAllAsyncByPagination(null,pageNumber,pageSize);
+
+            var data = brands.Data.Adapt<List<BrandDto>>();
+
+             return Ok(new PaginationResponse<List<BrandDto>>
             {
                 Data = data,
                 IsError = false,
-                Message = $"",
-                Status = (int)StatusCodeEnum.Ok
+                Status = (int)StatusCodeEnum.Ok,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = brands.TotalCount
             });
         }
         [HttpGet("{id}")]
@@ -127,18 +132,21 @@ namespace OutbornE_commerce.Controllers
         }
 
         [HttpGet("subBrands/{brandId}")]
-        public async Task<IActionResult> GetAllSubBrands(Guid brandId)
+        public async Task<IActionResult> GetAllSubBrands(Guid brandId,int pageNumber, int pageSize)
         {
-            var subs = await _brandRepository.FindByCondition(s => s.ParentBrandId == brandId);
-            var data = subs.Adapt<List<SubBrandDto>>();
+            var brands = await _brandRepository.FindAllAsyncByPagination(b=>b.ParentBrandId == brandId, pageNumber, pageSize);
 
-            return Ok(new Response<List<SubBrandDto>>
+            var data = brands.Data.Adapt<List<SubBrandDto>>();
+
+            return Ok(new PaginationResponse<List<SubBrandDto>>
             {
                 Data = data,
                 IsError = false,
-                Message = $"",
-                Status = (int)StatusCodeEnum.Ok
-            }); ;
+                Status = (int)StatusCodeEnum.Ok,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = brands.TotalCount
+            });
         }
         [HttpGet("subBrandById/{id}")]
         public async Task<IActionResult> GetSubBrandById(Guid id)
@@ -180,7 +188,7 @@ namespace OutbornE_commerce.Controllers
             });
         }
 
-        [HttpPut("subcategory")]
+        [HttpPut("subBrand")]
         public async Task<IActionResult> UpdateSubBrand([FromForm] SubBrandDto model, CancellationToken cancellationToken)
         {
             var brand = await _brandRepository.Find(c => c.Id == model.Id, true);

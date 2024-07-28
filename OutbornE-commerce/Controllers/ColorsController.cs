@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using OutbornE_commerce.BAL.Dto;
 using OutbornE_commerce.BAL.Dto.Colors;
+using OutbornE_commerce.BAL.Dto.ProductColors;
 using OutbornE_commerce.BAL.Repositories.Colors;
 using OutbornE_commerce.DAL.Models;
 using System.Reflection.PortableExecutable;
@@ -34,9 +35,26 @@ namespace OutbornE_commerce.Controllers
         {
             var colors = await _colorRepository.FindAllAsync(null, false);
             var colorEntites = colors.Adapt<List<ColorDto>>();
-            return Ok(new { data = colorEntites, message = ""});
+            return Ok(new { data = colorEntites, message = "" });
+        } 
+        [HttpGet("paginated")]
+        public async Task<IActionResult> GetAllColorsPaginated(int pageNumber  =1 ,int pageSize = 10)
+        {
+            var items = await _colorRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+
+            var data = items.Data.Adapt<List<ColorDto>>();
+
+            return Ok(new PaginationResponse<List<ColorDto>>
+            {
+                Data = data,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = items.TotalCount
+            });
         }
-        [HttpGet("Id")]
+        [HttpGet("{Id}")] 
         public async Task<IActionResult> GetColorById(Guid Id)
         {
             var color = await _colorRepository.Find(c => c.Id == Id, false);
@@ -90,7 +108,7 @@ namespace OutbornE_commerce.Controllers
                 Message = ""
             });
         }
-        [HttpDelete("Id")]
+        [HttpDelete("{Id}")]
         public async Task<IActionResult> DeleteColor(Guid Id , CancellationToken cancellationToken)
         {
             var color = await _colorRepository.Find(c => c.Id == Id, false);

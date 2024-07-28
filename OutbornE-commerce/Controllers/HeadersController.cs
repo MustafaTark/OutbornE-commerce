@@ -22,16 +22,20 @@ namespace OutbornE_commerce.Controllers
             _filesManager = filesManager;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllHeaders()
+        public async Task<IActionResult> GetAllHeaders(int pageNumber = 1, int pageSize = 10)
         {
-            var header = await _headerRepository.FindAllAsync(null, false);
-            var headerEntites = header.Adapt<List<HeaderDto>>();
-            return Ok(new Response<List<HeaderDto>>
+            var items = await _headerRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+
+            var data = items.Data.Adapt<List<HeaderDto>>();
+
+            return Ok(new PaginationResponse<List<HeaderDto>>
             {
-                Data = headerEntites,
+                Data = data,
                 IsError = false,
-                Message = "",
-                Status = (int)(StatusCodeEnum.NotFound)
+                Status = (int)StatusCodeEnum.Ok,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = items.TotalCount
             });
         }
         [HttpGet("Id")]

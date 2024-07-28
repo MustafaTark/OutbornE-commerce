@@ -6,6 +6,7 @@ using OutbornE_commerce.BAL.Dto;
 using OutbornE_commerce.BAL.Dto.Currencies;
 using OutbornE_commerce.BAL.Repositories.Currencies;
 using OutbornE_commerce.DAL.Models;
+using OutbornE_commerce.BAL.Dto.Brands;
 
 namespace OutbornE_commerce.Controllers
 {
@@ -19,16 +20,20 @@ namespace OutbornE_commerce.Controllers
             _currencyRepository = currencyRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllCurrencies()
+        public async Task<IActionResult> GetAllCurrencies(int pageNumber = 1, int pageSize = 10)
         {
-            var currencies = await _currencyRepository.FindAllAsync(null, false);
-            var currencyEntites = currencies.Adapt<List<CurrencyDto>>();
-            return Ok(new Response<List<CurrencyDto>>
+            var items = await _currencyRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+
+            var data = items.Data.Adapt<List<CurrencyDto>>();
+
+            return Ok(new PaginationResponse<List<CurrencyDto>>
             {
-                Data = currencyEntites,
+                Data = data,
                 IsError = false,
-                Message = "",
-                Status = (int)(StatusCodeEnum.Ok)
+                Status = (int)StatusCodeEnum.Ok,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = items.TotalCount
             });
         }
         [HttpGet("{Id}")]

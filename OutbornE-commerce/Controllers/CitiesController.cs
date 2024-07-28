@@ -1,4 +1,5 @@
 ﻿
+using OutbornE_commerce.BAL.Dto.Categories;
 using System.Threading;
 
 namespace OutbornE_commerce.Controllers
@@ -15,30 +16,25 @@ namespace OutbornE_commerce.Controllers
             _countryRepository = countryRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllCities()
+        public async Task<IActionResult> GetAllCities(int pageNumber,int pageSize)
         {
-            var cities = await _cityRepository.FindAllAsync(null, false);
-            var cityEntites = cities.Adapt<List<CityDto>>();
-            return Ok(new Response<List<CityDto>>
+            var items = await _cityRepository.FindAllAsyncByPagination(null, pageNumber, pageSize,new string[] {"Country"});
+
+            var data = items.Data.Adapt<List<CityDto>>();
+
+            return Ok(new PaginationResponse<List<CityDto>>
             {
-                Data = cityEntites,
+                Data = data,
                 IsError = false,
                 Status = (int)StatusCodeEnum.Ok,
-                Message = ""
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = items.TotalCount
             });
         }
-        [HttpGet("countryId")]
+        [HttpGet("{countryId}")]
         public async Task<IActionResult> GetAllCitiesForCountry(Guid countryId)
         {
-            var country = await _countryRepository.Find(c => c.Id == countryId, false);
-            if (country == null)
-                return Ok(new Response<CountryDto>
-                {
-                    Data = null,
-                    IsError = true,
-                    Message = $"Contry with Id: {countryId} doesn't exist in the database",
-                    Status = (int)StatusCodeEnum.NotFound
-                });
             var cities = await _cityRepository.FindByCondition(c => c.CountryId == countryId, null); // null for the includes !!!
             var cityEntites = cities.Adapt<List<CityDto>>();
             return Ok(new Response<List<CityDto>>

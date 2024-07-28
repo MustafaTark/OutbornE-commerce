@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using OutbornE_commerce.BAL.Dto;
+using OutbornE_commerce.BAL.Dto.ProductColors;
 using OutbornE_commerce.BAL.Dto.Tickets;
 using OutbornE_commerce.BAL.Repositories.Tickets;
 using OutbornE_commerce.DAL.Models;
@@ -20,16 +21,20 @@ namespace OutbornE_commerce.Controllers
             _ticketRepository = ticketRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllTickets()
+        public async Task<IActionResult> GetAllTickets(int pageNumber , int pageSize)
         {
-            var tickets = await _ticketRepository.FindAllAsync(null, false);
-            var ticketEntites = tickets.Adapt<List<TicketDto>>();
-            return Ok(new Response<List<TicketDto>>
+            var items = await _ticketRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+
+            var data = items.Data.Adapt<List<TicketDto>>();
+
+            return Ok(new PaginationResponse<List<TicketDto>>
             {
-                Data = ticketEntites,
+                Data = data,
                 IsError = false,
-                Status = (int) StatusCodeEnum.Ok,
-                Message = ""
+                Status = (int)StatusCodeEnum.Ok,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = items.TotalCount
             });
         }
         [HttpGet("{Id}")]

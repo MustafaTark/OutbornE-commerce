@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using OutbornE_commerce.BAL.Dto.Brands;
 using OutbornE_commerce.BAL.Dto.Categories;
 using OutbornE_commerce.BAL.Repositories.Categories;
 using OutbornE_commerce.DAL.Models;
@@ -23,16 +24,20 @@ namespace OutbornE_commerce.Controllers
             _categoryRepository = categoryRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllCateogries()
+        public async Task<IActionResult> GetAllCateogries(int pageNumber =1 , int pageSize=10)
         {
-            var categories = await _categoryRepository.FindAllAsync(null, false);
-            var data = categories.Adapt<List<CategoryDto>>();
-            return Ok(new Response<List<CategoryDto>>()
+            var items = await _categoryRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+
+            var data = items.Data.Adapt<List<CategoryDto>>();
+
+            return Ok(new PaginationResponse<List<CategoryDto>>
             {
-                Data =data,
+                Data = data,
                 IsError = false,
-                Message = $"",
-                Status = (int)StatusCodeEnum.Ok
+                Status = (int)StatusCodeEnum.Ok,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = items.TotalCount
             });
         }
         [HttpGet("{id}")]
@@ -106,17 +111,20 @@ namespace OutbornE_commerce.Controllers
         }
 
         [HttpGet("subCategories/{categoryId}")]
-        public async Task<IActionResult> GetAllSubCategories(Guid categoryId)
+        public async Task<IActionResult> GetAllSubCategories(Guid categoryId, int pageNumber = 1, int pageSize = 10)
         {
-            var subs = await _categoryRepository.FindByCondition(s => s.ParentCategoryId == categoryId);
-            var data = subs.Adapt<List<SubCategoryDto>>();
+            var items = await _categoryRepository.FindAllAsyncByPagination(c=>c.ParentCategoryId == categoryId, pageNumber, pageSize);
 
-            return Ok(new Response<List<SubCategoryDto>>()
+            var data = items.Data.Adapt<List<SubCategoryDto>>();
+
+            return Ok(new PaginationResponse<List<SubCategoryDto>>
             {
                 Data = data,
                 IsError = false,
-                Message = $"",
-                Status = (int)StatusCodeEnum.Ok
+                Status = (int)StatusCodeEnum.Ok,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = items.TotalCount
             });
         }
         [HttpGet("subCategoryById/{id}")]

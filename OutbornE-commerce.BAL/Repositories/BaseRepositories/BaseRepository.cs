@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OutbornE_commerce.BAL.Dto;
 using OutbornE_commerce.DAL.Data;
 using OutbornE_commerce.DAL.Models;
 using System;
@@ -25,10 +26,34 @@ namespace OutbornE_commerce.BAL.Repositories.BaseRepositories
                 query = query.AsNoTracking();
 
             if (includes != null)
-                foreach (var incluse in includes)
-                    query = query.Include(incluse);
+                foreach (var include in includes)
+                    query = query.Include(include);
 
             return await query.ToListAsync();
+        }
+        public async Task<PagainationModel<IEnumerable<T>>> FindAllAsyncByPagination(Expression<Func<T, bool>>? criteria = null, int pageNumber = 1,int pageSize = 10,string[] includes = null)
+        {
+            int totalCount = 0;
+            IQueryable<T> query = _context.Set<T>().AsNoTracking();
+
+            if (includes != null)
+                foreach (var include in includes)
+                    query = query.Include(include);
+
+            if(criteria != null)
+                query = query.Where(criteria);
+
+            totalCount = query.Count();
+
+            query = query.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
+            var data = await query.ToListAsync();
+            return new PagainationModel<IEnumerable<T>> ()
+            {
+                Data = data,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = totalCount
+            };
         }
 		//string[] includes = new string[] { "SubCategories" };
         public async Task<IEnumerable<T>> FindByCondition(Expression<Func<T, bool>> criteria, string[] includes = null)
@@ -42,7 +67,7 @@ namespace OutbornE_commerce.BAL.Repositories.BaseRepositories
             return await query.Where(criteria).ToListAsync();
         }
 
-		public async Task<T?> Find(Expression<Func<T, bool>> expression,  bool trackChanges, string[] includes = null)
+		public async Task<T?> Find(Expression<Func<T, bool>> expression,  bool trackChanges = false, string[] includes = null)
 		{
             IQueryable<T> query = _context.Set<T>();
             if (includes != null)

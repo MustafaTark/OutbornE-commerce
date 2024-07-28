@@ -24,6 +24,7 @@ namespace OutbornE_commerce.BAL.Dto.Products
         public string DeliveryAndReturnEn { get; set; }
         public string DeliveryAndReturnAr { get; set; }
         public List<ProductSizeDto>? ProductSizes { get; set; }
+        public List<Guid>? ProductSizesIds { get; set; }
         public decimal ShippingCost { get; set; }
         public int NumberOfReturnDays { get; set; }
     }

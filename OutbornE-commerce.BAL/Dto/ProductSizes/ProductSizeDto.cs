@@ -11,6 +11,7 @@ namespace OutbornE_commerce.BAL.Dto.ProductSizes
     {
         public Guid Id { get; set; }
         public Guid ProductId { get; set; }
+        public Guid SizeId { get; set; }
         public SizeDto? Size { get; set; }
     }
 }

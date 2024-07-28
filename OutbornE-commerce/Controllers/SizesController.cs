@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OutbornE_commerce.BAL.Dto.Colors;
+using OutbornE_commerce.BAL.Dto.ProductColors;
 using OutbornE_commerce.BAL.Dto.Sizes;
 using OutbornE_commerce.BAL.Repositories.Sizes;
 using OutbornE_commerce.DAL.Models;
@@ -20,11 +21,21 @@ namespace OutbornE_commerce.Controllers
             _sizeRepository = sizeRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllSizes()
+        public async Task<IActionResult> GetAllSizes(int pageNumber = 1, int pageSize = 5)
         {
-            var sizes = await _sizeRepository.FindAllAsync(null, false);
-            var sizeEntites = sizes.Adapt<List<SizeDto>>();
-            return Ok(sizeEntites);
+            var items = await _sizeRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+
+            var data = items.Data.Adapt<List<SizeDto>>();
+
+            return Ok(new PaginationResponse<List<SizeDto>>
+            {
+                Data = data,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = items.TotalCount
+            });
         }
         [HttpGet("Clothing")]
         public async Task<IActionResult> GetAllClothingSizes()

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OutbornE_commerce.BAL.Dto.ProductColors;
 using OutbornE_commerce.BAL.Dto.Products;
 using OutbornE_commerce.BAL.Repositories.Products;
 using OutbornE_commerce.BAL.Repositories.ProductSizes;
@@ -24,23 +25,26 @@ namespace OutbornE_commerce.Controllers
             _productSizeRepository = productSizeRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts()
+        public async Task<IActionResult> GetAllProducts(int pageNumber = 1, int pageSize)
         {
-            string[] includes = new string[] { "ProductSizes" };
-            var products = await _productRepository.FindAllAsync(includes);
-            var data = products.Adapt<List<ProductDto>>();
-            return Ok(new Response<List<ProductDto>>()
+            var items = await _productRepository.FindAllAsyncByPagination(null, pageNumber, pageSize, new string[] { "ProductSizes.Size" });
+
+            var data = items.Data.Adapt<List<ProductColorDto>>();
+
+            return Ok(new PaginationResponse<List<ProductColorDto>>
             {
                 Data = data,
                 IsError = false,
-                Status = (int)StatusCodeEnum.Ok
-
+                Status = (int)StatusCodeEnum.Ok,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = items.TotalCount
             });
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductById(Guid id)
         {
-            string[] includes = new string[] { "ProductSizes" };
+            string[] includes = new string[] { "ProductSizes.Size" };
             var product = await _productRepository.Find(i => i.Id == id,false, includes);
             var data = product.Adapt<ProductDto>(); 
             return Ok(new Response<ProductDto>()
@@ -62,9 +66,17 @@ namespace OutbornE_commerce.Controllers
                 product.ImageUrl = fileModel!.Url;
             }
 
-            foreach (var size in product.ProductSizes!)
+            foreach (var sizeId in model.ProductSizesIds!)
             {
-                size.CreatedBy = "admin";
+                product.ProductSizes = new List<ProductSize>();
+                var size = new ProductSize
+                {
+                    SizeId = sizeId,
+                    CreatedBy = "admin",
+                    CreatedOn = DateTime.Now,
+                    
+                };
+                product.ProductSizes!.Add(size);
             }
 
             await _productRepository.Create(product);
@@ -79,18 +91,33 @@ namespace OutbornE_commerce.Controllers
             });
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateProduct([FromBody]ProductDto model,CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateProduct([FromForm]ProductDto model,CancellationToken cancellationToken)
         {
             var product = await _productRepository.Find(c => c.Id == model.Id, false);
 
             product = model.Adapt<Product>();
             product.UpdatedBy = "admin";
+            product.CreatedBy = "admin";
             _productRepository.Update(product);
 
-            var newProductSizes = model.ProductSizes.Adapt<List<ProductSize>>();
-            foreach (var size in newProductSizes)
+            var newProductSizes = new List<ProductSize>();
+            //foreach (var size in newProductSizes)
+            //{
+            //    size.CreatedBy = "admin";
+            //} 
+            foreach (var sizeId in model.ProductSizesIds!)
             {
-                size.CreatedBy = "admin";
+                var Newsize = new ProductSize
+                {
+                    SizeId = sizeId,
+                    CreatedBy = "admin",
+                    UpdatedBy = "admin",
+                    CreatedOn= DateTime.UtcNow,
+                    UpdatedOn = DateTime.UtcNow,
+                    ProductId = model.Id
+
+                };
+                newProductSizes.Add(Newsize);
             }
             await _productSizeRepository.DeleteRange(s => s.ProductId == product.Id);
             await _productSizeRepository.CreateRange(newProductSizes);

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using OutbornE_commerce.BAL.Dto;
+using OutbornE_commerce.BAL.Dto.Categories;
 using OutbornE_commerce.BAL.Dto.Countries;
 using OutbornE_commerce.BAL.Dto.Currencies;
 using OutbornE_commerce.BAL.Repositories.Countries;
@@ -20,17 +21,21 @@ namespace OutbornE_commerce.Controllers
             _countryRepository = countryRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllCountries()
+        public async Task<IActionResult> GetAllCountries(int pageNumber, int pageSize)
         {
-            var countries = await _countryRepository.FindAllAsync(null, false);
-            var countryEntites = countries.Adapt<List<CountryDto>>();
-                return Ok(new Response<List<CountryDto>>
-                {
-                    Data = countryEntites,
-                    IsError = false,
-                    Message = "",
-                    Status = (int)StatusCodeEnum.Ok,
-                });
+            var items = await _countryRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+
+            var data = items.Data.Adapt<List<CountryDto>>();
+
+            return Ok(new PaginationResponse<List<CountryDto>>
+            {
+                Data = data,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = items.TotalCount
+            });
         }
         [HttpGet("Id")]
         public async Task<IActionResult>GetCountryById(Guid Id)
