@@ -9,6 +9,7 @@ namespace OutbornE_commerce.BAL.Dto.Products
     public class SearchModelDto
     {
         public string? SearchTerm { get; set; }
+        public Guid? BrandId { get; set; }
         public List<Guid>? CategoriesIds { get; set; }
         public List<Guid>? SizesIds { get; set; }
         public List<Guid>? ColorsIds {  get; set; }

@@ -24,6 +24,7 @@ namespace OutbornE_commerce.BAL.Repositories.Products
             int totalCount = 0;
             var products = _context.Products
                                    .AsNoTracking()
+                                   .SearchByBrand(model.BrandId)
                                    .SearchByTerm(model.SearchTerm)
                                    .SearchByCategories(model.CategoriesIds)
                                    .SearchBySizes(model.SizesIds)

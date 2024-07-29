@@ -10,6 +10,12 @@ namespace OutbornE_commerce.BAL.Extentions
 {
     public static class SearchProductExtention
     {
+        public static IQueryable<Product> SearchByBrand(this IQueryable<Product> products,Guid? brandId)
+        {
+            if(brandId != null)
+                products = products.Where(p=>p.BrandId == brandId);
+            return products;
+        }
         public static IQueryable<Product> SearchByTerm(this IQueryable<Product> products,string? searchTerm)
         {
             if (!string.IsNullOrEmpty(searchTerm))
