@@ -15,6 +15,12 @@ namespace OutbornE_commerce.BAL.Extentions
             if(brandId != null)
                 products = products.Where(p=>p.BrandId == brandId);
             return products;
+        } 
+        public static IQueryable<Product> SearchByType(this IQueryable<Product> products,int? Type)
+        {
+            if(Type != null)
+                products = products.Where(p=>p.ProductType == Type);
+            return products;
         }
         public static IQueryable<Product> SearchByTerm(this IQueryable<Product> products,string? searchTerm)
         {

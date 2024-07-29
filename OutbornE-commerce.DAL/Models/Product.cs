@@ -23,6 +23,7 @@ namespace OutbornE_commerce.DAL.Models
         public List<ProductSize>? ProductSizes { get; set; }
         public List<ProductColor>? ProductColors { get; set; }
         public List<ProductCategory>? ProductCategories { get; set; }
+        public int ProductType { get; set; }
         public Guid BrandId { get; set; }
         public Brand? Brand { get; set; }
         public Guid? SubBrandId { get; set; }

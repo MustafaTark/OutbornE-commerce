@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace OutbornE_commerce.DAL.Enums
 {
-    public enum ProductLabelEnum
+    public enum ProductType
     {
-        Empty = 0,
-        New = 1,
-        BestSeller = 2,
-
+        Men = 0,
+        Women = 1,
+        Kids= 2,
+        Accessories = 3,
     }
 }
