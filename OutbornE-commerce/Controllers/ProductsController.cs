@@ -187,9 +187,9 @@ namespace OutbornE_commerce.Controllers
         public async Task<IActionResult> SearchProducts([FromQuery] SearchModelDto model)
         {
            var products = await _productRepository.SearchProducts(model);
-            var data = products.Data.Adapt<List<ProductCardDto>>();
+            var data = products.Data.Adapt<List<SearchedProductDto>>();
 
-            return Ok(new PaginationResponse<List<ProductCardDto>>
+            return Ok(new PaginationResponse<List<SearchedProductDto>>
             {
                 Data = data,
                 IsError = false,
