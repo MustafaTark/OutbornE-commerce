@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OutbornE_commerce.DAL.Data;
 
@@ -11,9 +12,11 @@ using OutbornE_commerce.DAL.Data;
 namespace OutbornE_commerce.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240729062953_bestSellerInProduct")]
+    partial class bestSellerInProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,37 +54,37 @@ namespace OutbornE_commerce.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "76d7075c-ada6-492c-9707-90114c825a5b",
+                            Id = "3ca5ca62-d19e-427b-be27-08594908c4ba",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "49ddfab3-2b5c-4ae6-8cd1-437d861cebe2",
+                            Id = "9c8781b6-27ff-4cca-aabb-5a1e1302f217",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "5341a8e7-ad6d-4ad5-8afe-8786e27bb2f1",
+                            Id = "90682956-d9c4-4627-87d9-42778a6498fb",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "e4bd6e5e-2977-44eb-b723-6ac8b5d7782b",
+                            Id = "5a6b0533-5613-4d9b-9a86-4584baca8caa",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "190b987b-6677-48e2-97bf-161efe25e16a",
+                            Id = "fed78c70-2ea6-42aa-95e8-f272e3d669d9",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "5398aac8-2fbe-48ac-9236-fd25f76d98da",
+                            Id = "ab6d6d92-e799-40c8-b9eb-36487852687c",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -632,11 +635,11 @@ namespace OutbornE_commerce.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool>("IsBestSeller")
                         .HasColumnType("bit");
 
-                    b.Property<int>("Label")
-                        .HasColumnType("int");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("MaterialAr")
                         .IsRequired()
@@ -659,9 +662,6 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("QuantityInStock")
-                        .HasColumnType("int");
 
                     b.Property<decimal>("ShippingCost")
                         .HasColumnType("decimal(18,2)");

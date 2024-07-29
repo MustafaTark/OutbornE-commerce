@@ -1,4 +1,5 @@
-﻿using OutbornE_commerce.BAL.Dto.ProductSizes;
+﻿using OutbornE_commerce.BAL.Dto.ProductCategories;
+using OutbornE_commerce.BAL.Dto.ProductSizes;
 using OutbornE_commerce.DAL.Models;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,12 @@ namespace OutbornE_commerce.BAL.Dto.Products
         public string DeliveryAndReturnEn { get; set; }
         public string DeliveryAndReturnAr { get; set; }
         public List<ProductSizeDto>? ProductSizes { get; set; }
+        public List<ProductCategoryDto>? ProductCategories { get; set; }
         public List<Guid>? ProductSizesIds { get; set; }
+        public List<Guid>? ProductCategoriesIds { get; set; }
+        public Guid BrandId { get; set; }
+        public Guid? SubBrandId { get; set; }
+        public int Label { get; set; }
         public decimal ShippingCost { get; set; }
         public int NumberOfReturnDays { get; set; }
     }

@@ -22,6 +22,13 @@ namespace OutbornE_commerce.DAL.Models
         public string DeliveryAndReturnAr {  get; set; }
         public List<ProductSize>? ProductSizes { get; set; }
         public List<ProductColor>? ProductColors { get; set; }
+        public List<ProductCategory>? ProductCategories { get; set; }
+        public Guid BrandId { get; set; }
+        public Brand? Brand { get; set; }
+        public Guid? SubBrandId { get; set; }
+        public Brand? SubBrand { get; set; }
+        public int Label { get; set; }
+        public int QuantityInStock { get; set; }
         public decimal ShippingCost { get; set; }
         public int NumberOfReturnDays { get; set; }
 

@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OutbornE_commerce.BAL.Dto.ProductSizes
+namespace OutbornE_commerce.DAL.Enums
 {
-    public class ProductSizeForCreateDto
+    public enum ProductLabelEnum
     {
-        public Guid SizeId { get; set; }
+        New = 0,
+        BestSeller = 1,
+
     }
 }

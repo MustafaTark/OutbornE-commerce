@@ -7,6 +7,7 @@ using OutbornE_commerce.BAL.Repositories.Countries;
 using OutbornE_commerce.BAL.Repositories.Currencies;
 using OutbornE_commerce.BAL.Repositories.Headers;
 using OutbornE_commerce.BAL.Repositories.HomeSections;
+using OutbornE_commerce.BAL.Repositories.ProductCateories;
 using OutbornE_commerce.BAL.Repositories.ProductColors;
 using OutbornE_commerce.BAL.Repositories.ProductImages;
 using OutbornE_commerce.BAL.Repositories.Products;
@@ -43,7 +44,9 @@ namespace OutbornE_commerce.Extensions
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductSizeRepository, ProductSizeRepository>();
             services.AddScoped<IProductColorRepository, ProductColorRepository>();
-            services.AddScoped<IProductImageRepository, ProductImageRepository>();
+            services.AddScoped<IProductImageRepository, ProductImageRepository>(); 
+            
+            services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
 
         }
     }

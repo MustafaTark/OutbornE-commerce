@@ -13,7 +13,7 @@ namespace OutbornE_commerce.BAL.Repositories.BaseRepositories
 {
 	public class BaseRepository<T> : IBaseRepository<T> where T : class
 	{
-		private readonly ApplicationDbContext _context;
+		protected readonly ApplicationDbContext _context;
 		public BaseRepository(ApplicationDbContext context)
 		{
 			_context = context;
