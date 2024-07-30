@@ -121,5 +121,44 @@ namespace OutbornE_commerce.Controllers
                 Status = (int)StatusCodeEnum.Ok
             });
         }
+        [HttpPut("SetIsDefault")]
+        public async Task<IActionResult> SetIsDefault([FromQuery]Guid id, CancellationToken cancellationToken)
+        {
+            var oldDefaultColor = await _productColorRepository.Find(p=>p.IsDefault);
+            if(oldDefaultColor != null)
+            {
+                if (oldDefaultColor.Id == id)
+                {
+                    return Ok(new Response<ProductColor>
+                    {
+                        Data = null,
+                        IsError = true,
+                        Message = "This Already Default",
+                        MessageAr = "هذا بالفعل الافتراضى",
+                        Status = (int)StatusCodeEnum.BadRequest
+                    });
+                }
+                oldDefaultColor.IsDefault = false;
+
+                _productColorRepository.Update(oldDefaultColor);
+                await _productColorRepository.SaveAsync(cancellationToken);
+
+
+            }
+
+            var newDefaultColor = await _productColorRepository.Find(p => p.Id == id);
+            newDefaultColor!.IsDefault = true;
+
+            _productColorRepository.Update(newDefaultColor);
+            await  _productColorRepository.SaveAsync(cancellationToken);
+
+            return Ok(new Response<dynamic> 
+            {
+                Data = new { Id = id, IsDefault = newDefaultColor.IsDefault },
+                IsError = false,
+                Message = "",
+                Status = (int)StatusCodeEnum.Ok
+            });
+        }
     }
 }
