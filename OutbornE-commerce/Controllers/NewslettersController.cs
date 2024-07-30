@@ -6,6 +6,7 @@ using OutbornE_commerce.BAL.EmailServices;
 using OutbornE_commerce.BAL.Repositories.Newsletters;
 using OutbornE_commerce.BAL.Repositories.NewsletterSubscribers;
 using OutbornE_commerce.BAL.Repositories.SMTP_Server;
+using OutbornE_commerce.DAL.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace OutbornE_commerce.Controllers
@@ -81,5 +82,18 @@ namespace OutbornE_commerce.Controllers
                 Status = (int)StatusCodeEnum.Ok
             });
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var newsletter = await _newsletterRepository.Find(n => n.Id == id);
+            var data = newsletter.Adapt<NewsletterDto>();
+            return Ok(new Response<NewsletterDto>
+            {
+                Data = data,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok
+            });
+        }
+        
     }
 }
