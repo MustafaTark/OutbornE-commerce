@@ -1,4 +1,6 @@
-﻿using OutbornE_commerce.BAL.AuthServices;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
+using OutbornE_commerce.BAL.AuthServices;
+using OutbornE_commerce.BAL.EmailServices;
 using OutbornE_commerce.BAL.Repositories.Brands;
 using OutbornE_commerce.BAL.Repositories.Categories;
 using OutbornE_commerce.BAL.Repositories.Cities;
@@ -7,6 +9,8 @@ using OutbornE_commerce.BAL.Repositories.Countries;
 using OutbornE_commerce.BAL.Repositories.Currencies;
 using OutbornE_commerce.BAL.Repositories.Headers;
 using OutbornE_commerce.BAL.Repositories.HomeSections;
+using OutbornE_commerce.BAL.Repositories.Newsletters;
+using OutbornE_commerce.BAL.Repositories.NewsletterSubscribers;
 using OutbornE_commerce.BAL.Repositories.ProductCateories;
 using OutbornE_commerce.BAL.Repositories.ProductColors;
 using OutbornE_commerce.BAL.Repositories.ProductImages;
@@ -47,6 +51,11 @@ namespace OutbornE_commerce.Extensions
             services.AddScoped<IProductImageRepository, ProductImageRepository>(); 
             
             services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
+
+            services.AddScoped<INewsletterRepository, NewsletterRepository>();
+            services.AddScoped<INewsletterSubscriberRepository, NewsletterSubscriberRepository>();
+
+            services.AddScoped<IEmailSender, EmailSender>();
 
         }
     }

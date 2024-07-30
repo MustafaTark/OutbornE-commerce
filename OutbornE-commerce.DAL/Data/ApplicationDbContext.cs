@@ -34,12 +34,14 @@ namespace OutbornE_commerce.DAL.Data
         public DbSet<ProductColor> ProductColors { get; set; }
         public DbSet<ProductSize> ProductSizes { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
+        public DbSet<Newsletter> Newsletters { get; set; }
+        public DbSet<NewsletterSubscriber> NewsletterSubscribers { get; set; }
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 	  : base(options) { }
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
-			builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-            builder.ApplyConfiguration(new RoleConfigrations());
+			//builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+   //         builder.ApplyConfiguration(new RoleConfigrations());
 
             builder.Entity<Category>()
            .HasOne(c => c.ParentCategory)
