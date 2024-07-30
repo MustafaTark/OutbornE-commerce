@@ -199,5 +199,26 @@ namespace OutbornE_commerce.Controllers
                 TotalCount = products.TotalCount
             });
         }
+        [HttpGet("details")]
+        public async Task<IActionResult> GetProductDetails(Guid productId)
+        {
+            var product = await _productRepository.Find(p => p.Id == productId,
+                                                        trackChanges: true,
+                                                        new string[] { "ProductSizes.Size",
+                                                                       "ProductColors.Color",
+                                                                       "ProductColors.ProductImages",
+                                                                        "ProductCategories.Category",
+                                                                         "Brand"});
+            var data = product.Adapt<ProductDetailsDto>();
+
+            return Ok(new Response<ProductDetailsDto>()
+            {
+                Data = data,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok
+
+            });
+        }
+
     }
 }

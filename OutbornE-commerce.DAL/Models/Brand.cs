@@ -15,7 +15,8 @@ namespace OutbornE_commerce.DAL.Models
         public string ImageUrl {  get; set; }
 
         public Guid? ParentBrandId { get; set; }
-        public Brand? ParentBrand { get; set; }    
+        public Brand? ParentBrand { get; set; }
+        public bool IsFeatured { get; set; }
         public ICollection<Brand> SubBrands { get; set; } = new List<Brand>();
     }
 }

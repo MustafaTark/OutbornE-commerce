@@ -130,6 +130,20 @@ namespace OutbornE_commerce.Controllers
                 Status = (int)StatusCodeEnum.Ok
             });
         }
+        [HttpGet("featuredInHome")]
+        public async Task<IActionResult> GetAllBrandsFeaturedInHome()
+        {
+            var brands = await _brandRepository.FindByCondition(b => b.IsFeatured);
+            var data = brands.Adapt<List<BrandDto>>();
+
+            return Ok(new Response<List<BrandDto>>
+            {
+                Data = data,
+                IsError = false,
+                Message = $"",
+                Status = (int)StatusCodeEnum.Ok
+            });
+        }
 
         [HttpGet("subBrands/{brandId}")]
         public async Task<IActionResult> GetAllSubBrands(Guid brandId,int pageNumber, int pageSize)

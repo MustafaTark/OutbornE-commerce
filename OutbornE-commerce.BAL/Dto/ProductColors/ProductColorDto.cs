@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using OutbornE_commerce.BAL.Dto.Colors;
+using OutbornE_commerce.BAL.Dto.ProductImages;
 using OutbornE_commerce.DAL.Models;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,6 @@ namespace OutbornE_commerce.BAL.Dto.ProductColors
         public ColorDto? Color { get; set; }
         public bool IsDefault { get; set; }
         public List<IFormFile>? Images { get; set; }
-        public List<ProductImage>? ProductImages { get; set; }
+        public List<ProductImageDto>? ProductImages { get; set; }
     }
 }
