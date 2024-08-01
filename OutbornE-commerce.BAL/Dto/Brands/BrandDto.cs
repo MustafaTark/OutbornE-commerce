@@ -15,6 +15,7 @@ namespace OutbornE_commerce.BAL.Dto.Brands
         public string? DescriptionEn { get; set; }
         public string? DescriptionAr { get; set; }
         public string? ImageUrl { get; set; }
+        public bool IsFeatured {  get; set; }
         public IFormFile? Image { get; set; }
     }
 }
