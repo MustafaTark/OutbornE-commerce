@@ -16,19 +16,19 @@ namespace OutbornE_commerce.Controllers
             _countryRepository = countryRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllCities(int pageNumber=1,int pageSize = 10,string?searchTerm = null)
+        public async Task<IActionResult> GetAllCities(int pageNumber = 1, int pageSize = 10, string? searchTerm = null)
         {
             var items = new PagainationModel<IEnumerable<City>>();
 
             if (string.IsNullOrEmpty(searchTerm))
                 items = await _cityRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
             else
-              items=  await _cityRepository
-                                  .FindAllAsyncByPagination(b => (b.NameAr.Contains(searchTerm)
-                                                             || b.NameEn.Contains(searchTerm)
-                                                             || b.Country.NameEn.Contains(searchTerm)
-                                                             || b.Country.NameAr.Contains(searchTerm))
-                                                             , pageNumber, pageSize,new string[] {"Country"});
+                items = await _cityRepository
+                                    .FindAllAsyncByPagination(b => (b.NameAr.Contains(searchTerm)
+                                                               || b.NameEn.Contains(searchTerm)
+                                                               || b.Country.NameEn.Contains(searchTerm)
+                                                               || b.Country.NameAr.Contains(searchTerm))
+                                                               , pageNumber, pageSize, new string[] { "Country" });
 
             var data = items.Data.Adapt<List<CityDto>>();
 
@@ -42,7 +42,28 @@ namespace OutbornE_commerce.Controllers
                 TotalCount = items.TotalCount
             });
         }
-        [HttpGet("{countryId}")]
+        [HttpGet("{Id}")]
+        public async Task<IActionResult> GetCityById(Guid Id)
+        {
+            var city = await _cityRepository.Find(c => c.Id == Id, false);
+            if (city == null)
+                return Ok(new Response<CountryDto>
+                {
+                    Data = null,
+                    IsError = true,
+                    Message = $"Country with Id:Id doesn't exist in the database",
+                    Status = (int)StatusCodeEnum.NotFound,
+                });
+            var countryEntity = city.Adapt<CityDto>();
+            return Ok(new Response<CityDto>
+            {
+                Data = countryEntity,
+                IsError = false,
+                Message = "",
+                Status = (int)StatusCodeEnum.Ok,
+            });
+        }
+        [HttpGet("byCountryId")]
         public async Task<IActionResult> GetAllCitiesForCountry(Guid countryId)
         {
             var cities = await _cityRepository.FindByCondition(c => c.CountryId == countryId, null); // null for the includes !!!
