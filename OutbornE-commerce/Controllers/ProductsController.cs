@@ -28,9 +28,21 @@ namespace OutbornE_commerce.Controllers
             _productCategoryRepository = productCategoryRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts(int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> GetAllProducts(int pageNumber = 1, int pageSize = 10,string? searchTerm = null)
         {
-            var items = await _productRepository.FindAllAsyncByPagination(null, pageNumber, pageSize, new string[] { "ProductSizes.Size" });
+            var items = new PagainationModel<IEnumerable<Product>>();
+            if(string.IsNullOrEmpty(searchTerm))
+                 items = await _productRepository.FindAllAsyncByPagination(null, pageNumber, pageSize, new string[] { "ProductSizes.Size" });
+            else 
+                items = await _productRepository.FindAllAsyncByPagination(b=>b.NameEn.Contains(searchTerm)
+                                                                           ||b.NameAr.Contains(searchTerm)
+                                                                           ||b.MaterialEn.Contains(searchTerm)
+                                                                           ||b.MaterialAr.Contains(searchTerm)
+                                                                           ||b.AboutEn.Contains(searchTerm)
+                                                                            || b.AboutAr.Contains(searchTerm)
+                                                                            || b.DeliveryAndReturnEn.Contains(searchTerm)
+                                                                            || b.DeliveryAndReturnAr.Contains(searchTerm)
+                                                                            || b.ProductSizes.Any(p=>p.Size.Name.Contains(searchTerm)), pageNumber, pageSize, new string[] { "ProductSizes.Size" });
 
             var data = items.Data.Adapt<List<ProductDto>>();
 

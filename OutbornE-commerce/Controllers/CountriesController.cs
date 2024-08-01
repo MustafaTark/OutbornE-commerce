@@ -21,9 +21,17 @@ namespace OutbornE_commerce.Controllers
             _countryRepository = countryRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllCountries(int pageNumber, int pageSize)
+        public async Task<IActionResult> GetAllCountriesPaginated(int pageNumber = 1, int pageSize=10,string? searchTerm = null)
         {
-            var items = await _countryRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+            var items = new PagainationModel<IEnumerable<Country>>();
+
+            if (string.IsNullOrEmpty(searchTerm))
+                items = await _countryRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+            else
+                items = await _countryRepository
+                                    .FindAllAsyncByPagination(b => (b.NameAr.Contains(searchTerm)
+                                                               || b.NameEn.Contains(searchTerm))
+                                                               , pageNumber, pageSize, new string[] { "Country" });
 
             var data = items.Data.Adapt<List<CountryDto>>();
 
@@ -35,6 +43,20 @@ namespace OutbornE_commerce.Controllers
                 PageNumber = pageNumber,
                 PageSize = pageSize,
                 TotalCount = items.TotalCount
+            });
+        }
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllCountries()
+        {
+            var items = await _countryRepository.FindAllAsync(null);
+
+            var data = items.Adapt<List<CountryDto>>();
+
+            return Ok(new Response<List<CountryDto>>
+            {
+                Data = data,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok,
             });
         }
         [HttpGet("Id")]

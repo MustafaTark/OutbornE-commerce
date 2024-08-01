@@ -20,9 +20,19 @@ namespace OutbornE_commerce.Controllers
             _currencyRepository = currencyRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllCurrencies(int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> GetAllCurrencies(int pageNumber = 1, int pageSize = 10,string? searchTerm=null)
         {
-            var items = await _currencyRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+            var items = new PagainationModel<IEnumerable<Currency>>();
+
+            if (string.IsNullOrEmpty(searchTerm))
+                items = await _currencyRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+            else
+                items = await _currencyRepository
+                                    .FindAllAsyncByPagination(b => (b.NameAr.Contains(searchTerm)
+                                                               || b.NameEn.Contains(searchTerm)
+                                                               || b.Price.ToString().Contains(searchTerm)
+                                                               || b.Sign.Contains(searchTerm))
+                                                               , pageNumber, pageSize);
 
             var data = items.Data.Adapt<List<CurrencyDto>>();
 
@@ -34,6 +44,20 @@ namespace OutbornE_commerce.Controllers
                 PageNumber = pageNumber,
                 PageSize = pageSize,
                 TotalCount = items.TotalCount
+            });
+        }
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllCurrenciesSelect()
+        {
+            var items = await _currencyRepository.FindAllAsync(null);
+
+            var data = items.Adapt<List<CurrencyDto>>();
+
+            return Ok(new Response<List<CurrencyDto>>
+            {
+                Data = data,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok,
             });
         }
         [HttpGet("{Id}")]

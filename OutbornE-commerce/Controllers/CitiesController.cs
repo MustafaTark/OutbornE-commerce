@@ -16,9 +16,19 @@ namespace OutbornE_commerce.Controllers
             _countryRepository = countryRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllCities(int pageNumber,int pageSize)
+        public async Task<IActionResult> GetAllCities(int pageNumber=1,int pageSize = 10,string?searchTerm = null)
         {
-            var items = await _cityRepository.FindAllAsyncByPagination(null, pageNumber, pageSize,new string[] {"Country"});
+            var items = new PagainationModel<IEnumerable<City>>();
+
+            if (string.IsNullOrEmpty(searchTerm))
+                items = await _cityRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+            else
+              items=  await _cityRepository
+                                  .FindAllAsyncByPagination(b => (b.NameAr.Contains(searchTerm)
+                                                             || b.NameEn.Contains(searchTerm)
+                                                             || b.Country.NameEn.Contains(searchTerm)
+                                                             || b.Country.NameAr.Contains(searchTerm))
+                                                             , pageNumber, pageSize,new string[] {"Country"});
 
             var data = items.Data.Adapt<List<CityDto>>();
 

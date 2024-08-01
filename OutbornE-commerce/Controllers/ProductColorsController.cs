@@ -28,9 +28,9 @@ namespace OutbornE_commerce.Controllers
             _filesManager = filesManager;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllProductColors(int pageNumber= 1, int pageSize= 10)
+        public async Task<IActionResult> GetAllProductColors(Guid productId,int pageNumber= 1, int pageSize= 10)
         {
-            var items = await _productColorRepository.FindAllAsyncByPagination(null, pageNumber, pageSize, new string[] { "Color", "ProductImages" });
+            var items = await _productColorRepository.FindAllAsyncByPagination(b=>b.ProductId == productId, pageNumber, pageSize, new string[] { "Color", "ProductImages" });
 
             var data = items.Data.Adapt<List<ProductColorDto>>();
 

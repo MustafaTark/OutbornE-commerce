@@ -21,9 +21,16 @@ namespace OutbornE_commerce.Controllers
             _sizeRepository = sizeRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllSizes(int pageNumber = 1, int pageSize = 5)
+        public async Task<IActionResult> GetAllSizes(int pageNumber = 1, int pageSize = 5,string? searchTerm = null)
         {
-            var items = await _sizeRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+            var items = new PagainationModel<IEnumerable<Size>>();
+
+            if (string.IsNullOrEmpty(searchTerm))
+                items = await _sizeRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+            else
+                items = await _sizeRepository
+                                    .FindAllAsyncByPagination(b => (b.Name.Contains(searchTerm))
+                                                               , pageNumber, pageSize);
 
             var data = items.Data.Adapt<List<SizeDto>>();
 

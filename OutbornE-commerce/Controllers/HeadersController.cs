@@ -22,9 +22,19 @@ namespace OutbornE_commerce.Controllers
             _filesManager = filesManager;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllHeaders(int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> GetAllHeaders(int pageNumber = 1, int pageSize = 10,string? searchTerm=null)
         {
-            var items = await _headerRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+            var items = new PagainationModel<IEnumerable<Header>>();
+
+            if (string.IsNullOrEmpty(searchTerm))
+                items = await _headerRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+            else
+                items = await _headerRepository
+                                    .FindAllAsyncByPagination(b => (b.Title1En.Contains(searchTerm)
+                                                               || b.Title1En.Contains(searchTerm)
+                                                               || b.Title2Ar.ToString().Contains(searchTerm)
+                                                               || b.Title1En.Contains(searchTerm))
+                                                               , pageNumber, pageSize);
 
             var data = items.Data.Adapt<List<HeaderDto>>();
 
@@ -36,6 +46,21 @@ namespace OutbornE_commerce.Controllers
                 PageNumber = pageNumber,
                 PageSize = pageSize,
                 TotalCount = items.TotalCount
+            });
+        }
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllHeadersInHome()
+        {
+              var  items = await _headerRepository.FindAllAsync(null);
+
+
+            var data = items.Adapt<List<HeaderDto>>();
+
+            return Ok(new Response<List<HeaderDto>>
+            {
+                Data = data,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok,
             });
         }
         [HttpGet("Id")]

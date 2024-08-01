@@ -52,15 +52,27 @@ namespace OutbornE_commerce.Controllers
             });
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllNewsletters(int pageNumber = 1,int pageSize = 10)
+        public async Task<IActionResult> GetAllNewsletters(int pageNumber = 1,int pageSize = 10,string? searchTerm= null)
         {
-            var newsletters = await _newsletterRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
-            var data = newsletters.Adapt<List<NewsletterDto>>();
-            return Ok(new Response<List<NewsletterDto>>
+            var items = new PagainationModel<IEnumerable<Newsletter>>();
+
+            if (string.IsNullOrEmpty(searchTerm))
+                items = await _newsletterRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+            else
+                items = await _newsletterRepository
+                                    .FindAllAsyncByPagination(b => (b.Subject.Contains(searchTerm)
+                                                               || b.Body.Contains(searchTerm))
+                                                               , pageNumber, pageSize);
+            var data = items.Data.Adapt<List<NewsletterDto>>();
+
+            return Ok(new PaginationResponse<List<NewsletterDto>>
             {
                 Data = data,
                 IsError = false,
-                Status = (int)StatusCodeEnum.Ok
+                Status = (int)StatusCodeEnum.Ok,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = items.TotalCount
             });
         }
         [HttpPost]

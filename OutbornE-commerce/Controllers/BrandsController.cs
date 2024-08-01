@@ -25,11 +25,19 @@ namespace OutbornE_commerce.Controllers
             _brandRepository = brandRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllBrands(int pageNumber = 1 ,int pageSize = 10)
+        public async Task<IActionResult> GetAllBrands(int pageNumber = 1 ,int pageSize = 10,string? searchTerm= null)
         {
-           // var brands = await _brandRepository.FindAllAsync(null, false);
-
-            var brands = await _brandRepository.FindAllAsyncByPagination(null,pageNumber,pageSize);
+            // var brands = await _brandRepository.FindAllAsync(null, false);
+            var brands = new PagainationModel<IEnumerable<Brand>>();
+            if(searchTerm  == null)
+               brands = await _brandRepository.FindAllAsyncByPagination(null,pageNumber,pageSize);
+            else
+                brands = await _brandRepository
+                                  .FindAllAsyncByPagination(b=>b.NameAr.Contains(searchTerm)
+                                                             ||b.NameEn.Contains(searchTerm)
+                                                             ||b.DescriptionAr.Contains(searchTerm)
+                                                             ||b.DescriptionEn.Contains(searchTerm)
+                                 ,pageNumber,pageSize);
 
             var data = brands.Data.Adapt<List<BrandDto>>();
 
@@ -146,9 +154,18 @@ namespace OutbornE_commerce.Controllers
         }
 
         [HttpGet("subBrands/{brandId}")]
-        public async Task<IActionResult> GetAllSubBrands(Guid brandId,int pageNumber, int pageSize)
+        public async Task<IActionResult> GetAllSubBrands(Guid brandId,int pageNumber, int pageSize,string? searchTerm = null)
         {
-            var brands = await _brandRepository.FindAllAsyncByPagination(b=>b.ParentBrandId == brandId, pageNumber, pageSize);
+            var brands = new PagainationModel<IEnumerable<Brand>>();
+            if (searchTerm == null)
+                brands = await _brandRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+            else
+                brands = await _brandRepository
+                                  .FindAllAsyncByPagination(b => b.ParentBrandId == brandId &&( b.NameAr.Contains(searchTerm)
+                                                             || b.NameEn.Contains(searchTerm)
+                                                             || b.DescriptionAr.Contains(searchTerm)
+                                                             || b.DescriptionEn.Contains(searchTerm))
+                                 , pageNumber, pageSize);
 
             var data = brands.Data.Adapt<List<SubBrandDto>>();
 

@@ -21,9 +21,16 @@ namespace OutbornE_commerce.Controllers
             _ticketRepository = ticketRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllTickets(int pageNumber , int pageSize)
+        public async Task<IActionResult> GetAllTickets(int pageNumber = 1, int pageSize = 10, string? searchTerm = null)
         {
-            var items = await _ticketRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+            var items = new PagainationModel<IEnumerable<Ticket>>();
+
+            if (string.IsNullOrEmpty(searchTerm))
+                items = await _ticketRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+            else
+                items = await _ticketRepository
+                                    .FindAllAsyncByPagination(b => (b.Description.Contains(searchTerm))
+                                                               , pageNumber, pageSize);
 
             var data = items.Data.Adapt<List<TicketDto>>();
 

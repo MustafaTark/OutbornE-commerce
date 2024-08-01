@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using OutbornE_commerce.BAL.Dto;
 using OutbornE_commerce.BAL.Dto.Brands;
 using OutbornE_commerce.BAL.Dto.Categories;
 using OutbornE_commerce.BAL.Repositories.Categories;
@@ -24,10 +25,18 @@ namespace OutbornE_commerce.Controllers
             _categoryRepository = categoryRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllCateogries(int pageNumber =1 , int pageSize=10)
+        public async Task<IActionResult> GetAllCateogries(int pageNumber =1 , int pageSize=10,string? searchTerm = null)
         {
-            var items = await _categoryRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
-
+            var items = new PagainationModel<IEnumerable<Category>>();
+            if(string.IsNullOrEmpty(searchTerm))
+                  items = await _categoryRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+            else
+              items=  await _categoryRepository
+                                  .FindAllAsyncByPagination(b => (b.NameAr.Contains(searchTerm)
+                                                             || b.NameEn.Contains(searchTerm)
+                                                             || b.DescriptionAr.Contains(searchTerm)
+                                                             || b.DescriptionEn.Contains(searchTerm))
+                                 , pageNumber, pageSize);
             var data = items.Data.Adapt<List<CategoryDto>>();
 
             return Ok(new PaginationResponse<List<CategoryDto>>
@@ -111,9 +120,19 @@ namespace OutbornE_commerce.Controllers
         }
 
         [HttpGet("subCategories/{categoryId}")]
-        public async Task<IActionResult> GetAllSubCategories(Guid categoryId, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> GetAllSubCategories(Guid categoryId, int pageNumber = 1, int pageSize = 10,string? searchTerm = null)
         {
-            var items = await _categoryRepository.FindAllAsyncByPagination(c=>c.ParentCategoryId == categoryId, pageNumber, pageSize);
+            var items = new PagainationModel<IEnumerable<Category>>();
+
+            if (string.IsNullOrEmpty(searchTerm))
+                items = await _categoryRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+            else
+               items= await _categoryRepository
+                                  .FindAllAsyncByPagination(b => (b.NameAr.Contains(searchTerm)
+                                                             || b.NameEn.Contains(searchTerm)
+                                                             || b.DescriptionAr.Contains(searchTerm)
+                                                             || b.DescriptionEn.Contains(searchTerm))
+                                                             ,pageNumber,pageSize);
 
             var data = items.Data.Adapt<List<SubCategoryDto>>();
 

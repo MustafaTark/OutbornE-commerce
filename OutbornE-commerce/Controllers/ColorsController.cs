@@ -38,9 +38,17 @@ namespace OutbornE_commerce.Controllers
             return Ok(new { data = colorEntites, message = "" });
         } 
         [HttpGet("paginated")]
-        public async Task<IActionResult> GetAllColorsPaginated(int pageNumber  =1 ,int pageSize = 10)
+        public async Task<IActionResult> GetAllColorsPaginated(int pageNumber  =1 ,int pageSize = 10,string? searchTerm =null)
         {
-            var items = await _colorRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+            var items = new PagainationModel<IEnumerable<Color>>();
+
+            if (string.IsNullOrEmpty(searchTerm))
+                items = await _colorRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+            else
+                items = await _colorRepository
+                                    .FindAllAsyncByPagination(b => (b.NameAr.Contains(searchTerm)
+                                                               || b.NameEn.Contains(searchTerm))
+                                                               , pageNumber, pageSize);
 
             var data = items.Data.Adapt<List<ColorDto>>();
 
