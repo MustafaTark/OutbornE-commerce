@@ -59,7 +59,7 @@ namespace OutbornE_commerce.Controllers
                 Status = (int)StatusCodeEnum.Ok,
             });
         }
-        [HttpGet("Id")]
+        [HttpGet("{Id}")]
         public async Task<IActionResult>GetCountryById(Guid Id)
         {
             var country = await _countryRepository.Find(c => c.Id == Id, false);
@@ -119,7 +119,7 @@ namespace OutbornE_commerce.Controllers
                 Status = (int)StatusCodeEnum.NotFound,
             });
         }
-        [HttpDelete("Id")]
+        [HttpDelete("{Id}")]
         public async Task<IActionResult> DeleteCountry(Guid Id , CancellationToken cancellationToken)
         {
             var country = await _countryRepository.Find(c => c.Id == Id, false);

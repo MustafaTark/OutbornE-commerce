@@ -125,7 +125,7 @@ namespace OutbornE_commerce.Controllers
             var items = new PagainationModel<IEnumerable<Category>>();
 
             if (string.IsNullOrEmpty(searchTerm))
-                items = await _categoryRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+                items = await _categoryRepository.FindAllAsyncByPagination(null, pageNumber, pageSize,new string[] { "ParentCategory" });
             else
                items= await _categoryRepository
                                   .FindAllAsyncByPagination(b => (b.NameAr.Contains(searchTerm)

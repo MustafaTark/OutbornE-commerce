@@ -37,7 +37,7 @@ namespace OutbornE_commerce.Controllers
                 return Ok(new { message = "You have already inserted a home section" });
             var section = model.Adapt<HomeSection>();
             section.CreatedBy = "admin";
-            if (section.ImageUrl != null)
+            if (model.Image != null)
             {
                 var fileModel = await _filesManager.UploadFile(model.Image, "HomeSections");
                 section.ImageUrl = fileModel!.Url;
@@ -54,7 +54,7 @@ namespace OutbornE_commerce.Controllers
                 return Ok(new {message = $"Home Section with Id : {homeSection!.Id} doesn't exist in the database"});
             homeSection = model.Adapt<HomeSection>();
             homeSection.CreatedBy = "admin";
-            if (homeSection.ImageUrl != null)
+            if (model.Image != null)
             {
                 var fileModel = await _filesManager.UploadFile(model.Image, "HomeSections");
                 homeSection.ImageUrl = fileModel!.Url;

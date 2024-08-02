@@ -63,7 +63,7 @@ namespace OutbornE_commerce.Controllers
                 Status = (int)StatusCodeEnum.Ok,
             });
         }
-        [HttpGet("Id")]
+        [HttpGet("{Id}")]
         public async Task<IActionResult>GetHeaderById(Guid Id)
         {
             var header = await _headerRepository.Find(i => i.Id == Id, false);
@@ -83,7 +83,7 @@ namespace OutbornE_commerce.Controllers
         {
             var header = model.Adapt<Header>();
             header.CreatedBy = "admin";
-            if(header.ImageUrl != null)
+            if(model.Image != null)
             {
                 var fileModel = await _filesManager.UploadFile(model.Image, "Headers");
                 header.ImageUrl = fileModel!.Url;
@@ -104,7 +104,7 @@ namespace OutbornE_commerce.Controllers
             var header = await _headerRepository.Find(h => h.Id == model.Id, false);
             header = model.Adapt<Header>();
             header.CreatedBy = "admin";
-            if (header.ImageUrl != null)
+            if (model.Image != null)
             {
                 var fileModel = await _filesManager.UploadFile(model.Image, "Headers");
                 header.ImageUrl = fileModel!.Url;
@@ -119,7 +119,7 @@ namespace OutbornE_commerce.Controllers
                 Status = (int)(StatusCodeEnum.Ok)
             });
         }
-        [HttpDelete("Id")]
+        [HttpDelete("{Id}")]
         public async Task<IActionResult> DeleteHeader(Guid Id , CancellationToken cancellationToken)
         {
             var header = await _headerRepository.Find(h => h.Id==Id, false);

@@ -122,7 +122,7 @@ namespace OutbornE_commerce.Controllers
                 Status = (int)(StatusCodeEnum.NotFound)
             });
         }
-        [HttpDelete("Id")]
+        [HttpDelete("{Id}")]
         public async Task<IActionResult> DeleteCurrency(Guid Id , CancellationToken cancellationToken)
         {
             var currency = await _currencyRepository.Find(c => c.Id != Id, false);

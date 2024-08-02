@@ -17,5 +17,6 @@ namespace OutbornE_commerce.BAL.Dto.Categories
         public string? ImageUrl { get; set; }
         public IFormFile? Image { get; set; }
         public Guid? ParentCategoryId { get; set; }
+        public CategoryDto? ParentCategory { get; set; }
     }
 }
