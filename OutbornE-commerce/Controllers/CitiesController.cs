@@ -21,7 +21,7 @@ namespace OutbornE_commerce.Controllers
             var items = new PagainationModel<IEnumerable<City>>();
 
             if (string.IsNullOrEmpty(searchTerm))
-                items = await _cityRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+                items = await _cityRepository.FindAllAsyncByPagination(null, pageNumber, pageSize, new string[] { "Country" });
             else
                 items = await _cityRepository
                                     .FindAllAsyncByPagination(b => (b.NameAr.Contains(searchTerm)
@@ -111,7 +111,7 @@ namespace OutbornE_commerce.Controllers
                     Message = $"Contry with Id: {model.CountryId} doesn't exist in the database",
                     Status = (int)StatusCodeEnum.NotFound
                 });
-            var city = await _cityRepository.Find(c => c.Id == model.Id, true);
+            var city = await _cityRepository.Find(c => c.Id == model.Id, false);
             if(city == null)
             {
                 return Ok(new Response<CityDto>

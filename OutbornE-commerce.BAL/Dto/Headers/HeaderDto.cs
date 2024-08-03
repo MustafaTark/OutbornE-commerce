@@ -15,6 +15,6 @@ namespace OutbornE_commerce.BAL.Dto.Headers
         public string Title2Ar { get; set; }
         public string Title2En { get; set; }
         public string ImageUrl { get; set; }
-        public IFormFile Image {  get; set; }
+        public IFormFile? Image {  get; set; }
     }
 }

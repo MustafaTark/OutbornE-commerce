@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using OutbornE_commerce.BAL.Dto.Colors;
 using OutbornE_commerce.BAL.Dto.ProductColors;
@@ -49,14 +50,24 @@ namespace OutbornE_commerce.Controllers
         {
             var clothingSizes = await _sizeRepository.FindByCondition(t => t.Type == 0, null);
             var sizeEntites = clothingSizes.Adapt<List<SizeDto>>();
-            return Ok(sizeEntites);
+            return Ok(new Response<List<SizeDto>>
+            {
+                Data = sizeEntites,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok
+            });
         }
         [HttpGet("Shoes")]
         public async Task<IActionResult> GetAllShoesSizes()
         {
             var shoesSizes = await _sizeRepository.FindByCondition(t => (int)t.Type == 1, null);
             var sizeEntites = shoesSizes.Adapt<List<SizeDto>>();
-            return Ok(sizeEntites);
+            return Ok(new Response<List<SizeDto>>
+            {
+                Data = sizeEntites,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok
+            });
         }
         [HttpGet("{Id}")]
         public async Task<IActionResult> GetSizeById(Guid Id)
@@ -65,7 +76,12 @@ namespace OutbornE_commerce.Controllers
             if (size == null)
                 return Ok(new { message = $"Size with Id: {size!.Id} doesn't exist in the database" });
             var sizeEntity = size.Adapt<SizeDto>();
-            return Ok(sizeEntity);
+            return Ok(new Response<SizeDto>
+            {
+                Data = sizeEntity,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok
+            });
         }
         [HttpPost("CreateSize")]
         public async Task<IActionResult> CreateSize([FromBody] SizeForCreationDto model, CancellationToken cancellationToken)
@@ -108,7 +124,13 @@ namespace OutbornE_commerce.Controllers
                 return Ok(new { message = $"Size with Id: {size!.Id} doesn't exist in the database" });
             _sizeRepository.Delete(size);
             await _sizeRepository.SaveAsync(cancellationToken);
-            return Ok(Id);
+            return Ok(new Response<Guid>()
+            {
+                Data = Id,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok
+
+            });
         }
     }
 }

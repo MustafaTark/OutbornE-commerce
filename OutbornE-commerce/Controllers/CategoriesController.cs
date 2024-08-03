@@ -125,14 +125,14 @@ namespace OutbornE_commerce.Controllers
             var items = new PagainationModel<IEnumerable<Category>>();
 
             if (string.IsNullOrEmpty(searchTerm))
-                items = await _categoryRepository.FindAllAsyncByPagination(null, pageNumber, pageSize,new string[] { "ParentCategory" });
+                items = await _categoryRepository.FindAllAsyncByPagination(b=>b.ParentCategoryId == categoryId, pageNumber, pageSize,new string[] { "ParentCategory" });
             else
                items= await _categoryRepository
-                                  .FindAllAsyncByPagination(b => (b.NameAr.Contains(searchTerm)
+                                  .FindAllAsyncByPagination(b =>b.ParentCategoryId == categoryId && (b.NameAr.Contains(searchTerm)
                                                              || b.NameEn.Contains(searchTerm)
                                                              || b.DescriptionAr.Contains(searchTerm)
                                                              || b.DescriptionEn.Contains(searchTerm))
-                                                             ,pageNumber,pageSize);
+                                                             ,pageNumber,pageSize, new string[] { "ParentCategory" });
 
             var data = items.Data.Adapt<List<SubCategoryDto>>();
 
