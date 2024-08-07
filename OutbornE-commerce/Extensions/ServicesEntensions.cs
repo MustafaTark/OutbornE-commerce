@@ -1,14 +1,21 @@
 ﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using OutbornE_commerce.BAL.AuthServices;
 using OutbornE_commerce.BAL.EmailServices;
+using OutbornE_commerce.BAL.Repositories.AboutUs;
+using OutbornE_commerce.BAL.Repositories.Address;
 using OutbornE_commerce.BAL.Repositories.Brands;
 using OutbornE_commerce.BAL.Repositories.Categories;
 using OutbornE_commerce.BAL.Repositories.Cities;
 using OutbornE_commerce.BAL.Repositories.Colors;
+using OutbornE_commerce.BAL.Repositories.ContactUs;
+using OutbornE_commerce.BAL.Repositories.ContactUsSetups;
 using OutbornE_commerce.BAL.Repositories.Countries;
 using OutbornE_commerce.BAL.Repositories.Currencies;
+using OutbornE_commerce.BAL.Repositories.FAQs;
+using OutbornE_commerce.BAL.Repositories.Hashtags;
 using OutbornE_commerce.BAL.Repositories.Headers;
 using OutbornE_commerce.BAL.Repositories.HomeSections;
+using OutbornE_commerce.BAL.Repositories.InquiryTypes;
 using OutbornE_commerce.BAL.Repositories.Newsletters;
 using OutbornE_commerce.BAL.Repositories.NewsletterSubscribers;
 using OutbornE_commerce.BAL.Repositories.ProductCateories;
@@ -44,6 +51,13 @@ namespace OutbornE_commerce.Extensions
             services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<ISMTPRepository, SMTPRepository>();
             services.AddScoped<ITicketRepository, TicketRepository>();
+            services.AddScoped<IAddressRepository, AddressRepository>();
+            services.AddScoped<IHashtagRepository, HashtagRepository>();
+            services.AddScoped<IFAQRepository , FAQRepository>();
+            services.AddScoped<IAboutUsRepository, AboutUsRepository>();
+            services.AddScoped<IContactUsSetupRepository, ContactUsSetupRepository>();
+            services.AddScoped<IInquiryTypeRepository, InquiryTypeRepository>();
+            services.AddScoped<IContactUsRepository, ContactUsRepository>();
 
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductSizeRepository, ProductSizeRepository>();
