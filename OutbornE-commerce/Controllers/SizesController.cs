@@ -106,6 +106,7 @@ namespace OutbornE_commerce.Controllers
                 return Ok(new { message = $"Size with Id: {model.Id} doesn't exist in the database" });
             size = model.Adapt<Size>();
             size.UpdatedBy = "admin";
+            size.CreatedBy = "admin";
             _sizeRepository.Update(size);
             await _sizeRepository.SaveAsync(cancellationToken);
             return Ok(new Response<Guid>()

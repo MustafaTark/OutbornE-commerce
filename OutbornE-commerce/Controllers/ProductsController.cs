@@ -195,8 +195,8 @@ namespace OutbornE_commerce.Controllers
 
             });
         }
-        [HttpGet("search")]
-        public async Task<IActionResult> SearchProducts([FromQuery] SearchModelDto model)
+        [HttpPost("search")]
+        public async Task<IActionResult> SearchProducts([FromBody] SearchModelDto model)
         {
            var products = await _productRepository.SearchProducts(model);
             var data = products.Data.Adapt<List<SearchedProductDto>>();

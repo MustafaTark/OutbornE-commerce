@@ -110,6 +110,7 @@ namespace OutbornE_commerce.Controllers
             }
             await _productImageRepository.DeleteRange(p=>p.ProductColorId == model.Id);
             productColor.UpdatedBy = "admin";
+            productColor.CreatedBy = "admin";
             productColor.UpdatedOn = DateTime.Now;
             _productColorRepository.Update(productColor);
             await _productColorRepository.SaveAsync(cancellationToken);
