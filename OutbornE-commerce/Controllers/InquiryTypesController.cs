@@ -17,6 +17,27 @@ namespace OutbornE_commerce.Controllers
             _inquiryTypeRepository = inquiryTypeRepository;
         }
         [HttpGet]
+        public async Task<IActionResult>GetAllInquiryTypes(int pageNumber = 1 ,  int pageSize = 10 , string? searchTerm = null)
+        {
+            var items = new PagainationModel<IEnumerable<InquiryType>>();
+            if(string.IsNullOrEmpty(searchTerm) )
+                items = await _inquiryTypeRepository.FindAllAsyncByPagination(null,pageNumber, pageSize);
+            else
+                items = await _inquiryTypeRepository.FindAllAsyncByPagination(i => (i.NameEn.Contains(searchTerm)
+                                                                                                             || i.NameAr.Contains(searchTerm))
+                                                                                                             ,pageNumber, pageSize);
+            var data = items.Data.Adapt<List<InquiryTypeDto>>();
+            return Ok(new PaginationResponse<List<InquiryTypeDto>>
+            {
+                Data = data,
+                IsError = false,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                Status = (int)StatusCodeEnum.Ok,
+                TotalCount = items.TotalCount
+            });
+        }
+        [HttpGet("All")]
         public async Task<IActionResult> GetAllInquiryTypes()
         {
             var items = await _inquiryTypeRepository.FindAllAsync(null);

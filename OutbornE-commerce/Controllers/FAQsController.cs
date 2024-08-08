@@ -17,6 +17,31 @@ namespace OutbornE_commerce.Controllers
             _faqRepository = faqRepository;
         }
         [HttpGet]
+        public async Task<IActionResult> GetAllFAQ(int pageNumber = 1 , int pagesize = 10 , string? searchTerm = null)
+        {
+            var items = new PagainationModel<IEnumerable<FAQ>>();
+            if(string.IsNullOrEmpty(searchTerm))
+                items = await _faqRepository.FindAllAsyncByPagination(null,pageNumber, pagesize);
+            else
+                items = await _faqRepository.FindAllAsyncByPagination(f =>(f.QuestionAr.Contains(searchTerm))
+                                                                                                         || f.QuestionAr.Contains(searchTerm)
+                                                                                                         || f.QuestionEn.Contains(searchTerm)
+                                                                                                         || f.AnswerAr.Contains(searchTerm)
+                                                                                                         || f.AnswerEn.Contains(searchTerm),
+                                                                                                         pageNumber,pagesize);
+            var data = items.Data.Adapt<List<FAQDto>>();
+            return Ok(new PaginationResponse<List<FAQDto>>
+            {
+                Data = data,
+                PageNumber = pageNumber,
+                PageSize = pagesize,
+                TotalCount = items.TotalCount,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok
+
+            });
+        }
+        [HttpGet("All")]
         public async Task<IActionResult> GetAllFAQ()
         {
             var faqs = await _faqRepository.FindAllAsync(null);
