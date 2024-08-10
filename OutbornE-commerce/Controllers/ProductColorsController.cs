@@ -7,6 +7,7 @@ using OutbornE_commerce.BAL.Repositories.ProductColors;
 using OutbornE_commerce.BAL.Repositories.ProductImages;
 using OutbornE_commerce.DAL.Models;
 using OutbornE_commerce.FilesManager;
+using System.Threading;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace OutbornE_commerce.Controllers
@@ -92,25 +93,25 @@ namespace OutbornE_commerce.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateProductColor([FromForm]ProductColorDto model,CancellationToken cancellationToken)
         {
-            var productColor = await _productColorRepository.Find(p=>p.Id == model.Id,false,new string[] {"ProductImages"});
+            var productColor = await _productColorRepository.Find(p=>p.Id == model.Id);
              productColor = model.Adapt<ProductColor>();
-            if (model.Images != null)
-            {
-                List<FileModel> images = await _filesManager.UploadMultipleFile(model.Images, "Products");
-                foreach (var image in images)
-                {
-                    var prodImage = new ProductImage
-                    {
-                        CreatedBy = "admin",
-                        ImageUrl = image.Url,
-                        CreatedOn = DateTime.Now,
-                    };
-                    if (productColor.ProductImages is null)
-                        productColor.ProductImages = new List<ProductImage>();
-                    productColor.ProductImages.Add(prodImage);
-                }
-            }
-            await _productImageRepository.DeleteRange(p=>p.ProductColorId == model.Id);
+            //if (model.Images != null)
+            //{
+            //    List<FileModel> images = await _filesManager.UploadMultipleFile(model.Images, "Products");
+            //    foreach (var image in images)
+            //    {
+            //        var prodImage = new ProductImage
+            //        {
+            //            CreatedBy = "admin",
+            //            ImageUrl = image.Url,
+            //            CreatedOn = DateTime.Now,
+            //        };
+            //        if (productColor.ProductImages is null)
+            //            productColor.ProductImages = new List<ProductImage>();
+            //        productColor.ProductImages.Add(prodImage);
+            //    }
+            //}
+            //await _productImageRepository.DeleteRange(p=>p.ProductColorId == model.Id);
             productColor.UpdatedBy = "admin";
             productColor.CreatedBy = "admin";
             productColor.UpdatedOn = DateTime.Now;
@@ -119,6 +120,41 @@ namespace OutbornE_commerce.Controllers
             return Ok(new Response<Guid>
             {
                 Data = productColor.Id,
+                IsError = false,
+                Message = "",
+                Status = (int)StatusCodeEnum.Ok
+            });
+        }
+        [HttpPost("UploadProductImage")]
+        public async Task<IActionResult> UploadProductImage([FromQuery]Guid productColorId,[FromForm] FileToUploadDtoAPi file,CancellationToken cancellationToken)
+        {
+           var fileModel = await _filesManager.UploadFile(file.File, "Products");
+            var image = new ProductImage
+            {
+                ImageUrl = fileModel.Url,
+                CreatedBy = "admin",
+                ProductColorId = productColorId,    
+                
+            };
+           var result= await _productImageRepository.Create(image);
+            await _productColorRepository.SaveAsync(cancellationToken);
+            return Ok(new Response<Guid>
+            {
+                Data = result.Id,
+                IsError = false,
+                Message = "",
+                Status = (int)StatusCodeEnum.Ok
+            });
+        }
+        [HttpDelete("DeleteProductImage/{id}")]
+        public async Task<IActionResult> DeleteProductImage(Guid id, CancellationToken cancellationToken)
+        {
+            var image = await _productImageRepository.Find(c=>c.Id == id);
+             _productImageRepository.Delete(image);
+            await _productImageRepository.SaveAsync(cancellationToken);
+            return Ok(new Response<Guid>
+            {
+                Data = id,
                 IsError = false,
                 Message = "",
                 Status = (int)StatusCodeEnum.Ok
