@@ -25,7 +25,7 @@ namespace OutbornE_commerce.BAL.Repositories.Products
             var products = _context.Products
                                    .AsNoTracking()
                                    .Include(b => b.Brand)
-                                   .SearchByBrand(model.BrandId)
+                                   .SearchByBrand(model.BrandsIds)
                                    .SearchByType(model.ProductType)
                                    .SearchByTerm(model.SearchTerm)
                                    .SearchByCategories(model.CategoriesIds)

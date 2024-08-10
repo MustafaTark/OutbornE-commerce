@@ -105,11 +105,14 @@ namespace OutbornE_commerce.Controllers
                         ImageUrl = image.Url,
                         CreatedOn = DateTime.Now,
                     };
+                    if (productColor.ProductImages is null)
+                        productColor.ProductImages = new List<ProductImage>();
                     productColor.ProductImages.Add(prodImage);
                 }
             }
             await _productImageRepository.DeleteRange(p=>p.ProductColorId == model.Id);
             productColor.UpdatedBy = "admin";
+            productColor.CreatedBy = "admin";
             productColor.UpdatedOn = DateTime.Now;
             _productColorRepository.Update(productColor);
             await _productColorRepository.SaveAsync(cancellationToken);
