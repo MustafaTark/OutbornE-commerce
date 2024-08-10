@@ -105,6 +105,8 @@ namespace OutbornE_commerce.Controllers
                         ImageUrl = image.Url,
                         CreatedOn = DateTime.Now,
                     };
+                    if (productColor.ProductImages is null)
+                        productColor.ProductImages = new List<ProductImage>();
                     productColor.ProductImages.Add(prodImage);
                 }
             }
