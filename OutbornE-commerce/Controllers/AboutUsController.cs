@@ -128,5 +128,27 @@ namespace OutbornE_commerce.Controllers
                 Status = (int)StatusCodeEnum.Ok
             });
         }
+        [HttpDelete("{Id}")]
+        public async Task<IActionResult> DeleteAboutUs(Guid Id, CancellationToken cancellationToken)
+        {
+            var item = await _aboutUsRepository.Find(a => a.Id == Id);
+            if (item is null)
+                return Ok(new Response<AboutUsDto>
+                {
+                    Data = null,
+                    IsError = true,
+                    Message = "",
+                    Status = (int)StatusCodeEnum.NotFound
+                });
+            _aboutUsRepository.Delete(item);
+            await _aboutUsRepository.SaveAsync(cancellationToken);
+            return Ok(new Response<Guid>
+            {
+                Data = item.Id,
+                IsError = false,
+                Message = "",
+                Status = (int)StatusCodeEnum.Ok
+            });
+        }
     }
 }
