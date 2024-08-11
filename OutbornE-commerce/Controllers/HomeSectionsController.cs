@@ -28,9 +28,9 @@ namespace OutbornE_commerce.Controllers
         {
             var homeSection = (await _homeSectionRepository.FindAllAsync(null, false));
             var homeEntity = homeSection.Adapt<List<HomeSectionDto>>();
-            return Ok(new Response<HomeSectionDto>
+            return Ok(new Response<List<HomeSectionDto>>
             {
-                Data = homeEntity.FirstOrDefault(),
+                Data = homeEntity,
                 IsError = false,
                 Status = (int)StatusCodeEnum.Ok
             });
