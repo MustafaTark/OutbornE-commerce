@@ -31,7 +31,7 @@ namespace OutbornE_commerce.Controllers
                 items = await _countryRepository
                                     .FindAllAsyncByPagination(b => (b.NameAr.Contains(searchTerm)
                                                                || b.NameEn.Contains(searchTerm))
-                                                               , pageNumber, pageSize, new string[] { "Country" });
+                                                               , pageNumber, pageSize, null);
 
             var data = items.Data.Adapt<List<CountryDto>>();
 
