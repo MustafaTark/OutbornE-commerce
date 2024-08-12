@@ -70,6 +70,10 @@ namespace OutbornE_commerce.DAL.Data
             builder.Entity<IdentityUserLogin<string>>().ToTable("UserLogins");
             builder.Entity<IdentityRoleClaim<string>>().ToTable("RoleClaims");
             builder.Entity<IdentityUserToken<string>>().ToTable("UserTokens");
+
+
+            builder.Entity<Product>().HasQueryFilter(p => !p.IsDeleted).HasIndex(p=>p.IsDeleted);
+
             base.OnModelCreating(builder);
         }
     }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OutbornE_commerce.DAL.Data;
 
@@ -11,9 +12,11 @@ using OutbornE_commerce.DAL.Data;
 namespace OutbornE_commerce.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240812055716_AddIsPeopleAlsoBought")]
+    partial class AddIsPeopleAlsoBought
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,13 +54,13 @@ namespace OutbornE_commerce.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "af923066-c044-4f8a-9876-8c1962950878",
+                            Id = "0dd38b5f-6431-4346-94b1-751164649c97",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "b7e07a3b-4729-435a-b07c-a03e676a2f5a",
+                            Id = "bf23b850-9f7f-49fa-a952-6f52d0dc38ca",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -1065,8 +1068,6 @@ namespace OutbornE_commerce.DAL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BrandId");
-
-                    b.HasIndex("IsDeleted");
 
                     b.HasIndex("SubBrandId");
 
