@@ -228,7 +228,7 @@ namespace OutbornE_commerce.Controllers
         [HttpGet("details")]
         public async Task<IActionResult> GetProductDetails(Guid productId)
         {
-            var product = await _productRepository.Find(p => p.Id == productId,
+            var product = await _productRepository.FindIncludesSplited(p => p.Id == productId,
                                                         trackChanges: true,
                                                         new string[] { "ProductSizes.Size",
                                                                        "ProductColors.Color",

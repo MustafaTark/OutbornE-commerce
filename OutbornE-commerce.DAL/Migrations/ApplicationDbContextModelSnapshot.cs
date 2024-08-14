@@ -225,7 +225,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AboutUs");
+                    b.ToTable("AboutUs", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Address", b =>
@@ -280,7 +280,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Addresses");
+                    b.ToTable("Addresses", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.BagItem", b =>
@@ -329,7 +329,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("BagItems");
+                    b.ToTable("BagItems", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Brand", b =>
@@ -382,7 +382,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasIndex("ParentBrandId");
 
-                    b.ToTable("Brands");
+                    b.ToTable("Brands", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Category", b =>
@@ -432,7 +432,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasIndex("ParentCategoryId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.City", b =>
@@ -472,7 +472,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("Cities");
+                    b.ToTable("Cities", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Color", b =>
@@ -511,7 +511,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Colors");
+                    b.ToTable("Colors", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.ContactUs", b =>
@@ -574,7 +574,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasIndex("InquiryTypeId");
 
-                    b.ToTable("ContactUs");
+                    b.ToTable("ContactUs", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.ContactUsSetup", b =>
@@ -609,7 +609,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContactUsSetups");
+                    b.ToTable("ContactUsSetups", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Country", b =>
@@ -644,7 +644,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries");
+                    b.ToTable("Countries", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Currency", b =>
@@ -689,7 +689,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Currencies");
+                    b.ToTable("Currencies", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.FAQ", b =>
@@ -732,7 +732,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FAQs");
+                    b.ToTable("FAQs", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Hashtag", b =>
@@ -767,7 +767,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Hashtags");
+                    b.ToTable("Hashtags", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Header", b =>
@@ -814,7 +814,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Headers");
+                    b.ToTable("Headers", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.HomeSection", b =>
@@ -865,7 +865,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HomeSections");
+                    b.ToTable("HomeSections", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.InquiryType", b =>
@@ -900,7 +900,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("InquiryTypes");
+                    b.ToTable("InquiryTypes", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Newsletter", b =>
@@ -935,7 +935,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Newsletters");
+                    b.ToTable("Newsletters", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.NewsletterSubscriber", b =>
@@ -966,7 +966,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("NewsletterSubscribers");
+                    b.ToTable("NewsletterSubscribers", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Product", b =>
@@ -1070,7 +1070,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasIndex("SubBrandId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.ProductCategory", b =>
@@ -1107,7 +1107,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductCategory");
+                    b.ToTable("ProductCategory", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.ProductColor", b =>
@@ -1147,7 +1147,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductColors");
+                    b.ToTable("ProductColors", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.ProductImage", b =>
@@ -1183,7 +1183,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasIndex("ProductColorId");
 
-                    b.ToTable("ProductImages");
+                    b.ToTable("ProductImages", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.ProductSize", b =>
@@ -1220,7 +1220,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasIndex("SizeId");
 
-                    b.ToTable("ProductSizes");
+                    b.ToTable("ProductSizes", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.ReceivePoints", b =>
@@ -1251,7 +1251,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ReceivePoints");
+                    b.ToTable("ReceivePoints", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.SEO", b =>
@@ -1286,7 +1286,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SEOs");
+                    b.ToTable("SEOs", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.SMTPServer", b =>
@@ -1333,7 +1333,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SMTPServers");
+                    b.ToTable("SMTPServers", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Size", b =>
@@ -1367,7 +1367,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sizes");
+                    b.ToTable("Sizes", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Ticket", b =>
@@ -1401,7 +1401,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tickets");
+                    b.ToTable("Tickets", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.User", b =>
@@ -1553,7 +1553,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserAddresses");
+                    b.ToTable("UserAddresses", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1776,7 +1776,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.User", b =>
                 {
-                    b.OwnsMany("OutbornE_commerce.DAL.Models.RefreshToken", "RefreshTokens", b1 =>
+                    b.OwnsMany("OutbornE_commerce.DAL.Models.User.RefreshTokens#OutbornE_commerce.DAL.Models.RefreshToken", "RefreshTokens", b1 =>
                         {
                             b1.Property<string>("UserId")
                                 .HasColumnType("nvarchar(450)");
@@ -1805,7 +1805,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                             b1.HasKey("UserId", "Id");
 
-                            b1.ToTable("RefreshToken");
+                            b1.ToTable("RefreshToken", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");

@@ -16,7 +16,9 @@ namespace OutbornE_commerce.BAL.Repositories.BaseRepositories
         Task<IEnumerable<T>> FindByCondition(Expression<Func<T, bool>> criteria, string[] includes = null);
 
         Task<T?> Find(Expression<Func<T, bool>> expression, bool trackChanges = false, string[] includes = null);
-		Task<T> Create(T entity);
+        Task<T?> FindIncludesSplited(Expression<Func<T, bool>> expression, bool trackChanges = false, string[] includes = null);
+
+        Task<T> Create(T entity);
 		Task CreateRange(List<T> entities);
 
         void Delete(T entity);
