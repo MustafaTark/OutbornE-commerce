@@ -32,7 +32,7 @@ namespace OutbornE_commerce.Controllers
                 items = await _headerRepository
                                     .FindAllAsyncByPagination(b => (b.Title1En.Contains(searchTerm)
                                                                || b.Title1En.Contains(searchTerm)
-                                                               || b.Title2Ar.ToString().Contains(searchTerm)
+                                                               || b.Title2Ar.Contains(searchTerm)
                                                                || b.Title1En.Contains(searchTerm))
                                                                , pageNumber, pageSize);
 

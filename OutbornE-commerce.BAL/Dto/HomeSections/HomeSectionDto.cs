@@ -16,6 +16,6 @@ namespace OutbornE_commerce.BAL.Dto.HomeSections
         public string DescriptionEn { get; set; }
         public string Link { get; set; }
         public string ImageUrl { get; set; }
-        public IFormFile Image { get; set; }
+        public IFormFile? Image { get; set; }
     }
 }
