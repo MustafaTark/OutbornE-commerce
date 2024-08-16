@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using OutbornE_commerce.BAL.AuthServices;
 using OutbornE_commerce.BAL.Dto;
+using OutbornE_commerce.BAL.Repositories.Currencies;
 using OutbornE_commerce.DAL.Enums;
 using OutbornE_commerce.DAL.Models;
 using OutbornE_commerce.Extensions;
@@ -19,12 +20,14 @@ namespace OutbornE_commerce.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IAuthService _authService;
+        private readonly ICurrencyRepository _currencyRepository;
         //private readonly IEmailService _emailService;
         public AuthController(
-            UserManager<User> userManager, IAuthService authService)
+            UserManager<User> userManager, IAuthService authService, ICurrencyRepository currencyRepository)
         {
             _userManager = userManager;
             _authService = authService;
+            _currencyRepository = currencyRepository;
         }
         [HttpPost("registerUser")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterModel userForRegistration)
@@ -42,6 +45,12 @@ namespace OutbornE_commerce.Controllers
                 });
             }
             var user = userForRegistration.Adapt<User>();
+            var currency = await _currencyRepository.Find(c => c.IsDeafult);
+            if(currency != null)
+            {
+                user.CurrencyId = currency.Id;
+            }
+           
             var result = await _userManager.CreateAsync(user, userForRegistration.Password!);
             if (!result.Succeeded)
             {
@@ -77,6 +86,7 @@ namespace OutbornE_commerce.Controllers
         }
         [HttpPost("login")]
 
+
         public async Task<IActionResult> Authenticate([FromBody] UserForLoginDto user)
         {
             var validate = await _authService.ValidateUser(user);
@@ -91,51 +101,85 @@ namespace OutbornE_commerce.Controllers
             return Ok(response);
         }
 
-        //[HttpPost("resetpassword")]
-        //public async Task<IActionResult> ResetPassword(ResetPasswordModelDto model)
-        //{
-        //    var user = await _userManager.FindByEmailAsync(model.Email!);
-        //    if (user == null)
-        //        return NotFound($"Invalid Email Address");
-        //    var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(model.Token!));
-        //    var result = await _userManager.ResetPasswordAsync(user, decodedToken, model.NewPassword!);
-        //    if (result.Succeeded)
-        //    {
-        //        return StatusCodeEnum(201, "Password reset successful");
-        //    }
-        //    else
-        //    {
-        //        return BadRequest(result.Errors);
-        //    }
-        //}
-        //[HttpPost("forgotpassword/{email}")]
-        //public async Task<IActionResult> ForgotPassword(string email)
-        //{
-        //    if (string.IsNullOrEmpty(email))
-        //    {
-        //        return BadRequest("Email address cannot be null or empty.");
-        //    }
-        //    var user = await _userManager.FindByEmailAsync(email);
-        //    if (user == null)
-        //    {
-        //        return NotFound($"Invalid Email Address");
-        //    }
-        //    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-        //    var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+        [HttpPost("resetpassword")]
+        [Authorize]
+        public async Task<IActionResult> ResetPassword(ResetPasswordModelDto model)
+        {
+            string userId = User.GetUserIdAPI();
+            var user = await _userManager.FindByEmailAsync(userId);
+            if (user is null || !await _userManager.CheckPasswordAsync(user, model.OldPassword))
+            {
+                return Ok(new Response<string>
+                {
+                    Data = null,
+                    IsError = true,
+                    Message = "The Old Password Incorrect",
+                    MessageAr = "كلمة المرور القديمة خاطئة",
+                    Status = (int)StatusCodeEnum.BadRequest
+                });
+            }
+            var hashPassword = _userManager.PasswordHasher.HashPassword(user, model.NewPassword);
+            user.PasswordHash = hashPassword;
+            var res = await _userManager.UpdateAsync(user);
+            if (res.Succeeded)
+            {
+                return Ok(new Response<string>
+                {
+                    Data = user.Id,
+                    IsError = false,
+                    Status = (int)StatusCodeEnum.Ok
+                });
+            }
+            else
+            {
+                return Ok(new Response<string>
+                {
+                    Data = null,
+                    IsError = true,
+                    Message = "Something went wrong",
+                    MessageAr = "حدث خطأ",
+                    Status = (int)StatusCodeEnum.ServerError
+                });
+            }
+        }
+        [HttpPost("forgotpassword/{email}")]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                return BadRequest("Email address cannot be null or empty.");
+            }
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return NotFound($"Invalid Email Address");
+            }
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
-        //    var callbackUrl = $"https://localhost:7187/api/Authentication/resetpassword?email={Uri.EscapeDataString(email)}&token={encodedToken}";
+            var callbackUrl = $"https://localhost:7187/api/Authentication/resetpassword?email={Uri.EscapeDataString(email)}&token={encodedToken}";
 
-        //    // Send the password reset email with the callback URL
-        //    try
-        //    {
-        //        await _emailService.SendPasswordResetEmailAsync(email, callbackUrl);
-        //        return Ok();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCodeEnum(500, $"An error occurred while sending the password reset email. {ex.Message}");
-        //    }
-        //}
+            // Send the password reset email with the callback URL
+            try
+            {
+                //await _emailService.SendPasswordResetEmailAsync(email, callbackUrl);
+                return Ok(new Response<string>
+                {
+                    Data = callbackUrl,
+                    IsError = false,
+                    Status = (int)StatusCodeEnum.Ok
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Response<string>
+                {
+                    Data = user.Id,
+                    IsError = false,
+                    Status = (int)StatusCodeEnum.BadRequest
+                });
+            }
+        }
 
     }
 }

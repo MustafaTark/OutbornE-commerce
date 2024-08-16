@@ -23,7 +23,9 @@ namespace OutbornE_commerce.DAL.Models
 		public string? ForgetPasswordCode { get; set; }
 		public string? DeviceId { get; set; }
 		public string? PhoneNumber { get; set; }
-		public List<UserAddress> UserAddresses { get; set; }
+		public List<Address>? Addresses { get; set; }
+		public Guid? CurrencyId { get; set; }
+		public Currency? Currency { get; set; }
 		public string? Brief { get; set; }
 		public string? RefreshToken { get; set; }
 		public DateTime? RefreshTokenExpiryTime { get; set; }
