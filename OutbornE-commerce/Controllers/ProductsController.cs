@@ -195,6 +195,20 @@ namespace OutbornE_commerce.Controllers
 
             });
         }
+        [HttpGet("peopleAlsoBought")]
+        public async Task<IActionResult> GetPeopleAlsoBoughtProducts()
+        {
+            var products = await _productRepository.FindByCondition(p=>p.IsPeopleAlseBought);
+            var data = products.Adapt<List<ProductCardDto>>();
+
+            return Ok(new Response<List<ProductCardDto>>()
+            {
+                Data = data,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok
+
+            });
+        }
         [HttpPost("search")]
         public async Task<IActionResult> SearchProducts([FromBody] SearchModelDto model)
         {
@@ -214,7 +228,7 @@ namespace OutbornE_commerce.Controllers
         [HttpGet("details")]
         public async Task<IActionResult> GetProductDetails(Guid productId)
         {
-            var product = await _productRepository.Find(p => p.Id == productId,
+            var product = await _productRepository.FindIncludesSplited(p => p.Id == productId,
                                                         trackChanges: true,
                                                         new string[] { "ProductSizes.Size",
                                                                        "ProductColors.Color",
@@ -231,6 +245,21 @@ namespace OutbornE_commerce.Controllers
 
             });
         }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct(Guid id,CancellationToken cancellationToken)
+        {
+            var product = await _productRepository.Find(p => p.Id == id);
+            product.IsDeleted = true;
+            _productRepository.Update(product);
+            await _productRepository.SaveAsync(cancellationToken);
+			return Ok(new Response<Guid>()
+			{
+				Data = id,
+				IsError = false,
+				Status = (int)StatusCodeEnum.Ok
+
+			});
+		}
 
     }
 }

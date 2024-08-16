@@ -32,6 +32,7 @@ namespace OutbornE_commerce.BAL.Dto.Products
         public int ProductType { get; set; }
         public int QuantityInStock { get; set; }
         public decimal ShippingCost { get; set; }
-        public int NumberOfReturnDays { get; set; }
+		public bool IsPeopleAlseBought { get; set; }
+		public int NumberOfReturnDays { get; set; }
     }
 }

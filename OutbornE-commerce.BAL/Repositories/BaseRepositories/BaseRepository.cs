@@ -77,6 +77,16 @@ namespace OutbornE_commerce.BAL.Repositories.BaseRepositories
 			await query.Where(expression).AsNoTracking().FirstOrDefaultAsync()
 			: await query.Where(expression).AsTracking(QueryTrackingBehavior.TrackAll).FirstOrDefaultAsync();
 		}
+        public async Task<T?> FindIncludesSplited(Expression<Func<T, bool>> expression,  bool trackChanges = false, string[] includes = null)
+		{
+            IQueryable<T> query = _context.Set<T>();
+            if (includes != null)
+                foreach (var include in includes)
+                    query = query.Include(include);
+            return !trackChanges ?
+			await query.Where(expression).AsNoTracking().AsSplitQuery().FirstOrDefaultAsync()
+			: await query.Where(expression).AsTracking(QueryTrackingBehavior.TrackAll).AsSplitQuery().FirstOrDefaultAsync();
+		}
 		public async Task<T> Create(T entity)
 		{
 			var result = await _context.Set<T>().AddAsync(entity);

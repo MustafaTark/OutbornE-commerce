@@ -1008,6 +1008,9 @@ namespace OutbornE_commerce.DAL.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsPeopleAlseBought")
+                        .HasColumnType("bit");
+
                     b.Property<int>("Label")
                         .HasColumnType("int");
 
@@ -1062,6 +1065,8 @@ namespace OutbornE_commerce.DAL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BrandId");
+
+                    b.HasIndex("IsDeleted");
 
                     b.HasIndex("SubBrandId");
 
