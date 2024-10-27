@@ -36,12 +36,8 @@ namespace OutbornE_commerce.Controllers
             else 
                 items = await _productRepository.FindAllAsyncByPagination(b=>b.NameEn.Contains(searchTerm)
                                                                            ||b.NameAr.Contains(searchTerm)
-                                                                           ||b.MaterialEn.Contains(searchTerm)
-                                                                           ||b.MaterialAr.Contains(searchTerm)
                                                                            ||b.AboutEn.Contains(searchTerm)
                                                                             || b.AboutAr.Contains(searchTerm)
-                                                                            || b.DeliveryAndReturnEn.Contains(searchTerm)
-                                                                            || b.DeliveryAndReturnAr.Contains(searchTerm)
                                                                             || b.ProductSizes.Any(p=>p.Size.Name.Contains(searchTerm)), pageNumber, pageSize, new string[] { "ProductSizes.Size" });
 
             var data = items.Data.Adapt<List<ProductDto>>();
@@ -64,7 +60,7 @@ namespace OutbornE_commerce.Controllers
             var data = product.Adapt<ProductDto>(); 
 
             data.ProductSizesIds = product.ProductSizes?.Select(s=>s.SizeId).ToList();
-            data.ProductCategoriesIds = product.ProductCategories?.Select(s=>s.CategoryId).ToList();
+           // data.ProductCategoriesIds = product.ProductCategories?.Select(s=>s.CategoryId).ToList();
 
             return Ok(new Response<ProductDto>()
             {
@@ -97,18 +93,18 @@ namespace OutbornE_commerce.Controllers
                 };
                 product.ProductSizes!.Add(size);
             }
-            foreach (var categoryId in model.ProductCategoriesIds!)
-            {
-                product.ProductCategories = new List<ProductCategory>();
-                var category = new ProductCategory
-                {
-                    CategoryId = categoryId,
-                    CreatedBy = "admin",
-                    CreatedOn = DateTime.Now,
+            //foreach (var categoryId in model.ProductCategoriesIds!)
+            //{
+            //    product.ProductCategories = new List<ProductCategory>();
+            //    var category = new ProductCategory
+            //    {
+            //        CategoryId = categoryId,
+            //        CreatedBy = "admin",
+            //        CreatedOn = DateTime.Now,
                     
-                };
-                product.ProductCategories!.Add(category);
-            }
+            //    };
+            //    product.ProductCategories!.Add(category);
+            //}
 
             await _productRepository.Create(product);
             await _productRepository.SaveAsync(cancellationToken);
@@ -185,20 +181,6 @@ namespace OutbornE_commerce.Controllers
         public async Task<IActionResult> GetBestSellerProducts()
         {
             var products = await _productRepository.FindByCondition(p=>p.Label == (int) ProductLabelEnum.BestSeller);
-            var data = products.Adapt<List<ProductCardDto>>();
-
-            return Ok(new Response<List<ProductCardDto>>()
-            {
-                Data = data,
-                IsError = false,
-                Status = (int)StatusCodeEnum.Ok
-
-            });
-        }
-        [HttpGet("peopleAlsoBought")]
-        public async Task<IActionResult> GetPeopleAlsoBoughtProducts()
-        {
-            var products = await _productRepository.FindByCondition(p=>p.IsPeopleAlseBought);
             var data = products.Adapt<List<ProductCardDto>>();
 
             return Ok(new Response<List<ProductCardDto>>()

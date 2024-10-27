@@ -12,6 +12,5 @@ namespace OutbornE_commerce.BAL.Dto.Profile
         public string FullName { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
-        public Guid? CurrencyId { get; set; }
     }
 }

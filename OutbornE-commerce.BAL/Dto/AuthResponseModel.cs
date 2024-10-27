@@ -18,6 +18,7 @@ namespace OutbornE_commerce.BAL.Dto
         public List<string>? Permissions { get; set;}
         public string? RefreshToken { get; set; }
         public string? Email { get; set;}
+        public string? PhoneNumber { get; set;}
         public int AccountType { get; set; }
        
     }

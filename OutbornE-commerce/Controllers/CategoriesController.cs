@@ -33,9 +33,7 @@ namespace OutbornE_commerce.Controllers
             else
               items=  await _categoryRepository
                                   .FindAllAsyncByPagination(b => (b.NameAr.Contains(searchTerm)
-                                                             || b.NameEn.Contains(searchTerm)
-                                                             || b.DescriptionAr.Contains(searchTerm)
-                                                             || b.DescriptionEn.Contains(searchTerm))
+                                                             || b.NameEn.Contains(searchTerm))
                                  , pageNumber, pageSize);
             var data = items.Data.Adapt<List<CategoryDto>>();
 
@@ -129,9 +127,7 @@ namespace OutbornE_commerce.Controllers
             else
                items= await _categoryRepository
                                   .FindAllAsyncByPagination(b =>b.ParentCategoryId == categoryId && (b.NameAr.Contains(searchTerm)
-                                                             || b.NameEn.Contains(searchTerm)
-                                                             || b.DescriptionAr.Contains(searchTerm)
-                                                             || b.DescriptionEn.Contains(searchTerm))
+                                                             || b.NameEn.Contains(searchTerm))
                                                              ,pageNumber,pageSize, new string[] { "ParentCategory" });
 
             var data = items.Data.Adapt<List<SubCategoryDto>>();

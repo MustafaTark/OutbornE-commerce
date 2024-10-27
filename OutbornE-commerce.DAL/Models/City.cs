@@ -10,8 +10,8 @@ namespace OutbornE_commerce.DAL.Models
     {
         public string NameAr { get; set; }
         public string NameEn { get; set; }
-        public Guid CountryId { get; set; }
-        public Country? Country { get; set; }
+        //public Guid CountryId { get; set; }
+        //public Country? Country { get; set; }
 
     }
 }

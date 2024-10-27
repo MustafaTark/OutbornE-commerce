@@ -21,14 +21,12 @@ namespace OutbornE_commerce.Controllers
             var items = new PagainationModel<IEnumerable<City>>();
 
             if (string.IsNullOrEmpty(searchTerm))
-                items = await _cityRepository.FindAllAsyncByPagination(null, pageNumber, pageSize, new string[] { "Country" });
+                items = await _cityRepository.FindAllAsyncByPagination(null, pageNumber, pageSize,null);
             else
                 items = await _cityRepository
                                     .FindAllAsyncByPagination(b => (b.NameAr.Contains(searchTerm)
-                                                               || b.NameEn.Contains(searchTerm)
-                                                               || b.Country.NameEn.Contains(searchTerm)
-                                                               || b.Country.NameAr.Contains(searchTerm))
-                                                               , pageNumber, pageSize, new string[] { "Country" });
+                                                               || b.NameEn.Contains(searchTerm))
+                                                               , pageNumber, pageSize,null);
 
             var data = items.Data.Adapt<List<CityDto>>();
 
@@ -47,7 +45,7 @@ namespace OutbornE_commerce.Controllers
         {
             var city = await _cityRepository.Find(c => c.Id == Id, false);
             if (city == null)
-                return Ok(new Response<CountryDto>
+                return Ok(new Response<CityDto>
                 {
                     Data = null,
                     IsError = true,
@@ -63,10 +61,10 @@ namespace OutbornE_commerce.Controllers
                 Status = (int)StatusCodeEnum.Ok,
             });
         }
-        [HttpGet("byCountryId")]
-        public async Task<IActionResult> GetAllCitiesForCountry(Guid countryId)
+       [HttpGet("allCities")]
+        public async Task<IActionResult> GetAllCitiesForCountry()
         {
-            var cities = await _cityRepository.FindByCondition(c => c.CountryId == countryId, null); // null for the includes !!!
+            var cities = await _cityRepository.FindAllAsync(null,false); // null for the includes !!!
             var cityEntites = cities.Adapt<List<CityDto>>();
             return Ok(new Response<List<CityDto>>
             {
@@ -81,7 +79,7 @@ namespace OutbornE_commerce.Controllers
         {
             var country = await _countryRepository.Find(c => c.Id == model.CountryId, false);
             if (country == null)
-                return Ok(new Response<CountryDto>
+                return Ok(new Response<CityDto>
                 {
                     Data = null,
                     IsError = true,

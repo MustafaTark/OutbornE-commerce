@@ -37,7 +37,6 @@ namespace OutbornE_commerce.Controllers
         {
             var user = await _userManager.FindByIdAsync(model.Id);
             user.Email= model.Email;
-            user.CurrencyId = model.CurrencyId;
             user.FullName = model.FullName;
 
             if (user.PhoneNumber == model.PhoneNumber)

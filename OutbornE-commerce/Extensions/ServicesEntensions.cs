@@ -69,7 +69,7 @@ namespace OutbornE_commerce.Extensions
             services.AddScoped<INewsletterRepository, NewsletterRepository>();
             services.AddScoped<INewsletterSubscriberRepository, NewsletterSubscriberRepository>();
 
-            services.AddScoped<IEmailSender, EmailSender>();
+            services.AddScoped<IEmailSenderCustom, EmailSender>();
 
         }
     }

@@ -36,7 +36,16 @@ builder.Services.AddCors(options => {
 
 builder.Services.AddControllers();
 
-builder.Services.AddIdentity<User, IdentityRole>()
+builder.Services.AddIdentity<User, IdentityRole>(options=>
+				{
+                    options.Password.RequireDigit = true;
+                    options.Password.RequiredLength = 6;
+                    options.Password.RequireLowercase = true;
+                    options.Password.RequireUppercase = true;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequiredUniqueChars = 0;
+					options.User.RequireUniqueEmail = false;
+                })
 				.AddEntityFrameworkStores<ApplicationDbContext>()
 				.AddUserManager<UserManager<User>>()
 				.AddRoles<IdentityRole>()
@@ -73,7 +82,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddSwaggerGen(c => {
 	c.SwaggerDoc("v1", new OpenApiInfo
 	{
-		Title = "Outborn_API",
+		Title = "Eshop_API",
 		Version = "v1"
 	});
 	c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -83,7 +92,7 @@ builder.Services.AddSwaggerGen(c => {
 		Scheme = "Bearer",
 		BearerFormat = "JWT",
 		In = ParameterLocation.Header,
-		Description = "Add your valid token to be able to Outborn-Api",
+		Description = "Add your valid token to be able to Eshop-Api",
 	});
 	c.AddSecurityRequirement(new OpenApiSecurityRequirement {
 		{

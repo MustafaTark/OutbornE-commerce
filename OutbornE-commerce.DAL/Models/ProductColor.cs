@@ -13,6 +13,7 @@ namespace OutbornE_commerce.DAL.Models
         public Guid ColorId { get; set; }
         public Color? Color { get; set; }
         public bool IsDefault { get; set; }
-        public List<ProductImage> ProductImages { get; set; }
+        public int AvailableQuntity { get; set; }
+        public List<ProductImage>? ProductImages { get; set; }
     }
 }

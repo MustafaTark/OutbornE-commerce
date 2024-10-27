@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using OutbornE_commerce.BAL.AuthServices;
 using OutbornE_commerce.BAL.Dto;
 using OutbornE_commerce.BAL.Repositories.Currencies;
@@ -20,17 +21,65 @@ namespace OutbornE_commerce.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IAuthService _authService;
-        private readonly ICurrencyRepository _currencyRepository;
-        //private readonly IEmailService _emailService;
         public AuthController(
-            UserManager<User> userManager, IAuthService authService, ICurrencyRepository currencyRepository)
+            UserManager<User> userManager, IAuthService authService)
         {
             _userManager = userManager;
             _authService = authService;
-            _currencyRepository = currencyRepository;
         }
         [HttpPost("registerUser")]
-        public async Task<IActionResult> RegisterUser([FromBody] RegisterModel userForRegistration)
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDto userForRegistration)
+        {
+            var checkByPhone = await _userManager.Users.Where(p=>p.PhoneNumber == userForRegistration.Phone).FirstOrDefaultAsync();
+            if(checkByPhone != null)
+            {
+                return Ok(new AuthResponseModel
+                {
+                    MessageEn = "Phone already Exist",
+                    MessageAr = "هذا الرقم موجود من قبل",
+                    IsError = true,
+                    PhoneNumber = userForRegistration.Phone,
+                    
+                });
+            }
+            var user = userForRegistration.Adapt<User>();
+            user.UserName = userForRegistration.Phone;
+            user.PhoneNumber = userForRegistration.Phone;
+            var result = await _userManager.CreateAsync(user, userForRegistration.Password!);
+            if (!result.Succeeded)
+            {
+                //foreach (var error in result.Errors)
+                //{
+                //    ModelState.TryAddModelError(error.Code, error.Description);
+                //}
+                return Ok(new AuthResponseModel
+                {
+                    MessageEn = "Someting Wrong",
+                    MessageAr = "حدث خطأ",
+                    IsError = true,
+                    PhoneNumber = userForRegistration.Phone,
+
+                });
+            
+            }
+
+         //   string Role = Enum.GetName(typeof(AccountTypeEnum), userForRegistration.AccountType)!;
+
+            await _userManager.AddToRoleAsync(user, "User");
+            return Ok(new AuthResponseModel
+            {
+
+                IsError = false,
+                PhoneNumber = userForRegistration.Phone,
+                Id = await _userManager.GetUserIdAsync(user!),
+                AccountType = (int)AccountTypeEnum.User,
+                
+
+            });
+
+        } 
+        [HttpPost("registerAdmin")]
+        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel userForRegistration)
         {
             var checkByEmail = await _userManager.FindByEmailAsync(userForRegistration.Email);
             if(checkByEmail != null)
@@ -45,12 +94,6 @@ namespace OutbornE_commerce.Controllers
                 });
             }
             var user = userForRegistration.Adapt<User>();
-            var currency = await _currencyRepository.Find(c => c.IsDeafult);
-            if(currency != null)
-            {
-                user.CurrencyId = currency.Id;
-            }
-           
             var result = await _userManager.CreateAsync(user, userForRegistration.Password!);
             if (!result.Succeeded)
             {
@@ -67,20 +110,16 @@ namespace OutbornE_commerce.Controllers
 
                 });
             
-        }
+            }
 
-            string Role = Enum.GetName(typeof(AccountTypeEnum), userForRegistration.AccountType)!;
-
-            await _userManager.AddToRoleAsync(user, Role);
+            await _userManager.AddToRoleAsync(user, "Admin");
             return Ok(new AuthResponseModel
             {
 
                 IsError = false,
                 Email = userForRegistration.Email,
                 Id = await _userManager.GetUserIdAsync(user!),
-                AccountType = userForRegistration.AccountType,
-                
-
+                AccountType = (int) AccountTypeEnum.Admin,
             });
 
         }
@@ -93,7 +132,21 @@ namespace OutbornE_commerce.Controllers
             if (validate is not null)
                 return Ok(validate);
 
-            var userModel = await _userManager.FindByEmailAsync(user.Email!);
+            var userModel = await _userManager.Users.Where(u=>u.PhoneNumber == user.EmailOrPhone).FirstOrDefaultAsync();
+            var token = await _authService.CreateToken();
+            var roles = await _userManager.GetRolesAsync(userModel!);
+
+           var response =  userModel!.GetAuthResponse(roles.ToList(), "Success","تم بنجاح", (int)StatusCodeEnum.Ok, token);
+            return Ok(response);
+        }
+        [HttpPost("loginAdmin")]
+        public async Task<IActionResult> AuthenticateAdmin([FromBody] UserForLoginDto user)
+        {
+            var validate = await _authService.ValidateUser(user);
+            if (validate is not null)
+                return Ok(validate);
+
+            var userModel = await _userManager.Users.Where(u=>u.PhoneNumber == user.EmailOrPhone).FirstOrDefaultAsync();
             var token = await _authService.CreateToken();
             var roles = await _userManager.GetRolesAsync(userModel!);
 
@@ -157,7 +210,7 @@ namespace OutbornE_commerce.Controllers
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
-            var callbackUrl = $"https://localhost:7187/api/Authentication/resetpassword?email={Uri.EscapeDataString(email)}&token={encodedToken}";
+            var callbackUrl = "1234";
 
             // Send the password reset email with the callback URL
             try

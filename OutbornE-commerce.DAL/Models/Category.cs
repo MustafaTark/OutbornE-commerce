@@ -10,9 +10,7 @@ namespace OutbornE_commerce.DAL.Models
     {
         public string NameEn { get; set; }
         public string NameAr { get; set; }
-        public string? DescriptionEn { get; set; }
-        public string? DescriptionAr { get; set; }
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
 
         public Guid? ParentCategoryId { get; set; }
         public Category? ParentCategory { get; set; }

@@ -13,7 +13,7 @@ namespace OutbornE_commerce.BAL.Extentions
         public static IQueryable<Product> SearchByBrand(this IQueryable<Product> products, List<Guid>? brandsIds)
         {
             if(brandsIds != null)
-                products = products.Where(p=>brandsIds.Contains(p.BrandId));
+                products = products.Where(p=>brandsIds.Contains((Guid)p.BrandId));
             return products;
         } 
         public static IQueryable<Product> SearchByType(this IQueryable<Product> products,int? Type)
@@ -34,8 +34,7 @@ namespace OutbornE_commerce.BAL.Extentions
         {
             if(categoriesIds!=null && !categoriesIds.Any())
             {
-                products = products.Include(p => p.ProductCategories)
-                        .Where(p => p.ProductCategories!.Exists(c => categoriesIds.Contains(c.CategoryId)));
+                products = products.Where(c=>categoriesIds.Contains(c.SubCategoryId));
             }
             return products;
         }
@@ -60,9 +59,9 @@ namespace OutbornE_commerce.BAL.Extentions
         public static IQueryable<Product> SearchByPrice(this IQueryable<Product> products,decimal? minPrice,decimal? maxPrice)
         {
             if (minPrice != null)
-                products = products.Where(p => p.Price >= minPrice);
+                products = products.Where(p => p.PricePerUnit >= minPrice);
             if(maxPrice != null)
-                products = products.Where(p=>p.Price <= maxPrice);
+                products = products.Where(p=>p.PricePerUnit <= maxPrice);
             return products;
         }
     }

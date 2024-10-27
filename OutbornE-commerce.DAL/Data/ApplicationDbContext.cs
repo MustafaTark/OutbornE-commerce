@@ -22,20 +22,20 @@ namespace OutbornE_commerce.DAL.Data
         public DbSet<HomeSection> HomeSections { get; set; }
         public DbSet<Color> Colors { get; set; }
         public DbSet<Size> Sizes { get; set; }
-        public DbSet<SEO> SEOs { get; set; }
+        //public DbSet<SEO> SEOs { get; set; }
         public DbSet<ReceivePoints> ReceivePoints { get; set; }
-        public DbSet<Currency> Currencies { get; set; }
+        //public DbSet<Currency> Currencies { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<Country> Countries { get; set; }
-        public DbSet<SMTPServer> SMTPServers { get; set; }
+        //public DbSet<SMTPServer> SMTPServers { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductColor> ProductColors { get; set; }
         public DbSet<ProductSize> ProductSizes { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
-        public DbSet<Newsletter> Newsletters { get; set; }
-        public DbSet<NewsletterSubscriber> NewsletterSubscribers { get; set; }
-        public DbSet<Hashtag> Hashtags { get; set; }
+        //public DbSet<Newsletter> Newsletters { get; set; }
+        //public DbSet<NewsletterSubscriber> NewsletterSubscribers { get; set; }
+        //public DbSet<Hashtag> Hashtags { get; set; }
         public DbSet<FAQ> FAQs { get; set; }
         public DbSet<AboutUs> AboutUs { get; set; }
         public DbSet<ContactUsSetup> ContactUsSetups { get; set; }
@@ -53,12 +53,6 @@ namespace OutbornE_commerce.DAL.Data
            .HasOne(c => c.ParentCategory)
            .WithMany(c => c.SubCategories)
            .HasForeignKey(c => c.ParentCategoryId)
-           .OnDelete(DeleteBehavior.Restrict);
-
-            builder.Entity<Brand>()
-           .HasOne(c => c.ParentBrand)
-           .WithMany(c => c.SubBrands)
-           .HasForeignKey(c => c.ParentBrandId)
            .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(builder);

@@ -12,8 +12,8 @@ using OutbornE_commerce.DAL.Data;
 namespace OutbornE_commerce.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240814061145_IntialMigration")]
-    partial class IntialMigration
+    [Migration("20241027093943_IntiailMigration")]
+    partial class IntiailMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,13 +54,13 @@ namespace OutbornE_commerce.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d817783a-4d2c-4671-b426-e7822741b28e",
+                            Id = "b109f4e9-127d-4f7c-9072-684ee9dfb293",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "0b3b7c65-624d-4791-9311-d030d126fdb3",
+                            Id = "72851fc2-825c-434a-9c91-5b1e4404e81a",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -292,9 +292,8 @@ namespace OutbornE_commerce.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("ColorId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -322,9 +321,12 @@ namespace OutbornE_commerce.DAL.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ColorId");
 
                     b.HasIndex("ProductId");
 
@@ -348,20 +350,10 @@ namespace OutbornE_commerce.DAL.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("DescriptionAr")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DescriptionEn")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsFeatured")
                         .HasColumnType("bit");
 
                     b.Property<string>("NameAr")
@@ -372,9 +364,6 @@ namespace OutbornE_commerce.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("ParentBrandId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -382,8 +371,6 @@ namespace OutbornE_commerce.DAL.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ParentBrandId");
 
                     b.ToTable("Brands");
                 });
@@ -401,14 +388,7 @@ namespace OutbornE_commerce.DAL.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("DescriptionAr")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DescriptionEn")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
@@ -444,9 +424,6 @@ namespace OutbornE_commerce.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CountryId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -472,8 +449,6 @@ namespace OutbornE_commerce.DAL.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
 
                     b.ToTable("Cities");
                 });
@@ -650,51 +625,6 @@ namespace OutbornE_commerce.DAL.Migrations
                     b.ToTable("Countries");
                 });
 
-            modelBuilder.Entity("OutbornE_commerce.DAL.Models.Currency", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeafult")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("NameAr")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NameEn")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Sign")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Currencies");
-                });
-
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.FAQ", b =>
                 {
                     b.Property<Guid>("Id")
@@ -736,41 +666,6 @@ namespace OutbornE_commerce.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("FAQs");
-                });
-
-            modelBuilder.Entity("OutbornE_commerce.DAL.Models.Hashtag", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("NameAr")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NameEn")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Hashtags");
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Header", b =>
@@ -906,72 +801,6 @@ namespace OutbornE_commerce.DAL.Migrations
                     b.ToTable("InquiryTypes");
                 });
 
-            modelBuilder.Entity("OutbornE_commerce.DAL.Models.Newsletter", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Body")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Subject")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Newsletters");
-                });
-
-            modelBuilder.Entity("OutbornE_commerce.DAL.Models.NewsletterSubscriber", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("NewsletterSubscribers");
-                });
-
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Product", b =>
                 {
                     b.Property<Guid>("Id")
@@ -986,7 +815,7 @@ namespace OutbornE_commerce.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("BrandId")
+                    b.Property<Guid?>("BrandId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedBy")
@@ -996,14 +825,6 @@ namespace OutbornE_commerce.DAL.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("DeliveryAndReturnAr")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DeliveryAndReturnEn")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1011,19 +832,11 @@ namespace OutbornE_commerce.DAL.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsPeopleAlseBought")
-                        .HasColumnType("bit");
-
                     b.Property<int>("Label")
                         .HasColumnType("int");
 
-                    b.Property<string>("MaterialAr")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MaterialEn")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("MainCategoryId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("NameAr")
                         .IsRequired()
@@ -1033,10 +846,7 @@ namespace OutbornE_commerce.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("NumberOfReturnDays")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
+                    b.Property<decimal>("PricePerUnit")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ProductType")
@@ -1045,18 +855,13 @@ namespace OutbornE_commerce.DAL.Migrations
                     b.Property<int>("QuantityInStock")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("ShippingCost")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<string>("SizeAndFitAr")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SizeAndFitEn")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("SubBrandId")
+                    b.Property<Guid>("SubCategoryId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UpdatedBy")
@@ -1064,6 +869,12 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("WholesaleMinmumQuntity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("WholesalePrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -1071,46 +882,11 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasIndex("IsDeleted");
 
-                    b.HasIndex("SubBrandId");
+                    b.HasIndex("MainCategoryId");
+
+                    b.HasIndex("SubCategoryId");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("OutbornE_commerce.DAL.Models.ProductCategory", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductCategory");
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.ProductColor", b =>
@@ -1118,6 +894,9 @@ namespace OutbornE_commerce.DAL.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AvailableQuntity")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("ColorId")
                         .HasColumnType("uniqueidentifier");
@@ -1255,88 +1034,6 @@ namespace OutbornE_commerce.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ReceivePoints");
-                });
-
-            modelBuilder.Entity("OutbornE_commerce.DAL.Models.SEO", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("NameAr")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NameEn")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SEOs");
-                });
-
-            modelBuilder.Entity("OutbornE_commerce.DAL.Models.SMTPServer", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DisplayName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Host")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SMTPServers");
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Size", b =>
@@ -1518,47 +1215,6 @@ namespace OutbornE_commerce.DAL.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("OutbornE_commerce.DAL.Models.UserAddress", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("AddressId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDefault")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AddressId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserAddresses");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -1619,7 +1275,7 @@ namespace OutbornE_commerce.DAL.Migrations
                         .IsRequired();
 
                     b.HasOne("OutbornE_commerce.DAL.Models.User", "User")
-                        .WithMany()
+                        .WithMany("Addresses")
                         .HasForeignKey("UserId");
 
                     b.Navigation("City");
@@ -1629,6 +1285,12 @@ namespace OutbornE_commerce.DAL.Migrations
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.BagItem", b =>
                 {
+                    b.HasOne("OutbornE_commerce.DAL.Models.Color", "Color")
+                        .WithMany()
+                        .HasForeignKey("ColorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("OutbornE_commerce.DAL.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
@@ -1643,23 +1305,17 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasOne("OutbornE_commerce.DAL.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Color");
 
                     b.Navigation("Product");
 
                     b.Navigation("Size");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("OutbornE_commerce.DAL.Models.Brand", b =>
-                {
-                    b.HasOne("OutbornE_commerce.DAL.Models.Brand", "ParentBrand")
-                        .WithMany("SubBrands")
-                        .HasForeignKey("ParentBrandId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("ParentBrand");
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Category", b =>
@@ -1670,17 +1326,6 @@ namespace OutbornE_commerce.DAL.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("ParentCategory");
-                });
-
-            modelBuilder.Entity("OutbornE_commerce.DAL.Models.City", b =>
-                {
-                    b.HasOne("OutbornE_commerce.DAL.Models.Country", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Country");
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.ContactUs", b =>
@@ -1696,36 +1341,25 @@ namespace OutbornE_commerce.DAL.Migrations
                 {
                     b.HasOne("OutbornE_commerce.DAL.Models.Brand", "Brand")
                         .WithMany()
-                        .HasForeignKey("BrandId")
+                        .HasForeignKey("BrandId");
+
+                    b.HasOne("OutbornE_commerce.DAL.Models.Category", "MainCategory")
+                        .WithMany()
+                        .HasForeignKey("MainCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OutbornE_commerce.DAL.Models.Brand", "SubBrand")
+                    b.HasOne("OutbornE_commerce.DAL.Models.Category", "SubCategory")
                         .WithMany()
-                        .HasForeignKey("SubBrandId");
+                        .HasForeignKey("SubCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Brand");
 
-                    b.Navigation("SubBrand");
-                });
+                    b.Navigation("MainCategory");
 
-            modelBuilder.Entity("OutbornE_commerce.DAL.Models.ProductCategory", b =>
-                {
-                    b.HasOne("OutbornE_commerce.DAL.Models.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OutbornE_commerce.DAL.Models.Product", "Product")
-                        .WithMany("ProductCategories")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Product");
+                    b.Navigation("SubCategory");
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.ProductColor", b =>
@@ -1817,30 +1451,6 @@ namespace OutbornE_commerce.DAL.Migrations
                     b.Navigation("RefreshTokens");
                 });
 
-            modelBuilder.Entity("OutbornE_commerce.DAL.Models.UserAddress", b =>
-                {
-                    b.HasOne("OutbornE_commerce.DAL.Models.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OutbornE_commerce.DAL.Models.User", "User")
-                        .WithMany("UserAddresses")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Address");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("OutbornE_commerce.DAL.Models.Brand", b =>
-                {
-                    b.Navigation("SubBrands");
-                });
-
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Category", b =>
                 {
                     b.Navigation("SubCategories");
@@ -1848,8 +1458,6 @@ namespace OutbornE_commerce.DAL.Migrations
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Product", b =>
                 {
-                    b.Navigation("ProductCategories");
-
                     b.Navigation("ProductColors");
 
                     b.Navigation("ProductSizes");
@@ -1862,7 +1470,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.User", b =>
                 {
-                    b.Navigation("UserAddresses");
+                    b.Navigation("Addresses");
                 });
 #pragma warning restore 612, 618
         }

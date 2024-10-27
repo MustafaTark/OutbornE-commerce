@@ -35,8 +35,6 @@ namespace OutbornE_commerce.Controllers
                 brands = await _brandRepository
                                   .FindAllAsyncByPagination(b=>b.NameAr.Contains(searchTerm)
                                                              ||b.NameEn.Contains(searchTerm)
-                                                             ||b.DescriptionAr.Contains(searchTerm)
-                                                             ||b.DescriptionEn.Contains(searchTerm)
                                  ,pageNumber,pageSize);
 
             var data = brands.Data.Adapt<List<BrandDto>>();
@@ -57,7 +55,7 @@ namespace OutbornE_commerce.Controllers
             var brand = await _brandRepository.Find(c => c.Id == id, false);
             if (brand == null)
             {
-                return Ok(new Response<CityDto>
+                return Ok(new Response<BrandDto>
                 {
                     Data = null,
                     IsError = true,
@@ -133,111 +131,6 @@ namespace OutbornE_commerce.Controllers
             return Ok(new Response<Guid>
             {
                 Data = id,
-                IsError = false,
-                Message = $"",
-                Status = (int)StatusCodeEnum.Ok
-            });
-        }
-        [HttpGet("featuredInHome")]
-        public async Task<IActionResult> GetAllBrandsFeaturedInHome()
-        {
-            var brands = await _brandRepository.FindByCondition(b => b.IsFeatured);
-            var data = brands.Adapt<List<BrandDto>>();
-
-            return Ok(new Response<List<BrandDto>>
-            {
-                Data = data,
-                IsError = false,
-                Message = $"",
-                Status = (int)StatusCodeEnum.Ok
-            });
-        }
-
-        [HttpGet("subBrands/{brandId}")]
-        public async Task<IActionResult> GetAllSubBrands(Guid brandId,int pageNumber, int pageSize,string? searchTerm = null)
-        {
-            var brands = new PagainationModel<IEnumerable<Brand>>();
-            if (searchTerm == null)
-                brands = await _brandRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
-            else
-                brands = await _brandRepository
-                                  .FindAllAsyncByPagination(b => b.ParentBrandId == brandId &&( b.NameAr.Contains(searchTerm)
-                                                             || b.NameEn.Contains(searchTerm)
-                                                             || b.DescriptionAr.Contains(searchTerm)
-                                                             || b.DescriptionEn.Contains(searchTerm))
-                                 , pageNumber, pageSize);
-
-            var data = brands.Data.Adapt<List<SubBrandDto>>();
-
-            return Ok(new PaginationResponse<List<SubBrandDto>>
-            {
-                Data = data,
-                IsError = false,
-                Status = (int)StatusCodeEnum.Ok,
-                PageNumber = pageNumber,
-                PageSize = pageSize,
-                TotalCount = brands.TotalCount
-            });
-        }
-        [HttpGet("subBrandById/{id}")]
-        public async Task<IActionResult> GetSubBrandById(Guid id)
-        {
-            var sub = await _brandRepository.Find(s => s.Id == id, false);
-            if (sub == null)
-            {
-                return NotFound();
-            }
-            var data = sub.Adapt<SubBrandDto>();
-
-            return Ok(new Response<SubBrandDto>
-            {
-                Data = data,
-                IsError = false,
-                Message = $"",
-                Status = (int)StatusCodeEnum.Ok
-            });
-        }
-        [HttpPost("subBrand")]
-        public async Task<IActionResult> CreateSubBrand([FromForm] SubBrandDto model, CancellationToken cancellationToken)
-        {
-            var subbrand = model.Adapt<Brand>();
-            subbrand.CreatedBy = "admin";
-            if (model.Image != null)
-            {
-                var fileModel = await _filesManager.UploadFile(model.Image, "Categories");
-                subbrand.ImageUrl = fileModel!.Url;
-            }
-            var result = await _brandRepository.Create(subbrand);
-            await _brandRepository.SaveAsync(cancellationToken);
-
-            return Ok(new Response<Guid>
-            {
-                Data = result.Id,
-                IsError = false,
-                Message = $"",
-                Status = (int)StatusCodeEnum.Ok
-            });
-        }
-
-        [HttpPut("subBrand")]
-        public async Task<IActionResult> UpdateSubBrand([FromForm] SubBrandDto model, CancellationToken cancellationToken)
-        {
-            var brand = await _brandRepository.Find(c => c.Id == model.Id, true);
-            brand = model.Adapt<Brand>();
-            brand.CreatedBy = "admin";
-
-            if (model.Image != null)
-            {
-                var fileModel = await _filesManager.UploadFile(model.Image, "Categories");
-                brand.ImageUrl = fileModel!.Url;
-            }
-
-            _brandRepository.Update(brand);
-            await _brandRepository.SaveAsync(cancellationToken);
-
-            return Ok(new Response<Guid>
-            {
-                Data = brand.Id,
                 IsError = false,
                 Message = $"",
                 Status = (int)StatusCodeEnum.Ok

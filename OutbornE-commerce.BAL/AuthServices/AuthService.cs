@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using OutbornE_commerce.BAL.Dto;
@@ -26,15 +27,15 @@ namespace OutbornE_commerce.BAL.AuthServices
 		}
 		public async Task<AuthResponseModel?> ValidateUser(UserForLoginDto userForAuth)
 		{
-			 _user = await _userManager.FindByEmailAsync(userForAuth.Email);
+			 _user = await _userManager.Users.Where(u=>u.PhoneNumber == userForAuth.EmailOrPhone).FirstOrDefaultAsync();
 			if (_user == null || ! await _userManager.CheckPasswordAsync(_user, userForAuth.Password!))
 			{
                 return new AuthResponseModel
                 {
-                    Email = userForAuth.Email,
+                    PhoneNumber = userForAuth.EmailOrPhone,
                     IsError = true,
-                    MessageAr = "البريد الالكترونى او كلمة السر غير صحيحين",
-                    MessageEn = "Email or Password not correct",
+                    MessageAr = "رقم الهاتف او كلمة السر غير صحيحين",
+                    MessageEn = "Phone or Password not correct",
 					StatusCode = (int) StatusCodeEnum.BadRequest
                 };
             }
@@ -56,9 +57,8 @@ namespace OutbornE_commerce.BAL.AuthServices
 		private async Task<List<Claim>> GetClaims()
 		{
 			var claims = new List<Claim> {
-				new Claim("userName", _user.UserName!),
 				new Claim("uid", _user.Id!),
-				new Claim("email", _user.Email!),
+				new Claim("email", _user.PhoneNumber!),
 			};
 			var roles = await _userManager.GetRolesAsync(_user);
 			foreach (var role in roles)
