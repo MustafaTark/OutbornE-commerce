@@ -18,6 +18,7 @@ namespace OutbornE_commerce.BAL.Dto.ProductColors
         public ColorDto? Color { get; set; }
         public bool IsDefault { get; set; }
         public List<IFormFile>? Images { get; set; }
+        public int AvailableQuntity { get; set; }
         public List<ProductImageDto>? ProductImages { get; set; }
     }
 }

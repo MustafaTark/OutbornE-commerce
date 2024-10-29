@@ -32,13 +32,12 @@ namespace OutbornE_commerce.Controllers
         {
             var items = new PagainationModel<IEnumerable<Product>>();
             if(string.IsNullOrEmpty(searchTerm))
-                 items = await _productRepository.FindAllAsyncByPagination(null, pageNumber, pageSize, new string[] { "ProductSizes.Size" });
+                 items = await _productRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
             else 
                 items = await _productRepository.FindAllAsyncByPagination(b=>b.NameEn.Contains(searchTerm)
                                                                            ||b.NameAr.Contains(searchTerm)
                                                                            ||b.AboutEn.Contains(searchTerm)
-                                                                            || b.AboutAr.Contains(searchTerm)
-                                                                            || b.ProductSizes.Any(p=>p.Size.Name.Contains(searchTerm)), pageNumber, pageSize, new string[] { "ProductSizes.Size" });
+                                                                            || b.AboutAr.Contains(searchTerm), pageNumber, pageSize, new string[] { "ProductSizes.Size" });
 
             var data = items.Data.Adapt<List<ProductDto>>();
 
@@ -55,11 +54,11 @@ namespace OutbornE_commerce.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductById(Guid id)
         {
-            string[] includes = new string[] { "ProductSizes.Size" };
-            var product = await _productRepository.Find(i => i.Id == id,false, includes);
+           // string[] includes = new string[] { "ProductSizes.Size" };
+            var product = await _productRepository.Find(i => i.Id == id,false);
             var data = product.Adapt<ProductDto>(); 
 
-            data.ProductSizesIds = product.ProductSizes?.Select(s=>s.SizeId).ToList();
+            //data.ProductSizesIds = product.ProductSizes?.Select(s=>s.SizeId).ToList();
            // data.ProductCategoriesIds = product.ProductCategories?.Select(s=>s.CategoryId).ToList();
 
             return Ok(new Response<ProductDto>()
@@ -80,19 +79,24 @@ namespace OutbornE_commerce.Controllers
                 var fileModel = await _filesManager.UploadFile(model.Image, "Products");
                 product.ImageUrl = fileModel!.Url;
             }
-
-            foreach (var sizeId in model.ProductSizesIds!)
+            if (model.Demo != null)
             {
-                product.ProductSizes = new List<ProductSize>();
-                var size = new ProductSize
-                {
-                    SizeId = sizeId,
-                    CreatedBy = "admin",
-                    CreatedOn = DateTime.Now,
-                    
-                };
-                product.ProductSizes!.Add(size);
+                var fileModel = await _filesManager.UploadFile(model.Demo, "Products");
+                product.DemoUrl = fileModel!.Url;
             }
+
+            //foreach (var sizeId in model.ProductSizesIds!)
+            //{
+            //    product.ProductSizes = new List<ProductSize>();
+            //    var size = new ProductSize
+            //    {
+            //        SizeId = sizeId,
+            //        CreatedBy = "admin",
+            //        CreatedOn = DateTime.Now,
+                    
+            //    };
+            //    product.ProductSizes!.Add(size);
+            //}
             //foreach (var categoryId in model.ProductCategoriesIds!)
             //{
             //    product.ProductCategories = new List<ProductCategory>();
@@ -129,43 +133,43 @@ namespace OutbornE_commerce.Controllers
 
             var newProductSizes = new List<ProductSize>();
             var newProductCategories = new List<ProductCategory>();
-            //foreach (var size in newProductSizes)
+            ////foreach (var size in newProductSizes)
+            ////{
+            ////    size.CreatedBy = "admin";
+            ////} 
+            //foreach (var sizeId in model.ProductSizesIds!)
             //{
-            //    size.CreatedBy = "admin";
-            //} 
-            foreach (var sizeId in model.ProductSizesIds!)
-            {
-                var Newsize = new ProductSize
-                {
-                    SizeId = sizeId,
-                    CreatedBy = "admin",
-                    UpdatedBy = "admin",
-                    CreatedOn= DateTime.UtcNow,
-                    UpdatedOn = DateTime.UtcNow,
-                    ProductId = model.Id
+            //    var Newsize = new ProductSize
+            //    {
+            //        SizeId = sizeId,
+            //        CreatedBy = "admin",
+            //        UpdatedBy = "admin",
+            //        CreatedOn= DateTime.UtcNow,
+            //        UpdatedOn = DateTime.UtcNow,
+            //        ProductId = model.Id
 
-                };
-                newProductSizes.Add(Newsize);
-            }
-            foreach (var categoryId in model.ProductCategoriesIds!)
-            {
-                var Newcategory = new ProductCategory
-                {
-                    CategoryId = categoryId,
-                    CreatedBy = "admin",
-                    UpdatedBy = "admin",
-                    CreatedOn= DateTime.UtcNow,
-                    UpdatedOn = DateTime.UtcNow,
-                    ProductId = model.Id
+            //    };
+            //    newProductSizes.Add(Newsize);
+            //}
+            //foreach (var categoryId in model.ProductCategoriesIds!)
+            //{
+            //    var Newcategory = new ProductCategory
+            //    {
+            //        CategoryId = categoryId,
+            //        CreatedBy = "admin",
+            //        UpdatedBy = "admin",
+            //        CreatedOn= DateTime.UtcNow,
+            //        UpdatedOn = DateTime.UtcNow,
+            //        ProductId = model.Id
 
-                };
-                newProductCategories.Add(Newcategory);
-            }
-            await _productSizeRepository.DeleteRange(s => s.ProductId == product.Id);
-            await _productSizeRepository.CreateRange(newProductSizes);
+            //    };
+            //    newProductCategories.Add(Newcategory);
+            //}
+            //await _productSizeRepository.DeleteRange(s => s.ProductId == product.Id);
+            //await _productSizeRepository.CreateRange(newProductSizes);
             
-            await _productCategoryRepository.DeleteRange(s => s.ProductId == product.Id);
-            await _productCategoryRepository.CreateRange(newProductCategories);
+            //await _productCategoryRepository.DeleteRange(s => s.ProductId == product.Id);
+            //await _productCategoryRepository.CreateRange(newProductCategories);
 
             await _productRepository.SaveAsync(cancellationToken);
 
@@ -177,20 +181,20 @@ namespace OutbornE_commerce.Controllers
 
             });
         }
-        [HttpGet("bestSeller")]
-        public async Task<IActionResult> GetBestSellerProducts()
-        {
-            var products = await _productRepository.FindByCondition(p=>p.Label == (int) ProductLabelEnum.BestSeller);
-            var data = products.Adapt<List<ProductCardDto>>();
+        //[HttpGet("bestSeller")]
+        //public async Task<IActionResult> GetBestSellerProducts()
+        //{
+        //    var products = await _productRepository.FindByCondition(p=>p.Label == (int) ProductLabelEnum.BestSeller);
+        //    var data = products.Adapt<List<ProductCardDto>>();
 
-            return Ok(new Response<List<ProductCardDto>>()
-            {
-                Data = data,
-                IsError = false,
-                Status = (int)StatusCodeEnum.Ok
+        //    return Ok(new Response<List<ProductCardDto>>()
+        //    {
+        //        Data = data,
+        //        IsError = false,
+        //        Status = (int)StatusCodeEnum.Ok
 
-            });
-        }
+        //    });
+        //}
         [HttpPost("search")]
         public async Task<IActionResult> SearchProducts([FromBody] SearchModelDto model)
         {
@@ -212,11 +216,10 @@ namespace OutbornE_commerce.Controllers
         {
             var product = await _productRepository.FindIncludesSplited(p => p.Id == productId,
                                                         trackChanges: true,
-                                                        new string[] { "ProductSizes.Size",
-                                                                       "ProductColors.Color",
+                                                        new string[] {"ProductColors.Color",
                                                                        "ProductColors.ProductImages",
-                                                                        "ProductCategories.Category",
-                                                                         "Brand"});
+                                                                        "Category",
+                                                                        "Brand"});
             var data = product.Adapt<ProductDetailsDto>();
 
             return Ok(new Response<ProductDetailsDto>()

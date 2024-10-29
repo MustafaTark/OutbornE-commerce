@@ -10,6 +10,5 @@ namespace OutbornE_commerce.BAL.Dto.Cities
     {
         public string NameAr { get; set; }
         public string NameEn { get; set; }
-        public Guid CountryId { get; set; }
     }
 }

@@ -77,22 +77,13 @@ namespace OutbornE_commerce.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCity([FromBody] CityForCreationDto model ,CancellationToken cancellationToken)
         {
-            var country = await _countryRepository.Find(c => c.Id == model.CountryId, false);
-            if (country == null)
-                return Ok(new Response<CityDto>
-                {
-                    Data = null,
-                    IsError = true,
-                    Message = $"Contry with Id: {model.CountryId} doesn't exist in the database",
-                    Status = (int)StatusCodeEnum.NotFound
-                });
             var city = model.Adapt<City>();
             city.CreatedBy = "admin";
             var result = await _cityRepository.Create(city);
             await _cityRepository.SaveAsync(cancellationToken);
             return Ok(new Response<Guid>
             {
-                Data = city.Id,
+                Data = result.Id,
                 IsError = false,
                 Status = (int)StatusCodeEnum.Ok
             });
@@ -100,15 +91,6 @@ namespace OutbornE_commerce.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateCity([FromBody] CityDto model, CancellationToken cancellationToken)
         {
-            var country = await _countryRepository.Find(c => c.Id == model.CountryId, false);
-            if (country == null)
-                return Ok(new Response<CountryDto>
-                {
-                    Data = null,
-                    IsError = true,
-                    Message = $"Contry with Id: {model.CountryId} doesn't exist in the database",
-                    Status = (int)StatusCodeEnum.NotFound
-                });
             var city = await _cityRepository.Find(c => c.Id == model.Id, false);
             if(city == null)
             {

@@ -10,6 +10,7 @@ namespace OutbornE_commerce.BAL.AuthServices
 	public interface IAuthService
 	{
         Task<AuthResponseModel?> ValidateUser(UserForLoginDto userForAuth);
-		Task<string> CreateToken();
+        Task<AuthResponseModel?> ValidateAdmin(UserForLoginDto userForAuth);
+        Task<string> CreateToken();
 	}
 }

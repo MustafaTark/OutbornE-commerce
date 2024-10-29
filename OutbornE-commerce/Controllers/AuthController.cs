@@ -45,6 +45,7 @@ namespace OutbornE_commerce.Controllers
             var user = userForRegistration.Adapt<User>();
             user.UserName = userForRegistration.Phone;
             user.PhoneNumber = userForRegistration.Phone;
+            user.Email = userForRegistration.Phone;
             var result = await _userManager.CreateAsync(user, userForRegistration.Password!);
             if (!result.Succeeded)
             {
@@ -94,6 +95,7 @@ namespace OutbornE_commerce.Controllers
                 });
             }
             var user = userForRegistration.Adapt<User>();
+            user.UserName = userForRegistration.Email;
             var result = await _userManager.CreateAsync(user, userForRegistration.Password!);
             if (!result.Succeeded)
             {
@@ -142,11 +144,11 @@ namespace OutbornE_commerce.Controllers
         [HttpPost("loginAdmin")]
         public async Task<IActionResult> AuthenticateAdmin([FromBody] UserForLoginDto user)
         {
-            var validate = await _authService.ValidateUser(user);
+            var validate = await _authService.ValidateAdmin(user);
             if (validate is not null)
                 return Ok(validate);
 
-            var userModel = await _userManager.Users.Where(u=>u.PhoneNumber == user.EmailOrPhone).FirstOrDefaultAsync();
+            var userModel = await _userManager.Users.Where(u=>u.Email == user.EmailOrPhone).FirstOrDefaultAsync();
             var token = await _authService.CreateToken();
             var roles = await _userManager.GetRolesAsync(userModel!);
 

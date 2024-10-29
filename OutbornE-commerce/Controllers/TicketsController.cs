@@ -7,6 +7,7 @@ using OutbornE_commerce.BAL.Dto.ProductColors;
 using OutbornE_commerce.BAL.Dto.Tickets;
 using OutbornE_commerce.BAL.Repositories.Tickets;
 using OutbornE_commerce.DAL.Models;
+using OutbornE_commerce.Extensions;
 
 namespace OutbornE_commerce.Controllers
 {
@@ -93,7 +94,7 @@ namespace OutbornE_commerce.Controllers
                     Message = $"Ticket with Id : {model.Id} doesn't exist in the database"
                 });
             ticket = model.Adapt<Ticket>();
-            ticket.CreatedBy = "user";
+            ticket.CreatedBy = User.GetUserIdAPI();
             _ticketRepository.Update(ticket);
             await _ticketRepository.SaveAsync(cancellationToken);
             return Ok(new Response<Guid>()

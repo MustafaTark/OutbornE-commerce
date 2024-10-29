@@ -41,6 +41,22 @@ namespace OutbornE_commerce.BAL.AuthServices
             }
 			return null;
 		}
+		public async Task<AuthResponseModel?> ValidateAdmin(UserForLoginDto userForAuth)
+		{
+			 _user = await _userManager.Users.Where(u=>u.Email == userForAuth.EmailOrPhone).FirstOrDefaultAsync();
+			if (_user == null || ! await _userManager.CheckPasswordAsync(_user, userForAuth.Password!))
+			{
+                return new AuthResponseModel
+                {
+                    PhoneNumber = userForAuth.EmailOrPhone,
+                    IsError = true,
+                    MessageAr = "رقم الهاتف او كلمة السر غير صحيحين",
+                    MessageEn = "Phone or Password not correct",
+					StatusCode = (int) StatusCodeEnum.BadRequest
+                };
+            }
+			return null;
+		}
 		public async Task<string> CreateToken()
 		{
 			var signingCredentials = GetSigningCredentials();
@@ -58,7 +74,7 @@ namespace OutbornE_commerce.BAL.AuthServices
 		{
 			var claims = new List<Claim> {
 				new Claim("uid", _user.Id!),
-				new Claim("email", _user.PhoneNumber!),
+				new Claim("email", _user.Email!),
 			};
 			var roles = await _userManager.GetRolesAsync(_user);
 			foreach (var role in roles)

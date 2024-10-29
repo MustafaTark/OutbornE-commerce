@@ -26,10 +26,10 @@ namespace OutbornE_commerce.BAL.Repositories.Products
                                    .AsNoTracking()
                                    .Include(b => b.Brand)
                                    .SearchByBrand(model.BrandsIds)
-                                   .SearchByType(model.ProductType)
+                                //   .SearchByType(model.ProductType)
                                    .SearchByTerm(model.SearchTerm)
                                    .SearchByCategories(model.CategoriesIds)
-                                   .SearchBySizes(model.SizesIds)
+                                 //  .SearchBySizes(model.SizesIds)
                                    .SearchByColors(model.ColorsIds)
                                    .SearchByPrice(model.MinPrice,model.MaxPrice);
 

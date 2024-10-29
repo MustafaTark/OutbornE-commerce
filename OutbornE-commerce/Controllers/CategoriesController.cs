@@ -72,7 +72,7 @@ namespace OutbornE_commerce.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCategory([FromForm] CategoryDto model , CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateCategory([FromForm] CategoryForEdit model , CancellationToken cancellationToken)
         {
             var category = model.Adapt<Category>();
             category.CreatedBy = "admin";
@@ -89,7 +89,7 @@ namespace OutbornE_commerce.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateCategory([FromForm] CategoryDto model , CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateCategory([FromForm] CategoryForEdit model , CancellationToken cancellationToken)
         {
             var category = await _categoryRepository.Find(c => c.Id == model.Id, false);
             category = model.Adapt<Category>();
@@ -160,7 +160,7 @@ namespace OutbornE_commerce.Controllers
             });
         }
         [HttpPost("subcategory")]
-        public async Task<IActionResult> CreateSubCategory([FromForm] SubCategoryDto model, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateSubCategory([FromForm] SubCategoryForEdit model, CancellationToken cancellationToken)
         {
             var subcategory = model.Adapt<Category>();
             subcategory.CreatedBy = "admin";
@@ -182,7 +182,7 @@ namespace OutbornE_commerce.Controllers
         }
 
         [HttpPut("subcategory")]
-        public async Task<IActionResult> UpdateSubCategory([FromForm] SubCategoryDto model, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateSubCategory([FromForm] SubCategoryForEdit model, CancellationToken cancellationToken)
         {
             var category = await _categoryRepository.Find(c => c.Id == model.Id, true);
             category = model.Adapt<Category>();
