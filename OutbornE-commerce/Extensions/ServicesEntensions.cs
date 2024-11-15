@@ -19,6 +19,7 @@ using OutbornE_commerce.BAL.Repositories.HomeSections;
 using OutbornE_commerce.BAL.Repositories.InquiryTypes;
 using OutbornE_commerce.BAL.Repositories.Newsletters;
 using OutbornE_commerce.BAL.Repositories.NewsletterSubscribers;
+using OutbornE_commerce.BAL.Repositories.Orders;
 using OutbornE_commerce.BAL.Repositories.ProductCateories;
 using OutbornE_commerce.BAL.Repositories.ProductColors;
 using OutbornE_commerce.BAL.Repositories.ProductImages;
@@ -72,6 +73,9 @@ namespace OutbornE_commerce.Extensions
 
 
             services.AddScoped<IBagItemRepository, BagItemRepository>();
+
+
+            services.AddScoped<IOrderRepository, OrderRepository>();
 
             services.AddScoped<IEmailSenderCustom, EmailSender>();
 
