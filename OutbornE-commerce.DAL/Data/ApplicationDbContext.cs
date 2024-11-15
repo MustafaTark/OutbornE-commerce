@@ -42,6 +42,8 @@ namespace OutbornE_commerce.DAL.Data
         public DbSet<InquiryType> InquiryTypes { get; set; }
         public DbSet<ContactUs> ContactUs { get; set; }
         public DbSet<BagItem> BagItems { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
       : base(options) { }
         protected override void OnModelCreating(ModelBuilder builder)

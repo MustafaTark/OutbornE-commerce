@@ -3,6 +3,7 @@ using OutbornE_commerce.BAL.AuthServices;
 using OutbornE_commerce.BAL.EmailServices;
 using OutbornE_commerce.BAL.Repositories.AboutUs;
 using OutbornE_commerce.BAL.Repositories.Address;
+using OutbornE_commerce.BAL.Repositories.BagItems;
 using OutbornE_commerce.BAL.Repositories.Brands;
 using OutbornE_commerce.BAL.Repositories.Categories;
 using OutbornE_commerce.BAL.Repositories.Cities;
@@ -68,6 +69,9 @@ namespace OutbornE_commerce.Extensions
 
             services.AddScoped<INewsletterRepository, NewsletterRepository>();
             services.AddScoped<INewsletterSubscriberRepository, NewsletterSubscriberRepository>();
+
+
+            services.AddScoped<IBagItemRepository, BagItemRepository>();
 
             services.AddScoped<IEmailSenderCustom, EmailSender>();
 
