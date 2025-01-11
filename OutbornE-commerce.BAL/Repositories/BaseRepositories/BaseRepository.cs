@@ -43,7 +43,7 @@ namespace OutbornE_commerce.BAL.Repositories.BaseRepositories
             if(criteria != null)
                 query = query.Where(criteria);
 
-            totalCount = query.Count();
+            totalCount =await query.CountAsync();
 
             query = query.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
             var data = await query.ToListAsync();

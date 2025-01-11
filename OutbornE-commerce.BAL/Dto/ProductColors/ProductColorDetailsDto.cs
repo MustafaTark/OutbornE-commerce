@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using OutbornE_commerce.BAL.Dto.Colors;
 using OutbornE_commerce.BAL.Dto.ProductImages;
-using OutbornE_commerce.DAL.Models;
+using OutbornE_commerce.BAL.Dto.ProductSizes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace OutbornE_commerce.BAL.Dto.ProductColors
 {
-    public class ProductColorDto
+    public class ProductColorDetailsDto
     {
         public Guid Id { get; set; }
         public Guid ProductId { get; set; }
@@ -19,7 +19,7 @@ namespace OutbornE_commerce.BAL.Dto.ProductColors
         public bool IsDefault { get; set; }
         public List<IFormFile>? Images { get; set; }
         public int AvailableQuntity { get; set; }
-        public List<Guid>? SizesIds { get; set; }
+        public List<ProductSizeDto>? ProductSizes { get; set; }
         public List<ProductImageDto>? ProductImages { get; set; }
     }
 }

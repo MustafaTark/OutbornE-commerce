@@ -19,7 +19,6 @@ namespace OutbornE_commerce.DAL.Models
         public string AboutAr { get; set; }
         public string? SizeAndFitEn {  get; set; }
         public string? SizeAndFitAr {  get; set; }
-        public List<ProductSize>? ProductSizes { get; set; }
         public List<ProductColor>? ProductColors { get; set; }
         public Guid MainCategoryId { get; set; }
         public Category? MainCategory { get; set; }

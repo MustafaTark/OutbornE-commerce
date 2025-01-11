@@ -133,43 +133,6 @@ namespace OutbornE_commerce.Controllers
 
             var newProductSizes = new List<ProductSize>();
             var newProductCategories = new List<ProductCategory>();
-            ////foreach (var size in newProductSizes)
-            ////{
-            ////    size.CreatedBy = "admin";
-            ////} 
-            //foreach (var sizeId in model.ProductSizesIds!)
-            //{
-            //    var Newsize = new ProductSize
-            //    {
-            //        SizeId = sizeId,
-            //        CreatedBy = "admin",
-            //        UpdatedBy = "admin",
-            //        CreatedOn= DateTime.UtcNow,
-            //        UpdatedOn = DateTime.UtcNow,
-            //        ProductId = model.Id
-
-            //    };
-            //    newProductSizes.Add(Newsize);
-            //}
-            //foreach (var categoryId in model.ProductCategoriesIds!)
-            //{
-            //    var Newcategory = new ProductCategory
-            //    {
-            //        CategoryId = categoryId,
-            //        CreatedBy = "admin",
-            //        UpdatedBy = "admin",
-            //        CreatedOn= DateTime.UtcNow,
-            //        UpdatedOn = DateTime.UtcNow,
-            //        ProductId = model.Id
-
-            //    };
-            //    newProductCategories.Add(Newcategory);
-            //}
-            //await _productSizeRepository.DeleteRange(s => s.ProductId == product.Id);
-            //await _productSizeRepository.CreateRange(newProductSizes);
-            
-            //await _productCategoryRepository.DeleteRange(s => s.ProductId == product.Id);
-            //await _productCategoryRepository.CreateRange(newProductCategories);
 
             await _productRepository.SaveAsync(cancellationToken);
 
@@ -218,6 +181,7 @@ namespace OutbornE_commerce.Controllers
                                                         trackChanges: true,
                                                         new string[] {"ProductColors.Color",
                                                                        "ProductColors.ProductImages",
+                                                                       "ProductColors.ProductSizes.Size",
                                                                         "Category",
                                                                         "Brand"});
             var data = product.Adapt<ProductDetailsDto>();

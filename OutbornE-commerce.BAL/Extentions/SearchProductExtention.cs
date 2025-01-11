@@ -38,15 +38,15 @@ namespace OutbornE_commerce.BAL.Extentions
             }
             return products;
         }
-        public static IQueryable<Product> SearchBySizes(this IQueryable<Product> products,List<Guid>? sizesIds)
-        {
-            if(sizesIds != null && !sizesIds.Any())
-            {
-                products = products.Include(p => p.ProductSizes)
-                        .Where(p => p.ProductSizes!.Exists(c => sizesIds.Contains(c.SizeId)));
-            }
-            return products;
-        } 
+        //public static IQueryable<Product> SearchBySizes(this IQueryable<Product> products,List<Guid>? sizesIds)
+        //{
+        //    if(sizesIds != null && !sizesIds.Any())
+        //    {
+        //        products = products.Include(p => p.ProductColors).ThenInclude(p=>p.ProductSizes)
+        //                .Where(p => p.ProductColors!.Exists(c => sizesIds.Contains(c.SizeId)));
+        //    }
+        //    return products;
+        //} 
         public static IQueryable<Product> SearchByColors(this IQueryable<Product> products,List<Guid>? colorsIds)
         {
             if(colorsIds != null && !colorsIds.Any())

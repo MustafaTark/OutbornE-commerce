@@ -25,16 +25,16 @@ namespace OutbornE_commerce.Controllers
             _categoryRepository = categoryRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllCateogries(int pageNumber =1 , int pageSize=10,string? searchTerm = null)
+        public async Task<IActionResult> GetAllCateogries(int pageNumber = 1, int pageSize = 10, string? searchTerm = null)
         {
             var items = new PagainationModel<IEnumerable<Category>>();
-            if(string.IsNullOrEmpty(searchTerm))
-                  items = await _categoryRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
+            if (string.IsNullOrEmpty(searchTerm))
+                items = await _categoryRepository.FindAllAsyncByPagination(null, pageNumber, pageSize);
             else
-              items=  await _categoryRepository
-                                  .FindAllAsyncByPagination(b => (b.NameAr.Contains(searchTerm)
-                                                             || b.NameEn.Contains(searchTerm))
-                                 , pageNumber, pageSize);
+                items = await _categoryRepository
+                                    .FindAllAsyncByPagination(b => (b.NameAr.Contains(searchTerm)
+                                                               || b.NameEn.Contains(searchTerm))
+                                   , pageNumber, pageSize);
             var data = items.Data.Adapt<List<CategoryDto>>();
 
             return Ok(new PaginationResponse<List<CategoryDto>>
@@ -72,13 +72,13 @@ namespace OutbornE_commerce.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCategory([FromForm] CategoryForEdit model , CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateCategory([FromForm] CategoryForEdit model, CancellationToken cancellationToken)
         {
             var category = model.Adapt<Category>();
             category.CreatedBy = "admin";
-            if(model.Image != null)
+            if (model.Image != null)
             {
-               var fileModel =  await _filesManager.UploadFile(model.Image, "Categories");
+                var fileModel = await _filesManager.UploadFile(model.Image, "Categories");
                 category.ImageUrl = fileModel!.Url;
             }
             var result = await _categoryRepository.Create(category);
@@ -89,7 +89,7 @@ namespace OutbornE_commerce.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateCategory([FromForm] CategoryForEdit model , CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateCategory([FromForm] CategoryForEdit model, CancellationToken cancellationToken)
         {
             var category = await _categoryRepository.Find(c => c.Id == model.Id, false);
             category = model.Adapt<Category>();
@@ -107,7 +107,7 @@ namespace OutbornE_commerce.Controllers
             return Ok(new Response<Guid> { Data = category.Id, IsError = false, Message = $"", Status = (int)StatusCodeEnum.Ok });
         }
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(Guid id,CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteCategory(Guid id, CancellationToken cancellationToken)
         {
             var category = await _categoryRepository.Find(c => c.Id == id, false);
 
@@ -118,17 +118,17 @@ namespace OutbornE_commerce.Controllers
         }
 
         [HttpGet("subCategories/{categoryId}")]
-        public async Task<IActionResult> GetAllSubCategories(Guid categoryId, int pageNumber = 1, int pageSize = 10,string? searchTerm = null)
+        public async Task<IActionResult> GetAllSubCategories(Guid categoryId, int pageNumber = 1, int pageSize = 10, string? searchTerm = null)
         {
             var items = new PagainationModel<IEnumerable<Category>>();
 
             if (string.IsNullOrEmpty(searchTerm))
-                items = await _categoryRepository.FindAllAsyncByPagination(b=>b.ParentCategoryId == categoryId, pageNumber, pageSize,new string[] { "ParentCategory" });
+                items = await _categoryRepository.FindAllAsyncByPagination(b => b.ParentCategoryId == categoryId, pageNumber, pageSize, new string[] { "ParentCategory" });
             else
-               items= await _categoryRepository
-                                  .FindAllAsyncByPagination(b =>b.ParentCategoryId == categoryId && (b.NameAr.Contains(searchTerm)
-                                                             || b.NameEn.Contains(searchTerm))
-                                                             ,pageNumber,pageSize, new string[] { "ParentCategory" });
+                items = await _categoryRepository
+                                   .FindAllAsyncByPagination(b => b.ParentCategoryId == categoryId && (b.NameAr.Contains(searchTerm)
+                                                              || b.NameEn.Contains(searchTerm))
+                                                              , pageNumber, pageSize, new string[] { "ParentCategory" });
 
             var data = items.Data.Adapt<List<SubCategoryDto>>();
 
@@ -202,6 +202,33 @@ namespace OutbornE_commerce.Controllers
                 Data = category.Id,
                 IsError = false,
                 Message = $"",
+                Status = (int)StatusCodeEnum.Ok
+            });
+        }
+        [HttpGet("allMainCategories")]
+        public async Task<IActionResult> GetAllMainCategories()
+        {
+            var categories = await _categoryRepository.FindByCondition(c => c.ParentCategoryId == null);
+            var data = categories.Adapt<List<CategoryDto>>();
+
+            return Ok(new Response<List<CategoryDto>>
+            {
+                Data = data,
+                IsError = false,
+                Message = "",
+                Status = (int)StatusCodeEnum.Ok
+            });
+        }
+        [HttpGet("allSubCategories")]
+        public async Task<IActionResult> GetAllSubCategories(Guid categoryId)
+        {
+            var categories = await _categoryRepository.FindByCondition(c => c.ParentCategoryId == categoryId);
+            var data = categories.Adapt<List<CategoryDto>>();
+            return Ok(new Response<List<CategoryDto>>
+            {
+                Data = data,
+                IsError = false,
+                Message = "",
                 Status = (int)StatusCodeEnum.Ok
             });
         }

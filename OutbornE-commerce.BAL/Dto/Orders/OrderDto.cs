@@ -1,20 +1,19 @@
-﻿using OutbornE_commerce.DAL.Enums;
+﻿using OutbornE_commerce.DAL.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OutbornE_commerce.DAL.Models
+namespace OutbornE_commerce.BAL.Dto.Orders
 {
-    public class Order : BaseEntity
+    public class OrderDto
     {
+        public Guid Id { get; set; }
         public decimal Total { get; set; }
         public decimal Discount { get; set; }
         public string? CouponCode { get; set; }
-        public Guid? CouponCodeId { get; set; }
-        public decimal TotalAfterDiscount { get; set; } 
+        public decimal TotalAfterDiscount { get; set; }
         public string? PaymentImageUrl { get; set; }
         public string? PaymentImageUrl2 { get; set; }
         public string? PaymentImageUrl3 { get; set; }
@@ -23,13 +22,9 @@ namespace OutbornE_commerce.DAL.Models
         public string? PhoneNumber { get; set; }
         public string? FullAddress { get; set; }
         public string? Notes { get; set; }
-        public string UserId { get; set; }
-        public User? User { get; set; } 
-        public int Status { get; set; } 
-        public Guid? CityId { get; set; }
-        public City? City { get; set; }
-
-        //  [Required]
-        public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+        public UserShowDto? User { get; set; }
+        public int Status { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public List<OrderItemDto> OrderItems { get; set; } = new List<OrderItemDto>();
     }
 }

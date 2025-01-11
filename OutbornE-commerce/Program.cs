@@ -113,11 +113,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await context.EnsureRolesAsync(roleManager);
+}
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-	app.UseSwagger();
+app.UseSwagger();
 	app.UseSwaggerUI();
 //}
 app.UseCors("_myAllowSpecificOrigins");

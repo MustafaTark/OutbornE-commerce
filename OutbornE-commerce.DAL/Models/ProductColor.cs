@@ -15,5 +15,6 @@ namespace OutbornE_commerce.DAL.Models
         public bool IsDefault { get; set; }
         public int AvailableQuntity { get; set; }
         public List<ProductImage>? ProductImages { get; set; }
+        public List<ProductSize>? ProductSizes { get; set; }
     }
 }

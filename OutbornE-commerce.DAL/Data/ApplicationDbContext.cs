@@ -71,5 +71,16 @@ namespace OutbornE_commerce.DAL.Data
 
             base.OnModelCreating(builder);
         }
+        public async Task EnsureRolesAsync(RoleManager<IdentityRole> roleManager)
+        {
+            string[] roleNames = { "Admin", "User" };
+            foreach (var roleName in roleNames)
+            {
+                if (!await roleManager.RoleExistsAsync(roleName))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(roleName));
+                }
+            }
+        }
     }
 }

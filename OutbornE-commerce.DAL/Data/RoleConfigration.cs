@@ -13,11 +13,11 @@ namespace OutbornE_commerce.DAL.Data
 	{
 		public void Configure(EntityTypeBuilder<IdentityRole> builder)
 		{
-			builder.HasData(
-				new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" },       
-				new IdentityRole { Name = "User", NormalizedName = "USER" }
+			//builder.HasData(
+			//	new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" },       
+			//	new IdentityRole { Name = "User", NormalizedName = "USER" }
 
-				);
+			//	);
 		}
 	}
 }

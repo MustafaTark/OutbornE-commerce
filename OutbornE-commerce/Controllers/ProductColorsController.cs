@@ -34,7 +34,11 @@ namespace OutbornE_commerce.Controllers
             var items = await _productColorRepository.FindAllAsyncByPagination(b=>b.ProductId == productId, pageNumber, pageSize, new string[] { "Color", "ProductImages" });
 
             var data = items.Data.Adapt<List<ProductColorDto>>();
-
+            foreach(var item in data)
+            {
+                var itemEntity = items.Data.FirstOrDefault(p => p.Id == item.Id);
+                item.SizesIds = itemEntity.ProductSizes?.Select(p => p.SizeId).ToList();
+            }
             return Ok(new PaginationResponse<List<ProductColorDto>>
             {
                 Data = data,
@@ -48,8 +52,20 @@ namespace OutbornE_commerce.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductColorById(Guid id)
         {
-            var productColor = await _productColorRepository.Find(p=>p.Id == id,true,new string[] {"Color","ProductImages"});
+            var productColor = await _productColorRepository.Find(p => p.Id == id, true, new string[] { "Color", "ProductImages", "ProductSizes" });
+            if(productColor == null)
+            {
+                return NotFound(new Response<ProductColorDto>
+                {
+                    Data = null,
+                    IsError = true,
+                    Message = "Not Found",
+                    Status = (int)StatusCodeEnum.NotFound
+                });
+            }
+
             var data = productColor.Adapt<ProductColorDto>();
+            data.SizesIds = productColor.ProductSizes?.Select(p => p.SizeId).ToList();   
             return Ok(new Response<ProductColorDto>
             {
                 Data = data,
@@ -76,6 +92,20 @@ namespace OutbornE_commerce.Controllers
                         CreatedOn = DateTime.Now,
                     };
                     productColor.ProductImages.Add(prodImage);
+                }
+            }
+            if(model.SizeIds != null)
+            {
+                productColor.ProductSizes = new List<ProductSize>();
+                foreach (var sizeId in model.SizeIds)
+                {
+                    var size = new ProductSize
+                    {
+                        CreatedBy = "admin",
+                        CreatedOn = DateTime.UtcNow,
+                        SizeId = sizeId
+                    };
+                    productColor.ProductSizes.Add(size);
                 }
             }
 
@@ -115,7 +145,21 @@ namespace OutbornE_commerce.Controllers
             productColor.UpdatedBy = "admin";
             productColor.CreatedBy = "admin";
             productColor.UpdatedOn = DateTime.Now;
-            _productColorRepository.Update(productColor);
+            if (model.SizesIds != null)
+            {
+                productColor.ProductSizes = new List<ProductSize>();
+                foreach (var sizeId in model.SizesIds)
+                {
+                    var size = new ProductSize
+                    {
+                        CreatedBy = "admin",
+                        CreatedOn = DateTime.UtcNow,
+                        SizeId = sizeId
+                    };
+                    productColor.ProductSizes.Add(size);
+                }
+            }
+                _productColorRepository.Update(productColor);
             await _productColorRepository.SaveAsync(cancellationToken);
             return Ok(new Response<Guid>
             {
