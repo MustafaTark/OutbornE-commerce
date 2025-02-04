@@ -1,4 +1,6 @@
-﻿using OutbornE_commerce.BAL.Dto;
+﻿using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.Storage;
+using OutbornE_commerce.BAL.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +26,12 @@ namespace OutbornE_commerce.BAL.Repositories.BaseRepositories
         void Delete(T entity);
 		Task DeleteRange(Expression<Func<T, bool>> expression);
 		void UpdateRange(List<T> entities);
-
+        Task<int> ExecuteUpdate(Expression<Func<T, bool>> criteria, Expression<Func<SetPropertyCalls<T>, SetPropertyCalls<T>>> setPropertyCalls);
         void Update(T entity);
-		Task SaveAsync(CancellationToken cancellationToken);
+        Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
+        Task CommitTransactionAsync(IDbContextTransaction transaction, CancellationToken cancellationToken = default);
+        Task ExecuteInTransactionAsync(Func<Task> operation, CancellationToken cancellationToken = default);
+        Task<T> ExecuteInTransactionAsync<T>(Func<Task<T>> operation, CancellationToken cancellationToken = default);
+        Task SaveAsync(CancellationToken cancellationToken);
 	}
 }

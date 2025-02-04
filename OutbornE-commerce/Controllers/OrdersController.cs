@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OutbornE_commerce.BAL.Dto.Orders;
+using OutbornE_commerce.BAL.PaymentService;
 using OutbornE_commerce.BAL.Repositories.Orders;
 using OutbornE_commerce.BAL.Repositories.Products;
 using OutbornE_commerce.Extensions;
@@ -18,11 +20,15 @@ namespace OutbornE_commerce.Controllers
         private readonly IOrderRepository _orderRepository;
         private IFilesManager _filesManager;
         private readonly IProductRepository _productRepository;
-        public OrdersController(IOrderRepository orderRepository, IFilesManager filesManager, IProductRepository productRepository)
+        private readonly UserManager<User> _userManager;
+        private readonly IPaymentService _paymentService;
+        public OrdersController(IOrderRepository orderRepository, IFilesManager filesManager, IProductRepository productRepository, UserManager<User> userManager, IPaymentService paymentService)
         {
             _orderRepository = orderRepository;
             _filesManager = filesManager;
             _productRepository = productRepository;
+            _userManager = userManager;
+            _paymentService = paymentService;
         }
         [HttpPost]
         [Authorize]
@@ -359,7 +365,7 @@ namespace OutbornE_commerce.Controllers
                 Status = (int)StatusCodeEnum.Ok
             });
         }
-        [HttpPut("updateStatus")]
+        [HttpPut("update-status")]
         public async Task<IActionResult> UpdateOrderStatus([FromQuery] Guid orderId, [FromQuery] int status, CancellationToken cancellationToken)
         {
             if (!(Enum.GetValues<OrderStatus>()).Any(c => (int)c == status))
@@ -372,30 +378,132 @@ namespace OutbornE_commerce.Controllers
                     Status = (int)StatusCodeEnum.BadRequest,
                 });
             }
-            var order = await _orderRepository.Find(c => c.Id == orderId);
-            if (order == null)
+
+            return await _orderRepository.ExecuteInTransactionAsync(async () =>
+            {
+                var order = await _orderRepository.Find(c => c.Id == orderId);
+
+                order.Status = status;
+                order.UpdatedBy = User.GetUserIdAPI();
+                order.UpdatedOn = DateTime.UtcNow;
+                _orderRepository.Update(order);
+
+                if (order.Status == (int)(OrderStatus.Shipped))
+                {
+                    var productUpdates = order.OrderItems.Select(item => new
+                    {
+                        ProductId = item.ProductId,
+                        QuantityToReduce = item.Qunatity
+                    }).ToList();
+
+                    foreach (var update in productUpdates)
+                    {
+                        await _productRepository.ExecuteUpdate(
+                            p => p.Id == update.ProductId,
+                            p => p.SetProperty(p => p.QuantityInStock, p => p.QuantityInStock - update.QuantityToReduce)
+                        );
+                    }
+                }
+
+                return Ok(new Response<string>
+                {
+                    Data = "",
+                    IsError = false,
+                    Message = "",
+                    Status = (int)StatusCodeEnum.Ok,
+                });
+            }, cancellationToken);
+        }
+
+        [HttpPost("orderWithPayment")]
+        [Authorize]
+        public async Task<IActionResult> CreateOrderWithPayment([FromForm] OrderForCreateWithoutImage model, CancellationToken cancellationToken)
+        {
+            try
+            {
+                string userId = User.GetUserIdAPI();
+                var order = model.Adapt<Order>();
+                var productIds = model.OrderItems.Select(x => x.ProductId).ToList();
+                var products = await _productRepository.FindByCondition(c => productIds.Contains(c.Id));
+                foreach (var item in model.OrderItems)
+                {
+                    var product = products.FirstOrDefault(x => x.Id == item.ProductId);
+                    
+                    if (product.QuantityInStock < item.Quantity)
+                    {
+                        return BadRequest(new Response<string>
+                        {
+                            Data = "",
+                            IsError = true,
+                            Message = "الكمية المطلوبة غير متوفرة",
+                            Status = (int)StatusCodeEnum.BadRequest
+                        });
+                    }
+                    if (item.IsWholesale && item.Quantity < product.WholesaleMinmumQuntity)
+                    {
+                        return BadRequest(new Response<string>
+                        {
+                            Data = "",
+                            IsError = true,
+                            Message = "الكمية المطلوبة غير كافية لطلب الجملة ",
+                            Status = (int)StatusCodeEnum.BadRequest
+                        });
+                    }
+                    var orderItem = new OrderItem
+                    {
+                        ProductId = item.ProductId,
+                        Qunatity = item.Quantity,
+                        Price = item.IsWholesale? product.WholesalePrice: product.PricePerUnit,
+                        Total = (item.IsWholesale? product.WholesalePrice : product.PricePerUnit)* item.Quantity
+                    };
+                    order.OrderItems.Add(orderItem);
+                }
+
+                order.Total = order.OrderItems.Sum(x => x.Total);
+                order.TotalAfterDiscount = order.Total;
+                order.UserId = userId;
+                order.Status = (int)OrderStatus.Placed;
+
+                var entity = await _orderRepository.Create(order);
+                await _orderRepository.SaveAsync(cancellationToken);
+
+                var user = await _userManager.FindByIdAsync(userId);
+                var paymentRequest = new PaymentRequest
+                {
+                    OrderId = entity.Id,
+                    Quantity = 1,
+                    OrderNotes = order.Notes,
+                    PaymentMethod = "visa",
+                    Price = order.TotalAfterDiscount,
+                    ProductName = "Order",
+                    UserName = user.FullName,
+                    ShippingAddress = order.FullAddress != null ? order.FullAddress : "Egypt",
+                    UserEmail = user.Email != null ? user.Email : "mostaf01230@gmail.com"
+                };
+                var paymentUrl = _paymentService.InitiatePayment(paymentRequest);
+                return Ok(new Response<dynamic>
+                {
+                    Data = new
+                    { 
+                        id = order.Id,
+                        paymentUrl = paymentUrl,
+                    },
+                    IsError = false,
+                    Message = "",
+                    Status = (int)StatusCodeEnum.Ok
+                });
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new Response<string>
                 {
-                    Data = "",
-                    IsError = true,
-                    Message = "الطلب غير موجود",
-                    Status = (int)StatusCodeEnum.NotFound
+                    Data = ex.InnerException?.Message,
+                    IsError = false,
+                    Message = "حدث خطأ",
+                    Status = (int)StatusCodeEnum.BadRequest,
                 });
             }
-            order.Status = status;
-            order.UpdatedBy = User.GetUserIdAPI();
-            order.UpdatedOn = DateTime.UtcNow;
-            _orderRepository.Update(order);
-            await _orderRepository.SaveAsync(cancellationToken);
-            return Ok(new Response<string>
-            {
-                Data = "",
-                IsError = false,
-                Message = "",
-                Status = (int)StatusCodeEnum.Ok,
-            });
 
         }
-}
+    }
  }

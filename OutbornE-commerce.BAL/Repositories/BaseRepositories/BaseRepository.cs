@@ -1,4 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Microsoft.EntityFrameworkCore.Storage;
 using OutbornE_commerce.BAL.Dto;
 using OutbornE_commerce.DAL.Data;
 using OutbornE_commerce.DAL.Models;
@@ -98,10 +101,66 @@ namespace OutbornE_commerce.BAL.Repositories.BaseRepositories
 		}
 		public void Delete(T entity) => _context.Set<T>().Remove(entity);
 		public void Update(T entity) => _context.Set<T>().Update(entity);
-		public void UpdateRange(List<T> entities) => _context.Set<T>().UpdateRange(entities);
+        public async Task<int> ExecuteUpdate(Expression<Func<T, bool>> criteria, Expression<Func<SetPropertyCalls<T>, SetPropertyCalls<T>>> setPropertyCalls)
+        {
+            return await _context.Set<T>().Where(criteria).ExecuteUpdateAsync(setPropertyCalls);
+        }
+        public void UpdateRange(List<T> entities) => _context.Set<T>().UpdateRange(entities);
 		public async Task DeleteRange(Expression<Func<T, bool>> expression) =>await _context.Set<T>().Where(expression).ExecuteDeleteAsync();
 
-		public async Task SaveAsync(CancellationToken cancellationToken)
+
+        public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+        {
+            return await _context.Database.BeginTransactionAsync(cancellationToken);
+        }
+
+        public async Task CommitTransactionAsync(IDbContextTransaction transaction, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                await _context.SaveChangesAsync(cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
+            }
+            catch
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                throw;
+            }
+        }
+
+        public async Task ExecuteInTransactionAsync(Func<Task> operation, CancellationToken cancellationToken = default)
+        {
+            using var transaction = await BeginTransactionAsync(cancellationToken);
+            try
+            {
+                await operation();
+                await CommitTransactionAsync(transaction, cancellationToken);
+            }
+            catch
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                throw;
+            }
+        }
+
+        public async Task<T> ExecuteInTransactionAsync<T>(Func<Task<T>> operation, CancellationToken cancellationToken = default)
+        {
+            using var transaction = await BeginTransactionAsync(cancellationToken);
+            try
+            {
+                var result = await operation();
+                await CommitTransactionAsync(transaction, cancellationToken);
+                return result;
+            }
+            catch
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                throw;
+            }
+        }
+
+
+        public async Task SaveAsync(CancellationToken cancellationToken)
 		{
 			await _context.SaveChangesAsync(cancellationToken);
 		}

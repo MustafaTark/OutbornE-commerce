@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using OutbornE_commerce.BAL.AuthServices;
 using OutbornE_commerce.BAL.EmailServices;
+using OutbornE_commerce.BAL.PaymentService;
 using OutbornE_commerce.BAL.Repositories.AboutUs;
 using OutbornE_commerce.BAL.Repositories.Address;
 using OutbornE_commerce.BAL.Repositories.BagItems;
@@ -78,6 +79,7 @@ namespace OutbornE_commerce.Extensions
             services.AddScoped<IOrderRepository, OrderRepository>();
 
             services.AddScoped<IEmailSenderCustom, EmailSender>();
+            services.AddScoped<IPaymentService, PaymentService>();
 
         }
     }

@@ -44,6 +44,7 @@ namespace OutbornE_commerce.DAL.Data
         public DbSet<BagItem> BagItems { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<AppSetting> AppSettings { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
       : base(options) { }
         protected override void OnModelCreating(ModelBuilder builder)
@@ -68,6 +69,13 @@ namespace OutbornE_commerce.DAL.Data
 
 
             builder.Entity<Product>().HasQueryFilter(p => !p.IsDeleted).HasIndex(p=>p.IsDeleted);
+            builder.Entity<Category>().HasQueryFilter(p => !p.IsDeleted).HasIndex(p=>p.IsDeleted);
+            builder.Entity<ProductColor>().HasQueryFilter(p => !p.IsDeleted).HasIndex(p=>p.IsDeleted);
+            builder.Entity<ProductImage>().HasQueryFilter(p => !p.IsDeleted).HasIndex(p=>p.IsDeleted);
+            builder.Entity<Brand>().HasQueryFilter(p => !p.IsDeleted).HasIndex(p=>p.IsDeleted);
+            builder.Entity<Color>().HasQueryFilter(p => !p.IsDeleted).HasIndex(p=>p.IsDeleted);
+            builder.Entity<City>().HasQueryFilter(p => !p.IsDeleted).HasIndex(p=>p.IsDeleted);
+            builder.Entity<BagItem>().HasQueryFilter(p => !p.IsDeleted).HasIndex(p=>p.IsDeleted);
 
             base.OnModelCreating(builder);
         }

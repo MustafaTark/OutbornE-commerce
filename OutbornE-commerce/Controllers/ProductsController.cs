@@ -182,7 +182,7 @@ namespace OutbornE_commerce.Controllers
                                                         new string[] {"ProductColors.Color",
                                                                        "ProductColors.ProductImages",
                                                                        "ProductColors.ProductSizes.Size",
-                                                                        "Category",
+                                                                        "SubCategory",
                                                                         "Brand"});
             var data = product.Adapt<ProductDetailsDto>();
 
@@ -209,6 +209,17 @@ namespace OutbornE_commerce.Controllers
 
 			});
 		}
-
+        [HttpGet("byType")]
+        public async Task<IActionResult> GetProductsByType(int productType)
+        {
+            var products = await _productRepository.FindByCondition(p => p.ProductType == productType);
+            var data = products.Adapt<List<SearchedProductDto>>();
+            return Ok(new Response<List<SearchedProductDto>>()
+            {
+                Data = data,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok
+            });
+        }
     }
 }

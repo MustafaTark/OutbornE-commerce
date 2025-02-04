@@ -13,9 +13,10 @@ namespace OutbornE_commerce.BAL.Dto.Products
         public string NameEn { get; set; }
         public string NameAr { get; set; }
         public string ImageUrl { get; set; }
-        public decimal Price { get; set; }
+        public decimal PricePerUnit { get; set; }
+        public decimal WholesalePrice { get; set; }
         public int Label {  get; set; }
-        public Guid BrandId { get; set; }
+        public Guid? BrandId { get; set; }
         public BrandDto? Brand { get; set; }
     }
 }

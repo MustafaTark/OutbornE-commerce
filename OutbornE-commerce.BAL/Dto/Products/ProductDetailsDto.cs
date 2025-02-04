@@ -1,4 +1,5 @@
 ﻿using OutbornE_commerce.BAL.Dto.Brands;
+using OutbornE_commerce.BAL.Dto.Categories;
 using OutbornE_commerce.BAL.Dto.ProductCategories;
 using OutbornE_commerce.BAL.Dto.ProductColors;
 using OutbornE_commerce.BAL.Dto.ProductSizes;
@@ -16,7 +17,8 @@ namespace OutbornE_commerce.BAL.Dto.Products
         public Guid Id { get; set; }
         public string NameEn { get; set; }
         public string NameAr { get; set; }
-        public decimal Price { get; set; }
+        public decimal PricePerUnit { get; set; }
+        public decimal WholesalePrice { get; set; }
         public string ImageUrl { get; set; }
         public string AboutEn { get; set; }
         public string AboutAr { get; set; }
@@ -28,7 +30,7 @@ namespace OutbornE_commerce.BAL.Dto.Products
         public string DeliveryAndReturnAr { get; set; }
         public List<ProductSizeDto>? ProductSizes { get; set; }
         public List<ProductColorDto>? ProductColors { get; set; }
-        public List<ProductCategoryDto>? ProductCategories { get; set; }
+        public CategoryDto? SubCategory { get; set; }
         public int ProductType { get; set; }
         public Guid BrandId { get; set; }
         public BrandDto? Brand { get; set; }

@@ -14,6 +14,7 @@ namespace OutbornE_commerce.DAL.Enums
         Shipped = 3,
         Delivered = 4,
         Canceled = 5,
-        Refused = 6
+        Refused = 6,
+        Failed = 7
     }
 }

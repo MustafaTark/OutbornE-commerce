@@ -198,13 +198,13 @@ namespace OutbornE_commerce.Controllers
             }
         }
         [HttpPost("forgotpassword/{email}")]
-        public async Task<IActionResult> ForgotPassword(string email)
+        public async Task<IActionResult> ForgotPassword(string userEmail,string sendedEmail)
         {
-            if (string.IsNullOrEmpty(email))
+            if (string.IsNullOrEmpty(userEmail))
             {
                 return BadRequest("Email address cannot be null or empty.");
             }
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailAsync(userEmail);
             if (user == null)
             {
                 return NotFound($"Invalid Email Address");
@@ -220,7 +220,7 @@ namespace OutbornE_commerce.Controllers
                 //await _emailService.SendPasswordResetEmailAsync(email, callbackUrl);
                 return Ok(new Response<string>
                 {
-                    Data = callbackUrl,
+                    Data = "",
                     IsError = false,
                     Status = (int)StatusCodeEnum.Ok
                 });

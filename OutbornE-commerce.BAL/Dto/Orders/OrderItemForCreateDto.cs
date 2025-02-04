@@ -13,5 +13,6 @@ namespace OutbornE_commerce.BAL.Dto.Orders
         public Guid? ColorId { get; set; }
         public Guid? SizeId { get; set; }
         public int Quantity { get; set; }
+        public bool IsWholesale { get; set; }
     }
 }

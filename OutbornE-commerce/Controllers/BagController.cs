@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OutbornE_commerce.BAL.Dto.Bags;
 using OutbornE_commerce.BAL.Repositories.BagItems;
@@ -8,6 +9,7 @@ namespace OutbornE_commerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BagController : ControllerBase
     {
         private readonly IBagItemRepository _bagItemRepository;

@@ -1,5 +1,6 @@
 ﻿using OutbornE_commerce.BAL.Dto.Colors;
 using OutbornE_commerce.BAL.Dto.Products;
+using OutbornE_commerce.BAL.Dto.Sizes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace OutbornE_commerce.BAL.Dto.Bags
         public ProductCardDto? Product { get; set; }
         public Guid? ColorId { get; set; }
         public ColorForCreationDto? Color {  get; set; }
+        public Guid? SizeId { get; set; }
+        public SizeForCreationDto? Size { get; set; }
         public int Quantity { get; set; }
     }
 }
