@@ -28,6 +28,7 @@ namespace OutbornE_commerce.BAL.Dto.Products
         public Guid SubCategoryId { get; set; }
         public Guid? BrandId { get; set; }
         public int Label { get; set; }
+        public int ProductType { get; set; }
         public int QuantityInStock { get; set; }
     }
 }

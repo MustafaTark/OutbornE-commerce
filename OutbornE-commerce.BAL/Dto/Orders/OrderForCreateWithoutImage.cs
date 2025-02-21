@@ -14,6 +14,7 @@ namespace OutbornE_commerce.BAL.Dto.Orders
         public double? Latitude { get; set; }
         public string? PhoneNumber { get; set; }
         public string? FullAddress { get; set; }
+        public Guid? CityId { get; set; }
         public string? Notes { get; set; }
         public List<OrderItemForCreateDto> OrderItems { get; set; } = new List<OrderItemForCreateDto>();
     }

@@ -22,90 +22,17 @@ namespace OutbornE_commerce.Controllers
         private readonly IProductRepository _productRepository;
         private readonly UserManager<User> _userManager;
         private readonly IPaymentService _paymentService;
-        public OrdersController(IOrderRepository orderRepository, IFilesManager filesManager, IProductRepository productRepository, UserManager<User> userManager, IPaymentService paymentService)
+        private readonly ICityRepository _cityRepository;
+        public OrdersController(IOrderRepository orderRepository, IFilesManager filesManager, IProductRepository productRepository, UserManager<User> userManager, IPaymentService paymentService, ICityRepository cityRepository)
         {
             _orderRepository = orderRepository;
             _filesManager = filesManager;
             _productRepository = productRepository;
             _userManager = userManager;
             _paymentService = paymentService;
+            _cityRepository = cityRepository;
         }
         [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> Create([FromForm] OrderForCreateDto model, CancellationToken cancellationToken)
-        {
-            try
-            {
-                string userId = User.GetUserIdAPI();
-                var order = model.Adapt<Order>();
-                var productIds = model.OrderItems.Select(x => x.ProductId).ToList();
-                var products = await _productRepository.FindByCondition(c => productIds.Contains(c.Id));
-                foreach (var item in model.OrderItems)
-                {
-                    var product = products.FirstOrDefault(x => x.Id == item.ProductId);
-
-                    if (product.QuantityInStock < item.Quantity)
-                    {
-                        return BadRequest(new Response<string>
-                        {
-                            Data = "",
-                            IsError = true,
-                            Message = "الكمية المطلوبة غير متوفرة",
-                            Status = (int)StatusCodeEnum.BadRequest
-                        });
-                    }
-                    var orderItem = new OrderItem
-                    {
-                        ProductId = item.ProductId,
-                        Qunatity = item.Quantity,
-                        Price = product.PricePerUnit,
-                        Total = product.PricePerUnit * item.Quantity
-                    };
-                    order.OrderItems.Add(orderItem);
-                }
-                order.Total = order.OrderItems.Sum(x => x.Total);
-                order.TotalAfterDiscount = order.Total;
-                if (model.PaymentImage != null)
-                {
-                    var fileModel = await _filesManager.UploadFile(model.PaymentImage, "Orders");
-                    order.PaymentImageUrl = fileModel.Url;
-                }
-                if (model.PaymentImage2 != null)
-                {
-                    var fileModel = await _filesManager.UploadFile(model.PaymentImage2, "Orders");
-                    order.PaymentImageUrl2 = fileModel.Url;
-                }
-                if (model.PaymentImage3 != null)
-                {
-                    var fileModel = await _filesManager.UploadFile(model.PaymentImage3, "Orders");
-                    order.PaymentImageUrl3 = fileModel.Url;
-                }
-                order.UserId = userId;
-                order.Status = (int)OrderStatus.PlacedWithImages;
-                await _orderRepository.Create(order);
-                await _orderRepository.SaveAsync(cancellationToken);
-                return Ok(new Response<Guid>
-                {
-                    Data = order.Id,
-                    IsError = false,
-                    Message = "",
-                    Status = (int)StatusCodeEnum.Ok
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new Response<string>
-                {
-                    Data = ex.InnerException?.Message,
-                    IsError = false,
-                    Message = "حدث خطأ",
-                    Status = (int)StatusCodeEnum.BadRequest,
-                });
-            }
-
-        }
-
-        [HttpPost("withoutPaymentImages")]
         [Authorize]
         public async Task<IActionResult> CreateWithoutPaymentImages([FromForm] OrderForCreateWithoutImage model, CancellationToken cancellationToken)
         {
@@ -163,58 +90,6 @@ namespace OutbornE_commerce.Controllers
                 });
             }
 
-        }
-        [HttpPost("addPaymentImages")]
-        public async Task<IActionResult> AddPaymentImages([FromForm] OrderImagesDto model, CancellationToken cancellationToken)
-        {
-            try
-            {
-                var order = await _orderRepository.Find(c => c.Id == model.OrderId);
-                if (order == null)
-                {
-                    return BadRequest(new Response<string>
-                    {
-                        Data = "",
-                        IsError = true,
-                        Message = "الطلب غير موجود",
-                        Status = (int)StatusCodeEnum.NotFound
-                    });
-                }
-                if (model.PaymentImage != null)
-                {
-                    var fileModel = await _filesManager.UploadFile(model.PaymentImage, "Orders");
-                    order.PaymentImageUrl = fileModel.Url;
-                }
-                if (model.PaymentImage2 != null)
-                {
-                    var fileModel = await _filesManager.UploadFile(model.PaymentImage2, "Orders");
-                    order.PaymentImageUrl2 = fileModel.Url;
-                }
-                if (model.PaymentImage3 != null)
-                {
-                    var fileModel = await _filesManager.UploadFile(model.PaymentImage3, "Orders");
-                    order.PaymentImageUrl3 = fileModel.Url;
-                }
-                _orderRepository.Update(order);
-                await _orderRepository.SaveAsync(cancellationToken);
-                return Ok(new Response<string>
-                {
-                    Data = "",
-                    IsError = false,
-                    Message = "",
-                    Status = (int)StatusCodeEnum.Ok
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new Response<string>
-                {
-                    Data = ex.InnerException?.Message,
-                    IsError = false,
-                    Message = "حدث خطأ",
-                    Status = (int)StatusCodeEnum.BadRequest,
-                });
-            }
         }
         [HttpGet]
         public async Task<IActionResult> GetAll(int pageNumber = 1, int pageSize = 10, DateTime? from = null, DateTime? to = null, int? status = null)
@@ -417,7 +292,7 @@ namespace OutbornE_commerce.Controllers
 
         [HttpPost("orderWithPayment")]
         [Authorize]
-        public async Task<IActionResult> CreateOrderWithPayment([FromForm] OrderForCreateWithoutImage model, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateOrderWithPayment([FromBody] OrderForCreateWithoutImage model, CancellationToken cancellationToken)
         {
             try
             {
@@ -425,6 +300,7 @@ namespace OutbornE_commerce.Controllers
                 var order = model.Adapt<Order>();
                 var productIds = model.OrderItems.Select(x => x.ProductId).ToList();
                 var products = await _productRepository.FindByCondition(c => productIds.Contains(c.Id));
+                order.OrderItems.Clear();
                 foreach (var item in model.OrderItems)
                 {
                     var product = products.FirstOrDefault(x => x.Id == item.ProductId);
@@ -454,15 +330,34 @@ namespace OutbornE_commerce.Controllers
                         ProductId = item.ProductId,
                         Qunatity = item.Quantity,
                         Price = item.IsWholesale? product.WholesalePrice: product.PricePerUnit,
-                        Total = (item.IsWholesale? product.WholesalePrice : product.PricePerUnit)* item.Quantity
+                        Total = (item.IsWholesale? product.WholesalePrice : product.PricePerUnit)* item.Quantity,
+                        CreatedBy = User.GetUserIdAPI()
                     };
                     order.OrderItems.Add(orderItem);
                 }
 
+             
                 order.Total = order.OrderItems.Sum(x => x.Total);
+                if (model.CityId != null)
+                {
+                    var city = await _cityRepository.Find(c => c.Id == model.CityId);
+                    if (city == null)
+                    {
+                        return BadRequest(new Response<string>
+                        {
+                            Data = "",
+                            IsError = true,
+                            Message = "المدينة غير موجودة",
+                            Status = (int)StatusCodeEnum.BadRequest
+                        });
+                    }
+                    order.CityId = model.CityId;
+                    order.Total += city.ShippingCost;
+                }
                 order.TotalAfterDiscount = order.Total;
                 order.UserId = userId;
                 order.Status = (int)OrderStatus.Placed;
+                order.CreatedBy = User.GetUserIdAPI();
 
                 var entity = await _orderRepository.Create(order);
                 await _orderRepository.SaveAsync(cancellationToken);

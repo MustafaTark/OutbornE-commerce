@@ -38,10 +38,10 @@ builder.Services.AddControllers();
 
 builder.Services.AddIdentity<User, IdentityRole>(options=>
 				{
-                    options.Password.RequireDigit = true;
+                    //options.Password.RequireDigit = true;
                     options.Password.RequiredLength = 6;
-                    options.Password.RequireLowercase = true;
-                    options.Password.RequireUppercase = true;
+                    //options.Password.RequireLowercase = true;
+                    //options.Password.RequireUppercase = true;
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequiredUniqueChars = 0;
 					options.User.RequireUniqueEmail = false;
@@ -72,8 +72,8 @@ builder.Services.AddAuthentication(options =>
 						ValidateIssuer = true,
 						ValidateAudience = true,
 						ValidateLifetime = true,
-						ValidIssuer = builder.Configuration["JWT:Issuer"],
-						ValidAudience = builder.Configuration["JWT:Audience"],
+						ValidIssuer = builder.Configuration["JWT:validIssuer"],
+						ValidAudience = builder.Configuration["JWT:validAudience"],
 						IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
 						ClockSkew = TimeSpan.Zero
 					};

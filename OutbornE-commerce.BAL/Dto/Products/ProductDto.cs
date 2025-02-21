@@ -29,7 +29,7 @@ namespace OutbornE_commerce.BAL.Dto.Products
         //public List<ProductCategoryDto>? ProductCategories { get; set; }
         //public List<Guid>? ProductSizesIds { get; set; }
         //public List<Guid>? ProductCategoriesIds { get; set; }
-        public Guid BrandId { get; set; }
+        public Guid? BrandId { get; set; }
         public int Label { get; set; }
        // public int ProductType { get; set; }
         //public int QuantityInStock { get; set; }

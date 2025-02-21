@@ -13,5 +13,6 @@ namespace OutbornE_commerce.BAL.Dto.Cities
         public Guid Id { get; set; }
         public string NameAr { get; set; }
         public string NameEn { get; set; }
+        public decimal ShippingCost { get; set; }
     }
 }

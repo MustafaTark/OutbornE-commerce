@@ -46,7 +46,7 @@ namespace OutbornE_commerce.BAL.PaymentService
                     .Add("amount", totalAmount.ToString(CultureInfo.InvariantCulture))
                     .Add("currency", currency)
                     .Add("hash", hash)
-                    .Add("allowedMethods", "card,bank_installments,wallet,fawry")
+                    .Add("allowedMethods", "card,wallet,fawry")
                     .Add("merchantRedirect", (_redirectUrl + "Payments/success" + $"?orderId={orderId}"))
                     .Add("failureRedirect", _failureUrl + "Payments/fail" + $"?orderId={orderId}")
                     .Add("redirectMethod", "get")

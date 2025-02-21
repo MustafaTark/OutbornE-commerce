@@ -42,7 +42,7 @@ namespace OutbornE_commerce.Controllers
                 var order = await _orderRepository.Find(c => c.Id == new Guid(orderId));
 
                 order.Status = (int) OrderStatus.Confirmed;
-                order.UpdatedBy = User.GetUserIdAPI();
+                order.UpdatedBy = "kashir";
                 order.UpdatedOn = DateTime.UtcNow;
                 _orderRepository.Update(order);
 

@@ -23,6 +23,7 @@ namespace OutbornE_commerce.Controllers
         {
             var bag = model.Adapt<BagItem>();
             bag.UserId = User.GetUserIdAPI();
+            bag.CreatedBy = User.GetUserIdAPI();
             var result = await _bagItemRepository.Create(bag);
             await _bagItemRepository.SaveAsync(cancellationToken);
 
